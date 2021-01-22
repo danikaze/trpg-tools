@@ -7,13 +7,11 @@ import Head from 'next/head';
 import { store } from '@store';
 import { appWithTranslation } from '@utils/i18n';
 import { useUserData } from '@utils/auth';
-import { ThemeProvider } from '@material-ui/core/styles';
-import { CssBaseline } from '@material-ui/core';
 import { getLogger, globalLogger, Logger, NsLogger } from '@utils/logger';
-import { theme } from '@themes';
 import { UserAuthData } from '@model/user';
 import { setUser } from '@store/actions/user';
 
+import '@styles/reset-v2.css';
 import '@styles/globals.css';
 
 export type AppPage<P = {}, IP = P> = NextPage<P & AppPageProps, IP>;
@@ -59,13 +57,10 @@ const App: FunctionComponent<NextAppProps<AppPageProps>> = ({
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
         />
-        <meta name="theme-color" content={theme.palette.primary.main} />
+        <meta name="theme-color" />
       </Head>
       <Logger.Provider value={globalLogger}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Component {...pageProps} />
-        </ThemeProvider>
+        <Component {...pageProps} />
       </Logger.Provider>
     </>
   );
