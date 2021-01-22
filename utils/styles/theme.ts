@@ -5,9 +5,6 @@ export type Theme = {
 
   breakpoints: Breakpoints<'sm' | 'md' | 'lg'>;
 
-  minWidth?: number | string | undefined;
-  maxWidth?: number | string | undefined;
-
   boxShadow: {
     full: string;
     top: string;
