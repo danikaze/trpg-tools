@@ -16,9 +16,6 @@ export const defaultTheme: Theme = {
     lg: 760,
   }),
 
-  minWidth: 300,
-  maxWidth: 1300,
-
   boxShadow: {
     full: `0 0 10px 0 ${colors.shadow}`,
     top: `0 -10px 13px -10px ${colors.shadow}`,
