@@ -37,6 +37,7 @@
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "passport-twitter": "^1.0.4",
+    "random-js": "^2.1.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-redux": "^7.2.1",
