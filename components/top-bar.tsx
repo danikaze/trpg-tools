@@ -1,9 +1,10 @@
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import { TOPBAR_Z_INDEX } from '@utils/constants/z-index';
+import { PRODUCT_NAME } from '@utils/constants';
 import { makeStyles } from '@utils/styles';
 import { LinkToIndex } from './links/link-to-index';
-import { PRODUCT_NAME } from '@utils/constants';
+import logoUrl from '@assets/images/trpg-d20-50px.png';
 
 export const TOPBAR_HEIGHT = 40;
 
@@ -31,6 +32,14 @@ const useStyles = makeStyles(({ boxShadow, breakpoints }) => ({
       padding: '0 20px',
     },
   },
+  topLink: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  logo: {
+    marginRight: 15,
+    height: 30,
+  },
   name: {
     color: '#ff0000',
     marginRight: 20,
@@ -48,11 +57,12 @@ export const TopBar: FunctionComponent<Props> = ({ className }) => {
 
   return (
     <nav className={clsx(className, styles.root)}>
-      <div className={styles.name}>{PRODUCT_NAME}</div>
+      <LinkToIndex className={styles.topLink}>
+        <img className={styles.logo} src={logoUrl} alt="TRPG Logo" />
+        <div className={styles.name}>{PRODUCT_NAME}</div>
+      </LinkToIndex>
       <ul className={styles.links}>
-        <li>
-          <LinkToIndex />
-        </li>
+        <li></li>
       </ul>
     </nav>
   );
