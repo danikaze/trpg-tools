@@ -27,3 +27,10 @@ declare const AUTH_TWITTER_CALLBACK_ABS_URL: string;
 declare const AUTH_TWITTER_API_KEY: string;
 /** Twitter API key secret used for authentication */
 declare const AUTH_TWITTER_API_KEY_SECRET: string;
+
+/** User for the MySQL connection */
+declare const MYSQL_USER: string;
+/** Pass for the MySQL connection */
+declare const MYSQL_PASS: string;
+/** Database for the MySQL connection */
+declare const MYSQL_DATABASE: string;

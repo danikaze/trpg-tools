@@ -1,12 +1,13 @@
 import { Profile } from 'passport';
-import { encryptPassword } from '../utils/crypt';
-import { User, UserAuthData } from './user';
-import { LocalUserDB, TwitterUserDB, UserDB } from './user-mock';
+import { selectUser, User, UserAuthData } from './user';
+import { getUserIdFromLocal } from './user/local';
+import { getUserIdFromTwitter } from './user/twitter';
 
 export async function getUserAuthData(
-  id: number | User
+  id: User['id'] | undefined
 ): Promise<UserAuthData | undefined> {
-  const user = typeof id === 'number' ? UserDB.find((u) => u.id === id) : id;
+  if (!id) return;
+  const user = await selectUser(id);
   if (!user) return;
 
   return {
@@ -20,34 +21,15 @@ export async function authLocalUser(
   username: string,
   password: string
 ): Promise<UserAuthData | undefined> {
-  return new Promise(async (resolve) => {
-    // 1. Find the user in the database
-    // TODO: Replace with the real model instead of mock-data
-    const lcUser = username.toLowerCase();
-    const user = LocalUserDB.find((u) => u.username.toLowerCase() === lcUser);
-    if (!user) return resolve(undefined);
-
-    // 2. Encode the provided password with its salt
-    const pwd = await encryptPassword(password, user.salt);
-    // 3. Check if the encoded(provided password)
-    // is the same as the provided password
-    if (pwd !== user.password) return resolve(undefined);
-
-    // 4. if ok, return the UserAuthData
-    resolve(await getUserAuthData(user.userId));
-  });
+  const userId = await getUserIdFromLocal(username, password);
+  return await getUserAuthData(userId);
 }
 
 export async function authTwitterUser(
   profile: Profile
 ): Promise<UserAuthData | undefined> {
-  return new Promise(async (resolve) => {
-    // 1. Find the user in the database
-    // TODO: Replace with the real model instead of mock-data
-    const user = TwitterUserDB.find((u) => u.profileId === profile.id);
-    if (!user) return resolve(undefined);
-
-    // 2. if ok, return the UserAuthData
-    resolve(await getUserAuthData(user.userId));
-  });
+  // get the user from the database
+  // if it doesn't exist, it will be created
+  const userId = await getUserIdFromTwitter(profile);
+  return await getUserAuthData(userId);
 }

@@ -3,6 +3,8 @@ import compress from 'compression';
 import cookieParser from 'cookie-parser';
 import next from 'next';
 import { useAuth } from './auth';
+import { initDb } from '../utils/db';
+import { dbUpdates } from '../model/sql/init';
 
 export function run() {
   const port = Number(process.env.PORT || '3000');
@@ -19,6 +21,8 @@ export function run() {
   if (AUTH_ENABLED) {
     useAuth(server);
   }
+
+  initDb({ updates: dbUpdates });
 
   app.prepare().then(() => {
     // server.get('/customRoute', (req, res) => {

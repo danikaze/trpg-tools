@@ -155,4 +155,17 @@ export class Rng {
   public shuffle<T>(data: T[]): T[] {
     return shuffle(this.engine, data);
   }
+
+  /**
+   * Generates a random string of the specified size from the given characters
+   */
+  public randomString(charset: string, size: number): string {
+    let str = '';
+
+    for (let i = 0; i < size; i++) {
+      str += this.pick((charset as unknown) as string[]);
+    }
+
+    return str;
+  }
 }

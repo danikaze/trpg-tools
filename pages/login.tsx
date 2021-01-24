@@ -1,6 +1,4 @@
 import Head from 'next/head';
-import styles from '@styles/Home.module.css';
-import { ExampleNavBar } from '@components/example-nav-bar';
 import { LoginForm } from '@components/login-form';
 import { AppPage } from './_app';
 
@@ -11,15 +9,14 @@ export interface Props {
 const Login: AppPage<Props, Props> = ({ redirect }) => {
   return (
     <>
-      <ExampleNavBar />
-      <div className={styles.container}>
+      <div>
         <Head>
           <title>
             {PACKAGE_NAME} - {PACKAGE_VERSION} ({COMMIT_HASH_SHORT})
           </title>
         </Head>
 
-        <main className={styles.main}>
+        <main>
           <LoginForm redirect={redirect} twitter />
         </main>
         <div>PRODUCTION: {IS_PRODUCTION ? 'true' : 'false'}</div>

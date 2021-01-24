@@ -2,7 +2,6 @@ import { Router } from 'express';
 import passport from 'passport';
 import { Strategy } from 'passport-twitter';
 import { authTwitterUser } from '../../../model/auth';
-import { createUserFromTwitter } from '../../../model/user';
 
 export const twitterEnabled = (() => {
   try {
@@ -30,13 +29,11 @@ export const strategy =
         return done('Error while authenticating Twitter', false);
       }
       try {
-        let user = await authTwitterUser(profile);
+        const user = await authTwitterUser(profile);
         if (user) {
           return done(null, user);
         }
-        // If a user from twitter is not found, just create one
-        user = await createUserFromTwitter(profile);
-        return done(null, user);
+        return done(null, false);
       } catch (err) {
         return done(err, false);
       }
