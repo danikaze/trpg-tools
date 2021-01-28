@@ -6,6 +6,7 @@ import thunkMiddleware, {
 } from 'redux-thunk';
 import promiseMiddleware from 'redux-promise-middleware';
 import reduxInmutableStateInvariant from 'redux-immutable-state-invariant';
+import { UserAuthData } from '@model/user';
 import { State } from './model';
 import { Action } from './actions';
 import { reducer } from './reducers';
@@ -35,10 +36,23 @@ const makeStore: MakeStore<State, Action> = (context) => {
   );
 };
 
-// `wrapper` is required to be named like this
-// but the alias `store` is provided as well to make the code clearer
-export const wrapper = createWrapper<State, Action>(makeStore, {
+const w = createWrapper<State, Action>(makeStore, {
   debug: !IS_PRODUCTION,
 });
 
-export const store = wrapper;
+type Gssp = typeof w['getServerSideProps'];
+type Ctx = Parameters<Parameters<Gssp>[0]>[0];
+type Store = Omit<typeof w, 'getServerSideProps'> & {
+  getServerSideProps: <P extends {} = any>(
+    callback: (
+      ctx: Ctx & {
+        req: { user: UserAuthData | false };
+      }
+    ) => void | P
+  ) => ReturnType<Gssp>;
+};
+
+// `wrapper` is required to be named like this
+// but the alias `store` is provided as well to make the code clearer
+export const wrapper = w as Store;
+export const store = w as Store;
