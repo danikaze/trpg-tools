@@ -8,21 +8,17 @@ type TypesOf<R extends Race> = N[R]['types'];
 
 export function generateName<R extends Race>(
   race: R,
-  type: NameType<R>,
-  n: number = 1
+  type: NameType<R>
 ): string {
   const rng = new Rng();
-  let name = '';
   const def = namesByRace[race];
+  if (!def) throw new Error(`Error in the race: ${race}`);
+
   const defType = ((def.types as TypesOf<R>)[type] as unknown) as {
     parts: string[];
   };
+  if (!defType) throw new Error(`Error in the type: ${type}`);
+
   const defParts = def.parts as { [part: string]: string[] };
-
-  defType.parts?.forEach((part: string) => {
-    const str = rng.pick(defParts[part]);
-    name = `${name} ${str}`;
-  });
-
-  return name;
+  return defType.parts!.map((part) => rng.pick(defParts[part])).join(' ');
 }
