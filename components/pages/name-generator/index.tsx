@@ -1,10 +1,24 @@
 import { ChangeEvent, FunctionComponent } from 'react';
 import { makeStyles } from '@utils/styles';
-import { generateName, Race, NameType } from '@utils/generate-name';
-import { getUniqueElems } from '@utils/get-unique-elems';
-import { RaceDef, TypeDef, useNameGenerator } from './hooks';
+import { Race } from '@utils/generate-name';
+import { useNameGenerator } from './hooks';
 
-export type Props = {};
+export interface TypeDef {
+  key: string;
+  name: string;
+}
+export interface RaceDef {
+  key: Race;
+  name: string;
+  description: string;
+  types: TypeDef[];
+}
+export interface Props {
+  races: RaceDef[];
+  defaultRace: string;
+  defaultType: string;
+  defaultNames: string[];
+}
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -24,44 +38,39 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const SHOW_NAMES = 10;
-
-export const NameGenerator: FunctionComponent<Props> = ({}) => {
+export const NameGenerator: FunctionComponent<Props> = (props) => {
   const styles = useStyles();
   const {
     races,
-    types,
     selectedRace,
     selectedType,
-    raceDescription,
-    setRace,
-    setType,
+    names,
+    updateRace,
+    updateType,
     reload,
-  } = useNameGenerator();
+  } = useNameGenerator(props);
 
   return (
     <div className={styles.root}>
       <div className={styles.selector}>
-        {getRaceSelector(races, selectedRace, setRace)}
+        {getRaceSelector(races, selectedRace, updateRace)}
         {' ⇒ '}
-        {getTypeSelector(types, selectedType, setType)}
+        {getTypeSelector(selectedRace.types, selectedType, updateType)}{' '}
+        <button onClick={reload}>Reload names</button>
       </div>
-      <div className={styles.description}>{raceDescription}</div>
-      <ul className={styles.results}>
-        {getNames(selectedRace, selectedType as never)}
-      </ul>
-      <button onClick={reload}>See more names</button>
+      <div className={styles.description}>{selectedRace.description}</div>
+      <ul className={styles.results}>{getNames(names)}</ul>
     </div>
   );
 };
 
 function getRaceSelector(
   races: RaceDef[],
-  selectedRace: Race,
+  selectedRace: RaceDef,
   setRace: (race: Race) => void
 ): JSX.Element {
   const options = races.map(({ key, name }) => (
-    <option key={key} value={key} selected={selectedRace === key}>
+    <option key={key} value={key} selected={key === selectedRace.key}>
       {name}
     </option>
   ));
@@ -91,12 +100,6 @@ function getTypeSelector(
   return <select onChange={updateRace}>{options}</select>;
 }
 
-function getNames<R extends Race>(race: R, type: NameType<R>): JSX.Element[] {
-  const names: string[] = [];
-
-  for (let i = 0; i < SHOW_NAMES; i++) {
-    names.push(generateName(race, type));
-  }
-
-  return getUniqueElems(names).map((name, i) => <li key={i}>{name}</li>);
+function getNames(names: string[]): JSX.Element[] {
+  return names.map((name, i) => <li key={i}>{name}</li>);
 }
