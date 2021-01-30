@@ -43,6 +43,7 @@ const w = createWrapper<State, Action>(makeStore, {
 type Gssp = typeof w['getServerSideProps'];
 type Ctx = Parameters<Parameters<Gssp>[0]>[0];
 type Store = Omit<typeof w, 'getServerSideProps'> & {
+  // tslint:disable-next-line:no-any
   getServerSideProps: <P extends {} = any>(
     callback: (
       ctx: Ctx & {
