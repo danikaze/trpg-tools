@@ -61,9 +61,7 @@ export const TopBar: FunctionComponent<Props> = ({ className }) => {
         <img className={styles.logo} src={logoUrl} alt="TRPG Logo" />
         <div className={styles.name}>{PRODUCT_NAME}</div>
       </LinkToIndex>
-      <ul className={styles.links}>
-        <li></li>
-      </ul>
+      <ul className={styles.links} />
     </nav>
   );
 };

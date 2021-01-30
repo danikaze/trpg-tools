@@ -1,53 +1,50 @@
 import { useState } from 'react';
+import { Props, RaceDef } from '.';
+import { callGenerateNames } from '@api/names/get';
 import { Race } from '@utils/generate-name';
-import { namesByRace } from '@utils/constants/names';
-import { getFirstKey } from '@utils/get-first-key';
 
-export interface RaceDef {
-  key: Race;
-  name: string;
-}
-
-export interface TypeDef {
-  key: string;
-  name: string;
-}
-
-export function useNameGenerator() {
-  const [selectedRace, setRaceRaw] = useState<Race>('human');
-  const [selectedType, setType] = useState<string>('male');
-  const [currentLoad, setReload] = useState<number>(0);
-  const reload = () => setReload(currentLoad + 1);
-
-  const races = Object.entries(namesByRace).map(([key, def]) => ({
-    key: key as Race,
-    name: def.race,
-    description: def.description,
-  }));
-
-  const raceDescription = namesByRace[selectedRace].description;
-
-  const types = Object.entries(namesByRace[selectedRace].types).map(
-    ([key, def]) => ({
-      key,
-      name: def.description as string,
-    })
+export function useNameGenerator({
+  races,
+  defaultRace,
+  defaultType,
+  defaultNames,
+}: Props) {
+  const [selectedRace, setRace] = useState<RaceDef>(
+    getRace(races, defaultRace)
   );
+  const [selectedType, setType] = useState<string>(defaultType as string);
+  const [currentLoad, setReload] = useState<number>(0);
+  const [names, setNames] = useState<string[]>(defaultNames);
 
-  const setRace = (race: Race) => {
-    const type = (getFirstKey(namesByRace[race].types) as unknown) as string;
-    setType(type);
-    setRaceRaw(race);
+  const loadNameList = async <R extends Race>(raceKey: R, type: string) => {
+    setNames([]);
+    const res = await callGenerateNames(raceKey, type);
+    setRace(getRace(races, raceKey));
+    setType(type as string);
+    setReload(currentLoad + 1);
+    setNames(res.data);
   };
+
+  const updateRace = (race: Race) => {
+    const type = getRace(races, race).types[0].key;
+    loadNameList(race, type);
+  };
+
+  const updateType = (type: string) => loadNameList(selectedRace.key, type);
+
+  const reload = () => loadNameList(selectedRace.key, selectedType);
 
   return {
     races,
-    types,
     selectedRace,
     selectedType,
-    raceDescription,
-    setRace,
-    setType,
+    names,
+    updateRace,
+    updateType,
     reload,
   };
+}
+
+function getRace(races: RaceDef[], race: string): RaceDef {
+  return races.find((item) => item.key === race)!;
 }
