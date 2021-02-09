@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import { GetServerSidePropsContext } from 'next';
+import { GetServerSidePropsContext, NextApiResponse } from 'next';
 import { useSelector } from 'react-redux';
 import { UserAuthData } from '@model/user';
-import { getLogger } from './logger';
 import { userSelector } from '@store/model/user/selectors';
 import { UserState } from '@store/model/user';
+import { ApiRequest, ApiResponse } from '@api';
+import { getLogger } from './logger';
 
 const HTTP_FORBIDDEN = 401;
 const logger = getLogger('auth');
@@ -14,6 +15,11 @@ interface RequestData {
   res: Response;
   user: UserAuthData;
 }
+
+// tslint:disable-next-line: no-any
+type GenericRequest = ApiRequest<any, any>;
+// tslint:disable-next-line: no-any
+type GenericResponse = NextApiResponse<ApiResponse<any>>;
 
 /**
  * Hook that returns the available user data in the redux store
@@ -106,6 +112,36 @@ export function adminRequired(
 }
 
 /**
+ * To be called from an API, it will return an error in the standard format
+ * if the user is not logged.
+ * API should be stopped if returns `true` like:
+ * ```
+ * if(apiUserRequired(req, res)) return;
+ * ```
+ */
+export function apiUserRequired(
+  req: GenericRequest,
+  res: GenericResponse
+): true | undefined {
+  return apiRoleRequired(['user', 'admin'], req, res);
+}
+
+/**
+ * To be called from an API, it will return an error in the standard format
+ * if the user is not logged.
+ * API should be stopped if returns `true` like:
+ * ```
+ * if(apiAdminRequired(req, res)) return;
+ * ```
+ */
+export function apiAdminRequired(
+  req: GenericRequest,
+  res: GenericResponse
+): true | undefined {
+  return apiRoleRequired(['admin'], req, res);
+}
+
+/**
  * This function can be used inside `getServerSideProps` (just calling it
  * with the context is enough) or as a express middleware, and it will
  * redirect to the `LOGIN_PAGE` if the user is not logged-in. If logged in
@@ -148,6 +184,43 @@ function roleRequired(
   typeof next === 'function' && next();
 }
 
+function apiRoleRequired(
+  role: string[],
+  req: GenericRequest,
+  res: GenericResponse
+) {
+  const {
+    req: { originalUrl },
+    user,
+  } = getRequestData(req, res);
+
+  if (!user) {
+    logger.info(
+      `Blocked: Non logged user when tried to access API ${originalUrl}`
+    );
+    res.status(HTTP_FORBIDDEN);
+    res.json({
+      error: true,
+      msg: 'Not logged',
+    });
+    res.end();
+    return true;
+  }
+
+  if (role.includes(user.role)) return;
+
+  logger.info(
+    `Blocked: Wrong role user when tried to access API ${originalUrl}`
+  );
+  res.status(HTTP_FORBIDDEN);
+  res.json({
+    error: true,
+    msg: 'Forbidden',
+  });
+  res.end();
+  return true;
+}
+
 /**
  * This function can be used inside `getServerSideProps` (just calling
  * it with the context is enough) or as a express middleware, and it will
@@ -176,14 +249,16 @@ function logoutIfRequired(
  * the ones from `getServerSideProps` or the ones as a express middleware
  */
 function getRequestData(
-  a: Request | GetServerSidePropsContext,
-  b?: Response
+  a: Request | GenericRequest | GetServerSidePropsContext,
+  b?: Response | GenericResponse
 ): RequestData {
   const req = ((a as GetServerSidePropsContext).req!
     ? (a as GetServerSidePropsContext).req
     : a) as Request;
   const user = req.user as UserAuthData;
-  const res = (a.res ? a.res : b) as Response;
+  const res = ((a as GetServerSidePropsContext).res
+    ? (a as GetServerSidePropsContext).res
+    : b) as Response;
 
   return { req, res, user };
 }

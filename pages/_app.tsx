@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import {
   NextComponentType,
   NextPage,
-  GetServerSidePropsContext,
+  GetServerSidePropsContext as GSSPCtx,
   GetServerSidePropsResult,
 } from 'next';
 import NextApp, { AppContext, AppProps as NextAppProps } from 'next/app';
@@ -27,14 +27,18 @@ interface AppPageProps {
   user: UserAuthData | false;
 }
 
+export type GetServerSidePropsContext<
+  Q extends ParsedUrlQuery = ParsedUrlQuery
+> = GSSPCtx<Q> & {
+  req: { user: UserAuthData | false };
+};
+
 export type GetServerSideProps<
   // tslint:disable-next-line:no-any
   P extends { [key: string]: any } = { [key: string]: any },
   Q extends ParsedUrlQuery = ParsedUrlQuery
 > = (
-  context: GetServerSidePropsContext<Q> & {
-    req: { user: UserAuthData | false };
-  }
+  context: GetServerSidePropsContext<Q>
 ) => Promise<GetServerSidePropsResult<P>>;
 
 interface WithInitialProps {
