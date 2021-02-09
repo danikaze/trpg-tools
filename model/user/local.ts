@@ -1,7 +1,7 @@
 import { encryptPassword } from '../../utils/crypt';
 import { Rng } from '../../utils/rng';
-import { LOCAL_SALT_SIZE } from '../../model/sql/init/user';
 import { getDb } from '../../utils/db';
+import { LOCAL_SALT_SIZE } from '../sql/init/constants';
 import { DbLocalUser, sql } from '../sql/user';
 import { User } from '../user';
 

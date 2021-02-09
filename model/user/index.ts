@@ -1,11 +1,12 @@
 import { OkPacket } from 'mysql2/promise';
-import { getDb } from '../../utils/db';
+import { getDb, getTimestamp } from '../../utils/db';
 import { DbUser, sql, UserType } from '../sql/user';
+import { TimestampTable } from '../';
 
 export type UserRole = 'admin' | 'user';
 export type UserAuthData = Pick<User, 'id' | 'username' | 'role'>;
 
-export interface User {
+export interface User extends TimestampTable {
   id: number;
   username: string;
   role: UserRole;
@@ -29,6 +30,7 @@ export async function createUser(
     type,
     username,
     role,
+    createdOn: getTimestamp(),
   });
 
   return (await selectUser((rows as OkPacket).insertId))!;
@@ -36,5 +38,10 @@ export async function createUser(
 
 export async function selectUser(id: User['id']): Promise<User | undefined> {
   const db = await getDb();
-  return await db.queryOne<DbUser>(sql.selectUser, { id });
+  const rawUser = await db.queryOne<DbUser>(sql.selectUser, { id });
+  if (!rawUser) return;
+
+  return {
+    ...rawUser,
+  };
 }
