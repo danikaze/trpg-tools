@@ -1,6 +1,7 @@
 import { NextApiHandler, NextApiResponse } from 'next';
 import { IncomingMessage } from 'http';
 import { Env } from 'next/dist/lib/load-env-config';
+import { UserAuthData } from '@model/user';
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 /* | 'CONNECT' | 'OPTIONS' | 'TRACE' */
@@ -54,6 +55,7 @@ export interface ApiRequest<Q, B> extends IncomingMessage {
   cookies: {
     [key: string]: string;
   };
+  user: UserAuthData | false;
   env: Env;
 }
 
