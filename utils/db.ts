@@ -8,6 +8,7 @@ import { getLogger } from './logger';
 import './logger/private/server';
 
 let db: MySql;
+const RATIO_SECS_MS = 1000;
 
 /**
  * Get a connection to the database
@@ -41,4 +42,12 @@ export async function initDb(options: InitDbOptions): Promise<void> {
  */
 export function generateUniqueId(): string {
   return uuidv4();
+}
+
+/**
+ * Get a standard way to store timestamps as numbers in the database
+ */
+export function getTimestamp(date?: Date): number {
+  const timestamp = date ? date.getTime() : Date.now();
+  return Math.floor(timestamp / RATIO_SECS_MS);
 }

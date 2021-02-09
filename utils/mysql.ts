@@ -43,7 +43,7 @@ export class MySql {
   public static readonly CONTROL_TABLE_NAME = '_dbcontrol';
   public static readonly INIT_VERSION = 0;
 
-  protected readonly logger?: NsLogger;
+  public readonly logger?: NsLogger;
   protected readonly connection: Connection;
 
   constructor(connection: Connection, options?: MySqlOptions) {
@@ -55,7 +55,7 @@ export class MySql {
   /**
    * Executes SQL without expecting a result
    */
-  public async execute(sql: string, params?: SqlParams) {
+  public async execute<P extends {}>(sql: string, params?: P) {
     return this.connection.execute(sql, params);
   }
 

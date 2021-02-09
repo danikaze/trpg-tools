@@ -1,10 +1,11 @@
 import { UserRole } from '@model/user';
+import { TimestampTable } from '..';
 
 export type UserType =
   | 'lc' // local (user + pass)
   | 'tw'; // twitter
 
-export interface DbUser {
+export interface DbUser extends TimestampTable {
   id: number;
   type: UserType;
   username: string;
@@ -29,8 +30,8 @@ export interface DbTwitterUser {
 export const sql = {
   createUser: `
     INSERT INTO
-      users(type, username, role)
-      VALUES(:type, :username, :role)`,
+      users(type, username, role, createdOn, updatedOn)
+      VALUES(:type, :username, :role, :createdOn, :createdOn)`,
   selectUser: `
     SELECT id, username, role
       FROM users
@@ -47,8 +48,8 @@ export const sql = {
       users_twitter(userId, profileId)
       VALUES(:userId, :profileId)`,
   selectUserFromTwitter: `
-      SELECT id, username, role
-        FROM users u, users_twitter t
-        WHERE u.id = t.userId
-          AND t.profileId = :profileId`,
+    SELECT id, username, role
+      FROM users u, users_twitter t
+      WHERE u.id = t.userId
+        AND t.profileId = :profileId`,
 };
