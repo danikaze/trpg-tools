@@ -12,3 +12,8 @@ export const THUMBNAILS_FOLDER = 'public/static/thumbs/{type}';
 
 /** Public URLs are relative to this folder */
 export const PUBLIC_URL_FOLDER = 'public';
+
+/** Maximum length for  Game.name */
+export const GAME_NAME_MAX_CHARS = 255;
+/** Maximum length for Game.description */
+export const GAME_DESC_MAX_CHARS = 2000;

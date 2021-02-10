@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { makeStyles } from '@utils/styles';
 import { LinkToIndex } from './links/link-to-index';
 import { LinkToCharacterNameGenerator } from './links/link-to-character-name-generator';
+import { LinkToMyGames } from './links/link-to-my-games';
 
 export interface Props {
   className?: string;
@@ -39,6 +40,9 @@ export const SideBar: FunctionComponent<Props> = ({ className }) => {
         </li>
         <li>
           <LinkToCharacterNameGenerator />
+        </li>
+        <li>
+          <LinkToMyGames />
         </li>
       </ul>
     </nav>

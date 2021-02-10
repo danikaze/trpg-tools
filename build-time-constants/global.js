@@ -1,11 +1,11 @@
 // max size of the header of a file (i.e. "data:image/jpeg;base64,") in bytes
 const FILE_HEADER_SIZE_B = 64;
 
-const IMAGE_MAX_SIZE_B = 1e6; // 1mb
-const BODY_MAX_SIZE_B = Math.max(IMAGE_MAX_SIZE_B + FILE_HEADER_SIZE_B);
+const GAME_IMAGE_MAX_SIZE_B = 1e6; // 1mb
+const BODY_MAX_SIZE_B = FILE_HEADER_SIZE_B + Math.max(GAME_IMAGE_MAX_SIZE_B);
 
 module.exports = {
-  IMAGE_MAX_SIZE_B,
+  GAME_IMAGE_MAX_SIZE_B,
   BODY_MAX_SIZE_B,
   I18N_OPTIMIZED_NAMESPACES_ENABLED: true,
   AUTH_ENABLED: true,
