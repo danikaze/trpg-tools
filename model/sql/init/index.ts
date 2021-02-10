@@ -3,15 +3,19 @@ import { DbInitFunction, InitDbOptions } from '../../../utils/mysql';
 import { initUser } from './user';
 import { initImage } from './image';
 import { userDevData } from './mock/user';
+import { initGame } from './game';
+import { gameDevData } from './mock/game';
 
 const init: DbInitFunction = async (db) => {
   await initUser(db);
   await initImage(db);
+  await initGame(db);
 
   if (IS_PRODUCTION) return;
 
   db.logger!.debug('Inserting Dev Data into the database...');
   await userDevData(db);
+  await gameDevData(db);
   db.logger!.debug('Dev Data done!');
 };
 

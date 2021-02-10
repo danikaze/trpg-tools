@@ -42,8 +42,8 @@ export type DbSelectGameImage = {
 export const sql = {
   createGame: `
     INSERT INTO
-      games (id, userId, name, description, createdOn, updatedOn)
-      VALUES (:id, :userId, :name, :description, :createdOn, :createdOn)
+      games (id, userId, name, description, imageId, createdOn, updatedOn)
+      VALUES (:id, :userId, :name, :description, :imageId, :createdOn, :createdOn)
   `,
   deleteGame: `
     DELETE FROM games
@@ -68,8 +68,16 @@ export const sql = {
         AND userId = :userId
   `,
   selectGame: `
-    SELECT g.id, g.name, g.description, g.thumbUrl, g.imageUrl, g.createdOn, g.updatedOn
-      FROM games g, games_permissions p
+    SELECT
+        g.id, g.name, g.description, g.createdOn, g.updatedOn,
+        p.permission,
+        u.id AS userId, u.username,
+        i.path AS imageUrl
+      FROM
+        games g,
+        games_permissions p,
+        images_thumbnails i,
+        users u
       WHERE g.id = :id
         AND (
           g.userId = :userId
@@ -79,6 +87,9 @@ export const sql = {
             AND p.permission != 'none'
           )
         )
+        AND g.imageId = i.imageId
+        AND i.type = 'gameBanner'
+        AND u.id = :userId
   `,
   selectUserGames: `
     SELECT

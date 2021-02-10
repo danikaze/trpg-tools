@@ -3,9 +3,9 @@
  */
 
 /**
- * Maximum size of images in bytes
+ * Maximum size for Game.images in bytes
  */
-declare const IMAGE_MAX_SIZE_B: number;
+declare const GAME_IMAGE_MAX_SIZE_B: number;
 /**
  * Maximum length required for the body requests (to be parsed) in bytes
  */

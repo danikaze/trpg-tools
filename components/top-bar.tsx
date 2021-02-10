@@ -3,8 +3,11 @@ import clsx from 'clsx';
 import { TOPBAR_Z_INDEX } from '@utils/constants/z-index';
 import { PRODUCT_NAME } from '@utils/constants';
 import { makeStyles } from '@utils/styles';
-import { LinkToIndex } from './links/link-to-index';
+import { useUserData } from '@utils/auth';
 import logoUrl from '@assets/images/trpg-d20-50px.png';
+import { LinkToIndex } from './links/link-to-index';
+import { LinkToLogin } from './links/link-to-login';
+import { LinkToLogout } from './links/link-to-logout';
 
 export const TOPBAR_HEIGHT = 40;
 
@@ -15,6 +18,7 @@ export interface Props {
 const useStyles = makeStyles(({ boxShadow, breakpoints }) => ({
   root: {
     display: 'flex',
+    justifyContent: 'space-between',
     position: 'sticky',
     top: 0,
     zIndex: TOPBAR_Z_INDEX,
@@ -50,18 +54,39 @@ const useStyles = makeStyles(({ boxShadow, breakpoints }) => ({
       marginRight: 20,
     },
   },
+  userData: {},
 }));
 
 export const TopBar: FunctionComponent<Props> = ({ className }) => {
   const styles = useStyles();
+  const user = getUserElement(styles);
 
   return (
     <nav className={clsx(className, styles.root)}>
       <LinkToIndex className={styles.topLink}>
-        <img className={styles.logo} src={logoUrl} alt="TRPG Logo" />
+        <img
+          className={styles.logo}
+          src={logoUrl}
+          alt={`${PRODUCT_NAME} logo`}
+        />
         <div className={styles.name}>{PRODUCT_NAME}</div>
       </LinkToIndex>
       <ul className={styles.links} />
+      {user}
     </nav>
   );
 };
+
+function getUserElement(
+  styles: ReturnType<typeof useStyles>
+): JSX.Element | void {
+  const user = useUserData();
+  if (user) {
+    return (
+      <div className={styles.userData}>
+        {user.username} (<LinkToLogout />)
+      </div>
+    );
+  }
+  return <LinkToLogin className={styles.userData} />;
+}
