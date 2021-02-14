@@ -3,9 +3,7 @@ import { callApi } from '@utils/call-api';
 import { generateName, NameType, Race } from '@utils/generate-name';
 import { getUniqueElems } from '@utils/get-unique-elems';
 
-interface Return {
-  data: string[];
-}
+type Return = string[];
 
 interface Query {
   race: string;
@@ -17,15 +15,15 @@ const SHOW_NAMES = 10;
 /*
  * API Handler
  */
-export const getNamesApi: ApiHandler<string[], Query> = (req, res) => {
+export const getNamesApi: ApiHandler<Return, Query> = (req, res) => {
   try {
     const race = req.query.race as Race;
     const type = req.query.type as NameType<Race>;
 
     const names = getNameList(race, type);
     return res.json({ data: getUniqueElems(names) });
-  } catch (e) {
-    apiError(res, e);
+  } catch (error) {
+    apiError(res, { error });
     return;
   }
 };

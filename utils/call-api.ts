@@ -19,6 +19,10 @@ export interface CallApiOptions<Q extends {} = {}, B extends {} = {}> {
   timeout?: number;
 }
 
+export interface ApiResponse<R> {
+  data: R;
+}
+
 type MethodOptions<
   M extends HttpMethod,
   Q extends {} = {},
@@ -33,14 +37,18 @@ export function callApi<
   R extends {},
   Q extends {} = {},
   B extends {} = {},
-  M extends HttpMethod = 'GET'
->(api: CallApiType, method: M, opt: MethodOptions<M, Q, B> = {}): Promise<R> {
+  M extends HttpMethod = HttpMethod
+>(
+  api: CallApiType,
+  method: M,
+  opt: MethodOptions<M, Q, B> = {}
+): Promise<ApiResponse<R>> {
   const options = {
     ...defaultOptions,
     ...opt,
   };
 
-  return new Promise<R>((resolve, reject) => {
+  return new Promise<ApiResponse<R>>((resolve, reject) => {
     let timeoutHandler: number;
     if (options.timeout! > 0) {
       timeoutHandler = window.setTimeout(
@@ -57,6 +65,9 @@ export function callApi<
     fetch(url, {
       method,
       body,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     }).then((response) => {
       clearTimeout(timeoutHandler);
       resolve(response.json());
