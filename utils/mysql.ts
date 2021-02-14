@@ -1,4 +1,4 @@
-import { Connection } from 'mysql2/promise';
+import { Connection, ResultSetHeader } from 'mysql2/promise';
 import { NsLogger } from './logger';
 
 export interface SqlParams {
@@ -55,25 +55,39 @@ export class MySql {
   /**
    * Executes SQL without expecting a result
    */
-  public async execute<P extends {}>(sql: string, params?: P) {
+  public async execute<P extends {} = SqlParams>(sql: string, params?: P) {
     return this.connection.execute(sql, params);
   }
 
   /**
    * Executes SQL and obtains a list of results
    */
-  public async query<T>(sql: string, params?: SqlParams): Promise<T[]> {
+  public async query<T extends {} = {}, P extends {} = SqlParams>(
+    sql: string,
+    params?: P
+  ): Promise<T[]> {
     return (await this.connection.execute(sql, params))[0] as T[];
   }
 
   /**
    * Executes SQL and gets the first result
    */
-  public async queryOne<T>(
+  public async queryOne<T extends {} = {}, P extends {} = SqlParams>(
     sql: string,
-    params?: SqlParams
+    params?: P
   ): Promise<T | undefined> {
     return ((await this.connection.execute(sql, params))[0] as T[])[0];
+  }
+
+  /**
+   * Insert one element and get the result
+   */
+  public async insertOne<P extends {} = SqlParams>(
+    sql: string,
+    params?: P
+  ): Promise<ResultSetHeader> {
+    const res = await this.connection.execute(sql, params);
+    return res[0] as ResultSetHeader;
   }
 
   /**
@@ -113,6 +127,10 @@ export class MySql {
     return returnValue;
   }
 
+  /**
+   * Initializes the database connection to the provided version,
+   * applying updates if needed
+   */
   public async initDb(options: InitDbOptions) {
     const dbVersion = await this.getDbVersion();
 

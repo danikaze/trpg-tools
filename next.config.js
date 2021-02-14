@@ -18,4 +18,11 @@ config = withBundleAnalyzer({ enabled: process.env.ANALYZE === 'true' })(
   config
 );
 
+config.api = {
+  ...config.api,
+  bodyParser: {
+    sizeLimit: '2mb',
+  },
+};
+
 module.exports = config;
