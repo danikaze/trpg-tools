@@ -1,7 +1,7 @@
 import { HttpMethod } from '@api';
 import { addUrlParams } from './url';
 
-export type CallApiType = 'names' | 'image';
+export type CallApiType = 'names' | 'image' | 'game';
 
 export interface CallApiOptions<Q extends {} = {}, B extends {} = {}> {
   /**
