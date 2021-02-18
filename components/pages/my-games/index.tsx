@@ -1,12 +1,15 @@
 import { FunctionComponent } from 'react';
 import { GamePreviewData } from '@model/game';
 import { makeStyles } from '@utils/styles';
+import { Paginated } from '@utils/mysql';
 import { GameEditor } from '@components/game-editor';
 import { useMyGames } from './hooks';
 import { GamePreview } from '@components/game-preview';
+import { Pagination } from '@components/pagination';
+import { LinkToMyGames } from '@components/links/link-to-my-games';
 
 export interface Props {
-  games: GamePreviewData[];
+  pages?: Paginated<GamePreviewData>;
 }
 
 const useStyles = makeStyles(() => ({
@@ -25,15 +28,16 @@ type Styles = ReturnType<typeof useStyles>;
 export const MyGames: FunctionComponent<Props> = (props) => {
   const styles = useStyles();
   const {
-    games,
+    pages,
     isCreatorOpen,
     toggleCreator,
     createGame,
     onImageChange,
   } = useMyGames(props);
 
-  const gameList =
-    games.length > 0 ? renderGameList(styles, games) : renderEmptyList(styles);
+  const gameList = pages
+    ? renderGameList(styles, pages)
+    : renderEmptyList(styles);
 
   return (
     <div className={styles.root}>
@@ -55,7 +59,24 @@ function renderEmptyList(styles: Styles): JSX.Element {
   return <div>No games yet.</div>;
 }
 
-function renderGameList(styles: Styles, games: GamePreviewData[]): JSX.Element {
+function renderGameList(
+  styles: Styles,
+  pages: Paginated<GamePreviewData>
+): JSX.Element {
+  const games = pages.data;
   const list = games.map((game) => <GamePreview key={game.id} game={game} />);
-  return <div>{list}</div>;
+  const pagination = (
+    <Pagination
+      page={pages.page}
+      totalPages={pages.totalPages}
+      LinkElem={LinkToMyGames}
+    />
+  );
+
+  return (
+    <>
+      <div>{list}</div>
+      {pagination}
+    </>
+  );
 }

@@ -1,22 +1,31 @@
+import { useEffect, useState } from 'react';
 import { createNewGame } from '@api/game/client';
 import { uploadImage } from '@api/image/client';
 import { GameEditorData } from '@components/game-editor';
 import { GamePreviewData } from '@model/game';
-import { useState } from 'react';
+import { Paginated } from '@utils/mysql';
 import { Props } from '.';
 
 interface State {
   isCreatorOpen: boolean;
-  games: GamePreviewData[] | undefined;
+  pages: Paginated<GamePreviewData> | undefined;
   imageId: number | undefined;
 }
 
 export function useMyGames(props: Props) {
   const [state, setState] = useState<State>({
     isCreatorOpen: false,
-    games: props.games?.data,
+    pages: props.pages,
     imageId: undefined,
   });
+
+  // need to update the state on page change
+  useEffect(() => {
+    setState((state) => ({
+      ...state,
+      pages: props.pages,
+    }));
+  }, [props.pages?.page]);
 
   const toggleCreator = () =>
     setState({
@@ -47,8 +56,13 @@ export function useMyGames(props: Props) {
     setState((state) => {
       return {
         ...state,
-        games: state.games ? [newGame, ...state.games] : [newGame],
         isCreatorOpen: false,
+        pages: state.pages
+          ? {
+              ...state.pages,
+              data: [newGame, ...state.pages.data],
+            }
+          : undefined,
       };
     });
   };
@@ -57,7 +71,7 @@ export function useMyGames(props: Props) {
     toggleCreator,
     createGame,
     onImageChange,
-    games: state.games,
+    pages: state.pages,
     isCreatorOpen: state.isCreatorOpen,
   };
 }
