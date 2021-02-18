@@ -18,7 +18,7 @@ export const initUser: DbInitFunction = async (db) => {
     // auth data for users based on username and password
     `
     CREATE TABLE IF NOT EXISTS users_local (
-      userId ${INTERNAL_ID},
+      userId ${INTERNAL_ID} NOT NULL,
       username ${USERNAME_ROWTYPE} NOT NULL UNIQUE,
       password VARCHAR(256) NOT NULL COLLATE utf8_bin,
       salt CHAR(${LOCAL_SALT_SIZE}),
@@ -37,7 +37,7 @@ export const initUser: DbInitFunction = async (db) => {
     // auth data for users based on twitter accounts
     `
     CREATE TABLE IF NOT EXISTS users_twitter (
-      userId ${INTERNAL_ID},
+      userId ${INTERNAL_ID} NOT NULL,
       profileId VARCHAR(36) NOT NULL PRIMARY KEY,
 
       FOREIGN KEY (userId)
