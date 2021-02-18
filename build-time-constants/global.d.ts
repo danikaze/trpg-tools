@@ -1,8 +1,15 @@
 /*
  * Data from global.js
  */
-/** Example of a value available in the whole application */
-declare const GLOBAL_EXAMPLE: string;
+
+/**
+ * Maximum size of images in bytes
+ */
+declare const IMAGE_MAX_SIZE_B: number;
+/**
+ * Maximum length required for the body requests (to be parsed) in bytes
+ */
+declare const BODY_MAX_SIZE_B: number;
 
 /**
  * - `true`: SSR is optimized delivering only the needed i18n namespaces

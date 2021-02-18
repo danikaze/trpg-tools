@@ -1,6 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 _design
+public/static/thumbs
+uploads
 
 # from nextjs-boilerplate config
 /build-time-constants/*secret*

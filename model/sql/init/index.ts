@@ -1,10 +1,12 @@
 import { DbInitFunction, InitDbOptions } from '../../../utils/mysql';
 
 import { initUser } from './user';
+import { initImage } from './image';
 import { userDevData } from './mock/user';
 
 const init: DbInitFunction = async (db) => {
   await initUser(db);
+  await initImage(db);
 
   if (IS_PRODUCTION) return;
 
