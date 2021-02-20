@@ -37,6 +37,7 @@ export const goliathNames: NameDefinitions<Type, Part> = {
   },
   parts: {
     birth: [
+      // Volo 109
       'Aukan',
       'Eglath',
       'Gae-Al',
@@ -58,6 +59,7 @@ export const goliathNames: NameDefinitions<Type, Part> = {
       'Vimak',
     ],
     nickname: [
+      // Volo 109
       'Bearkiller',
       'Dawncaller',
       'Fearless',
@@ -75,6 +77,7 @@ export const goliathNames: NameDefinitions<Type, Part> = {
       'Wordpainter',
     ],
     clan: [
+      // Volo 109
       'Anakalathai',
       'Elanithino',
       'Gathakanathi',

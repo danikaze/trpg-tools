@@ -25,7 +25,7 @@ export default NameGeneratorPage;
 
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
   const defaultRace = 'human';
-  const defaultType = 'male';
+  const defaultType = 'phbMale';
   const defaultNames = getNameList(defaultRace, defaultType);
 
   const races = Object.entries(namesByRace).map(([key, def]) => ({
