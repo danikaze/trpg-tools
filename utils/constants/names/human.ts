@@ -22,42 +22,42 @@ import { slavicMale, slavicFemale } from './human-parts/slavic';
 import { spanishMale, spanishFemale } from './human-parts/spanish';
 
 type Type =
-  | 'phbMale'
-  | 'phbFemale'
-  | 'arabicMale'
-  | 'arabicFemale'
-  | 'celticMale'
-  | 'celticFemale'
-  | 'chineseMale'
-  | 'chineseFemale'
-  | 'egyptianMale'
-  | 'egyptianFemale'
-  | 'englishMale'
-  | 'englishFemale'
-  | 'frenchMale'
-  | 'frenchFemale'
-  | 'germanMale'
-  | 'germanFemale'
-  | 'greekMale'
-  | 'greekFemale'
-  | 'indianMale'
-  | 'indianFemale'
-  | 'japaneseMale'
-  | 'japaneseFemale'
-  | 'mesoamericanMale'
-  | 'mesoamericanFemale'
-  | 'nigerCongoMale'
-  | 'nigerCongoFemale'
-  | 'norseMale'
-  | 'norseFemale'
-  | 'polynesianMale'
-  | 'polynesianFemale'
-  | 'romanMale'
-  | 'romanFemale'
-  | 'slavicMale'
-  | 'slavicFemale'
-  | 'spanishMale'
-  | 'spanishFemale';
+  | 'realms-male'
+  | 'realms-female'
+  | 'arabic-male'
+  | 'arabic-female'
+  | 'celtic-male'
+  | 'celtic-female'
+  | 'chinese-male'
+  | 'chinese-female'
+  | 'egyptian-male'
+  | 'egyptian-female'
+  | 'english-male'
+  | 'english-female'
+  | 'french-male'
+  | 'french-female'
+  | 'german-male'
+  | 'german-female'
+  | 'greek-male'
+  | 'greek-female'
+  | 'indian-male'
+  | 'indian-female'
+  | 'japanese-male'
+  | 'japanese-female'
+  | 'mesoamerican-male'
+  | 'mesoamerican-female'
+  | 'nigerCongo-male'
+  | 'nigerCongo-female'
+  | 'norse-male'
+  | 'norse-female'
+  | 'polynesian-male'
+  | 'polynesian-female'
+  | 'roman-male'
+  | 'roman-female'
+  | 'slavic-male'
+  | 'slavic-female'
+  | 'spanish-male'
+  | 'spanish-female';
 type Part =
   | 'phbMale'
   | 'phbFemale'
@@ -123,147 +123,147 @@ export const humanNames: NameDefinitions<Type, Part> = {
   and the typical names of their members, can be used as
   inspiration no matter which world your human is in`,
   types: {
-    phbMale: {
+    'realms-male': {
       description: 'Forgotten Realms male human names',
       parts: ['phbMale', 'phbFamily'],
     },
-    phbFemale: {
+    'realms-female': {
       description: 'Forgotten Realms female human names',
       parts: ['phbFemale', 'phbFamily'],
     },
-    arabicMale: {
+    'arabic-male': {
       description: 'Arabic male human names',
       parts: ['arabicMale'],
     },
-    arabicFemale: {
+    'arabic-female': {
       description: 'Arabic female human names',
       parts: ['arabicFemale'],
     },
-    celticMale: {
+    'celtic-male': {
       description: 'Celtic male human names',
       parts: ['celticMale'],
     },
-    celticFemale: {
+    'celtic-female': {
       description: 'Celtic female human names',
       parts: ['celticFemale'],
     },
-    chineseMale: {
+    'chinese-male': {
       description: 'Chinese male human names',
       parts: ['chineseMale'],
     },
-    chineseFemale: {
+    'chinese-female': {
       description: 'Chinese female human names',
       parts: ['chineseFemale'],
     },
-    egyptianMale: {
+    'egyptian-male': {
       description: 'Egyptian male human names',
       parts: ['egyptianMale'],
     },
-    egyptianFemale: {
+    'egyptian-female': {
       description: 'Egyptian female human names',
       parts: ['egyptianFemale'],
     },
-    englishMale: {
+    'english-male': {
       description: 'English male human names',
       parts: ['englishMale'],
     },
-    englishFemale: {
+    'english-female': {
       description: 'English female human names',
       parts: ['englishFemale'],
     },
-    frenchMale: {
+    'french-male': {
       description: 'French male human names',
       parts: ['frenchMale'],
     },
-    frenchFemale: {
+    'french-female': {
       description: 'French female human names',
       parts: ['frenchFemale'],
     },
-    germanMale: {
+    'german-male': {
       description: 'German male human names',
       parts: ['germanMale'],
     },
-    germanFemale: {
+    'german-female': {
       description: 'German female human names',
       parts: ['germanFemale'],
     },
-    greekMale: {
+    'greek-male': {
       description: 'Greek male human names',
       parts: ['greekMale'],
     },
-    greekFemale: {
+    'greek-female': {
       description: 'Greek female human names',
       parts: ['greekFemale'],
     },
-    indianMale: {
+    'indian-male': {
       description: 'Indian male human names',
       parts: ['indianMale'],
     },
-    indianFemale: {
+    'indian-female': {
       description: 'Indian female human names',
       parts: ['indianFemale'],
     },
-    japaneseMale: {
+    'japanese-male': {
       description: 'Japanese male human names',
       parts: ['japaneseMale'],
     },
-    japaneseFemale: {
+    'japanese-female': {
       description: 'Japanese female human names',
       parts: ['japaneseFemale'],
     },
-    mesoamericanMale: {
+    'mesoamerican-male': {
       description: 'Mesoamerican male human names',
       parts: ['mesoamericanMale'],
     },
-    mesoamericanFemale: {
+    'mesoamerican-female': {
       description: 'Mesoamerican female human names',
       parts: ['mesoamericanFemale'],
     },
-    nigerCongoMale: {
+    'nigerCongo-male': {
       description: 'Niger-Congo male human names',
       parts: ['nigerCongoMale'],
     },
-    nigerCongoFemale: {
+    'nigerCongo-female': {
       description: 'Niger-Congo female human names',
       parts: ['nigerCongoFemale'],
     },
-    norseMale: {
+    'norse-male': {
       description: 'Norse male human names',
       parts: ['norseMale'],
     },
-    norseFemale: {
+    'norse-female': {
       description: 'Norse female human names',
       parts: ['norseFemale'],
     },
-    polynesianMale: {
+    'polynesian-male': {
       description: 'Polynesian male human names',
       parts: ['polynesianMale'],
     },
-    polynesianFemale: {
+    'polynesian-female': {
       description: 'Polynesian female human names',
       parts: ['polynesianFemale'],
     },
-    romanMale: {
+    'roman-male': {
       description: 'Roman male human names',
       parts: ['romanMale'],
     },
-    romanFemale: {
+    'roman-female': {
       description: 'Roman female human names',
       parts: ['romanFemale'],
     },
-    slavicMale: {
+    'slavic-male': {
       description: 'Slavic male human names',
       parts: ['slavicMale'],
     },
-    slavicFemale: {
+    'slavic-female': {
       description: 'Slavic female human names',
       parts: ['slavicFemale'],
     },
-    spanishMale: {
+    'spanish-male': {
       description: 'Spanish male human names',
       parts: ['spanishMale'],
     },
-    spanishFemale: {
+    'spanish-female': {
       description: 'Spanish female human names',
       parts: ['spanishFemale'],
     },
