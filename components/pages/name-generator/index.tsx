@@ -1,6 +1,6 @@
 import { ChangeEvent, FunctionComponent } from 'react';
 import { makeStyles } from '@utils/styles';
-import { Race } from '@utils/generate-name';
+import { NameType, Race } from '@utils/generate-name';
 import { useNameGenerator } from './hooks';
 
 export interface TypeDef {
@@ -15,8 +15,8 @@ export interface RaceDef {
 }
 export interface Props {
   races: RaceDef[];
-  defaultRace: string;
-  defaultType: string;
+  defaultRace: Race;
+  defaultType: NameType<Race>;
   defaultNames: string[];
 }
 
@@ -70,7 +70,7 @@ function getRaceSelector(
   setRace: (race: Race) => void
 ): JSX.Element {
   const options = races.map(({ key, name }) => (
-    <option key={key} value={key} selected={key === selectedRace.key}>
+    <option key={key} value={key}>
       {name}
     </option>
   ));
@@ -79,7 +79,11 @@ function getRaceSelector(
     setRace(ev.target.value as Race);
   };
 
-  return <select onChange={updateRace}>{options}</select>;
+  return (
+    <select value={selectedRace.key} onChange={updateRace}>
+      {options}
+    </select>
+  );
 }
 
 function getTypeSelector(
@@ -88,7 +92,7 @@ function getTypeSelector(
   setType: (type: string) => void
 ) {
   const options = types.map(({ key, name }) => (
-    <option key={key} value={key} selected={selectedType === key}>
+    <option key={key} value={key}>
       {name}
     </option>
   ));
@@ -97,7 +101,11 @@ function getTypeSelector(
     setType(ev.target.value);
   };
 
-  return <select onChange={updateRace}>{options}</select>;
+  return (
+    <select value={selectedType} onChange={updateRace}>
+      {options}
+    </select>
+  );
 }
 
 function getNames(names: string[]): JSX.Element[] {
