@@ -1,7 +1,7 @@
 import { NameDefinitions } from '.';
 
 type Type = 'male' | 'female';
-type Part = 'male' | 'female';
+type Part = 'male' | 'female' | 'surname';
 
 export const tritonNames: NameDefinitions<Type, Part> = {
   race: 'Triton',
@@ -23,6 +23,7 @@ export const tritonNames: NameDefinitions<Type, Part> = {
   },
   parts: {
     male: [
+      // Volo 117
       'Aryn',
       'Belthyn',
       'Duthyn',
@@ -33,6 +34,7 @@ export const tritonNames: NameDefinitions<Type, Part> = {
       'Wolyn',
     ],
     female: [
+      // Volo 117
       'Corus',
       'Delnis',
       'Jhimas',
@@ -41,6 +43,12 @@ export const tritonNames: NameDefinitions<Type, Part> = {
       'Nalos',
       'Vodos',
       'Zunis',
+    ],
+    surname: [
+      // Volo 117
+      'Ahlorsath',
+      'Pumanath',
+      'Vuuvaxath',
     ],
   },
 };

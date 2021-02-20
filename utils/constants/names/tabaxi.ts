@@ -26,6 +26,7 @@ export const tabaxiNames: NameDefinitions<Type, Part> = {
   },
   parts: {
     name: [
+      // Volo 114
       'Cloud on the Mountain top (Cloud)',
       'Five Timber (Timber)',
       'Jade Shoe (Jade)',
@@ -35,6 +36,7 @@ export const tabaxiNames: NameDefinitions<Type, Part> = {
       'Smoking Mirror (Smoke)',
     ],
     clan: [
+      // Volo 114
       'Bright Cliffs',
       'Distant Rain',
       'Mountain Tree',
