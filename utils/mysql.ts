@@ -84,7 +84,15 @@ export class MySql {
    * Executes SQL without expecting a result
    */
   public async execute<P extends {} = SqlParams>(sql: string, params?: P) {
-    return this.connection.execute(sql, params);
+    try {
+      return this.connection.execute(sql, params);
+    } catch (e) {
+      this.logger &&
+        this.logger.error(
+          `Error on execute: "${sql}" with params ${JSON.stringify(params)}`
+        );
+      throw e;
+    }
   }
 
   /**
@@ -94,7 +102,15 @@ export class MySql {
     sql: string,
     params?: P
   ): Promise<T[]> {
-    return (await this.connection.execute(sql, params))[0] as T[];
+    try {
+      return (await this.connection.execute(sql, params))[0] as T[];
+    } catch (e) {
+      this.logger &&
+        this.logger.error(
+          `Error on query: "${sql}" with params ${JSON.stringify(params)}`
+        );
+      throw e;
+    }
   }
 
   /**
@@ -104,7 +120,15 @@ export class MySql {
     sql: string,
     params?: P
   ): Promise<T | undefined> {
-    return ((await this.connection.execute(sql, params))[0] as T[])[0];
+    try {
+      return ((await this.connection.execute(sql, params))[0] as T[])[0];
+    } catch (e) {
+      this.logger &&
+        this.logger.error(
+          `Error on queryOne: "${sql}" with params ${JSON.stringify(params)}`
+        );
+      throw e;
+    }
   }
 
   /**
@@ -170,25 +194,37 @@ export class MySql {
       : rpp;
     (options.dataParams as SqlParams).offset = Math.max(0, page) * rpp;
 
-    const [dataQuery, countQuery] = await Promise.all([
-      this.connection.execute(options.dataSql, options.dataParams),
-      this.connection.execute(options.countSql, options.countParams),
-    ]);
-    const data = dataQuery[0] as T[];
-    const count = (countQuery[0] as { total: number }[])[0]!;
+    try {
+      const [dataQuery, countQuery] = await Promise.all([
+        this.connection.execute(options.dataSql, options.dataParams),
+        this.connection.execute(options.countSql, options.countParams),
+      ]);
+      const data = dataQuery[0] as T[];
+      const count = (countQuery[0] as { total: number }[])[0]!;
 
-    const totalResults = count.total;
-    const totalPages = Math.ceil(totalResults / rpp);
-    const moreResults = page < totalPages - 1;
+      const totalResults = count.total;
+      const totalPages = Math.ceil(totalResults / rpp);
+      const moreResults = page < totalPages - 1;
 
-    return {
-      totalResults,
-      totalPages,
-      moreResults,
-      data,
-      rpp: options.rpp,
-      page: options.page,
-    };
+      return {
+        totalResults,
+        totalPages,
+        moreResults,
+        data,
+        rpp: options.rpp,
+        page: options.page,
+      };
+    } catch (e) {
+      this.logger &&
+        this.logger.error(
+          `Error on pagination: "${
+            options.dataSql
+          }" with params ${JSON.stringify(options.dataParams)} OR "${
+            options.countSql
+          } with params ${JSON.stringify(options.countParams)}"`
+        );
+      throw e;
+    }
   }
 
   /**
@@ -198,8 +234,54 @@ export class MySql {
     sql: string,
     params?: P
   ): Promise<ResultSetHeader> {
-    const res = await this.connection.execute(sql, params);
-    return res[0] as ResultSetHeader;
+    try {
+      const res = await this.connection.execute(sql, params);
+      return res[0] as ResultSetHeader;
+    } catch (e) {
+      this.logger &&
+        this.logger.error(
+          `Error on insertOne: "${sql}" with params ${JSON.stringify(params)}`
+        );
+      throw e;
+    }
+  }
+
+  /**
+   * Execute an update query and get the result
+   */
+  public async update<P extends {} = SqlParams>(
+    sql: string,
+    params?: P
+  ): Promise<ResultSetHeader> {
+    try {
+      const res = await this.connection.execute(sql, params);
+      return res[0] as ResultSetHeader;
+    } catch (e) {
+      this.logger &&
+        this.logger.error(
+          `Error on update: "${sql}" with params ${JSON.stringify(params)}`
+        );
+      throw e;
+    }
+  }
+
+  /**
+   * Execute a delete query and get the result
+   */
+  public async delete<P extends {} = SqlParams>(
+    sql: string,
+    params?: P
+  ): Promise<ResultSetHeader> {
+    try {
+      const res = await this.connection.execute(sql, params);
+      return res[0] as ResultSetHeader;
+    } catch (e) {
+      this.logger &&
+        this.logger.error(
+          `Error on delete: "${sql}" with params ${JSON.stringify(params)}`
+        );
+      throw e;
+    }
   }
 
   /**
