@@ -1,4 +1,5 @@
 import { ResultSetHeader } from 'mysql2/promise';
+import { UpdateGameResponse } from '@api/game/interface';
 import { Paginated } from '@utils/mysql';
 import { generateUniqueId, getDb, getTimestamp } from '@utils/db';
 import {
@@ -10,7 +11,7 @@ import {
   limits,
 } from '../sql/game';
 import { DbUser } from '../sql/user';
-import { User, UserAuthData } from '../user';
+import { UserAuthData } from '../user';
 import { TimestampTable } from '..';
 
 export interface GamePreviewData extends TimestampTable {
@@ -83,50 +84,66 @@ export async function createGame(
 }
 
 export async function deleteGame(
-  id: DbGame['id'],
-  userId: User['id']
+  user: UserAuthData,
+  id: DbGame['id']
 ): Promise<void> {
   const db = await getDb();
-  await db.execute(sql.deleteGame, { id, userId });
+  const res = await db.delete(sql.deleteGame, { id, userId: user.id });
+
+  if (!res.affectedRows) {
+    throw new Error('No game found to delete or not enough permissions');
+  }
 }
 
 export async function updateGame(
-  id: DbGame['id'],
-  userId: User['id'],
+  user: UserAuthData,
+  gameId: DbGame['id'],
+  lastUpdate: number,
   data: GameUpdateData
-): Promise<void> {
+): Promise<UpdateGameResponse> {
   const db = await getDb();
-  await db.execute(sql.createGame, {
-    id,
-    userId,
+  const now = getTimestamp();
+  const res = await db.update(sql.updateGame, {
+    lastUpdate,
+    id: gameId,
+    userId: user.id,
     name: data.name || null,
     description: data.description || null,
-    updatedOn: getTimestamp(),
+    imageId: data.imageId || null,
+    updatedOn: now,
   });
+
+  if (!res.affectedRows) {
+    throw new Error(
+      'No game found to update, not enough permissions or the game was updated somewhere else'
+    );
+  }
+
+  return { updatedOn: now };
 }
 
 export async function updateGameImage(
+  user: UserAuthData,
   id: DbGame['id'],
-  userId: DbUser['id'],
   imageId: DbGame['imageId']
 ): Promise<void> {
   const db = await getDb();
   await db.execute(sql.createGame, {
     id,
-    userId,
     imageId,
+    user: user.id,
     updatedOn: getTimestamp(),
   });
 }
 
 export async function selectGameDetails(
-  id: DbGame['id'],
-  userId: User['id']
+  user: UserAuthData,
+  id: DbGame['id']
 ): Promise<GameDetailsData | undefined> {
   const db = await getDb();
   const game = await db.queryOne<DbSelectGame>(sql.selectGame, {
     id,
-    userId,
+    userId: user.id,
   });
   if (!game) return;
 
@@ -144,7 +161,7 @@ export async function selectGameDetails(
 }
 
 export async function selectUserGames(
-  userId: User['id'],
+  user: UserAuthData,
   page: number = 0
 ): Promise<Paginated<GamePreviewData>> {
   const db = await getDb();
@@ -153,9 +170,9 @@ export async function selectUserGames(
     rpp: limits.selectUserGames!.default,
     limit: limits.selectUserGames!,
     dataSql: sql.selectUserGames,
-    dataParams: { userId },
+    dataParams: { userId: user.id },
     countSql: sql.countUserGames,
-    countParams: { userId },
+    countParams: { userId: user.id },
   });
 
   return {
@@ -175,14 +192,14 @@ export async function selectUserGames(
 }
 
 export async function shareGame(
+  user: UserAuthData,
   gameId: DbGame['id'],
-  userId: DbUser['id'],
   permission: GamePermission
 ): Promise<void> {
   const db = await getDb();
   await db.execute(sql.shareGame, {
     gameId,
-    userId,
     permission,
+    user: user.id,
   });
 }
