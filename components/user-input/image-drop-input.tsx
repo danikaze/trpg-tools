@@ -20,7 +20,7 @@ export interface Props {
   /** Optional ref to the <input> element */
   inputRef?: RefObject<HTMLInputElement>;
   /** Image to show by default */
-  defaultImage?: File | null | undefined;
+  defaultImage?: File | string | null | undefined;
   /** Update it to force a input reset (re-render) */
   reset?: number | string;
   /**
@@ -37,7 +37,7 @@ export interface Props {
 
 interface State {
   valid: 'na' | 'ok' | 'ng';
-  image: File | null;
+  image: File | string | null;
   reset: number | string;
 }
 
@@ -70,10 +70,14 @@ const preventDefault: DragEventHandler<HTMLDivElement> = (ev) => {
   ev.stopPropagation();
 };
 
-const previewImage = (target: HTMLElement | null, image?: File) => {
+const previewImage = (target: HTMLElement | null, image?: File | string) => {
   if (!target) return;
   if (!image) {
     target.style.backgroundImage = '';
+    return;
+  }
+  if (typeof image === 'string') {
+    target.style.backgroundImage = `url(${image})`;
     return;
   }
 
@@ -106,7 +110,10 @@ function useImageDropInput(props: Props) {
     changeImage(props.defaultImage || null, true);
   }, [props.defaultImage, props.reset]);
 
-  function changeImage(files: FileList | File | null, forcePreview?: boolean) {
+  function changeImage(
+    files: FileList | File | string | null,
+    forcePreview?: boolean
+  ) {
     const image = files instanceof FileList ? files![0] : files;
     if (image === state.image) return;
 
@@ -134,13 +141,15 @@ function useImageDropInput(props: Props) {
       reset: props.reset || state.reset,
     });
     previewImage(target, image);
-    onChange && onChange(image, false);
+    // we don't want to call onChange when just setting the default image
+    onChange && typeof image !== 'string' && onChange(image, false);
     if (inputRef.current && files instanceof FileList) {
       inputRef.current.files = files as FileList;
     }
   }
 
-  function validateImage(image: File) {
+  function validateImage(image: File | string) {
+    if (typeof image === 'string') return true;
     if (!image) return false;
     if (allowedTypes && allowedTypes.indexOf(image.type) === -1) return false;
     if (maxBytes && image.size > maxBytes) return false;

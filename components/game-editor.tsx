@@ -10,14 +10,21 @@ import { Button } from './user-input/button';
 export interface GameEditorData {
   name: string;
   description: string;
-  image: File | null;
+  image: string | File | null;
+}
+
+export interface GameDefaultData {
+  name: string;
+  description: string;
+  imageUrl?: string | null;
 }
 
 export interface Props {
   mode: 'edit' | 'create';
+  game?: GameDefaultData;
   className?: string;
   onDataChange?: (data: Omit<GameEditorData, 'image'>) => Promise<void>;
-  onImageChange?: (image: GameEditorData['image']) => Promise<void>;
+  onImageChange?: (image: File | null) => Promise<void>;
   onSubmit: (data: GameEditorData) => Promise<void>;
 }
 
@@ -49,11 +56,12 @@ interface State {
 }
 
 function useGameEditor(props: Props) {
+  const { game } = props;
   const [state, setState] = useState<State>({
     data: {
-      name: '',
-      description: '',
-      image: null,
+      name: (game && game.name) || '',
+      description: (game && game.description) || '',
+      image: (game && game.imageUrl) || null,
     },
     imageReset: 0,
     isWorking: false,
@@ -81,9 +89,9 @@ function useGameEditor(props: Props) {
     setState((state) => ({
       ...state,
       data: {
-        name: '',
-        description: '',
-        image: null,
+        name: (game && game.name) || '',
+        description: (game && game.description) || '',
+        image: (game && game.imageUrl) || null,
       },
       imageReset: state.imageReset + 1,
       isWorking: false,
@@ -127,6 +135,7 @@ function useGameEditor(props: Props) {
     submitDisabled: state.isWorking,
     titleText: props.mode === 'create' ? 'Create New Game' : 'Edit Game',
     submitText: props.mode === 'create' ? 'Create' : 'Update',
+    reset: props.mode === 'create' ? undefined : resetEditor,
   };
 }
 
@@ -143,7 +152,10 @@ export const GameEditor: FunctionComponent<Props> = (props) => {
     submitDisabled,
     titleText,
     submitText,
+    reset,
   } = useGameEditor(props);
+
+  const resetButton = reset ? <Button onClick={reset}>Reset</Button> : null;
 
   return (
     <div className={clsx(styles.root, props.className)}>
@@ -155,6 +167,7 @@ export const GameEditor: FunctionComponent<Props> = (props) => {
             allowedTypes={['image/png', 'image/jpeg', 'image/webp']}
             onChange={imageChangeHandler}
             reset={imageReset}
+            defaultImage={props.game?.imageUrl}
           />
         </div>
         <div className={styles.details}>
@@ -179,6 +192,7 @@ export const GameEditor: FunctionComponent<Props> = (props) => {
         <Button onClick={submit} disabled={submitDisabled}>
           {submitText}
         </Button>
+        {resetButton}
       </div>
     </div>
   );
