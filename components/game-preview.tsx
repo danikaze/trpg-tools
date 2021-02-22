@@ -4,6 +4,7 @@ import { GamePreviewData } from '@model/game';
 import { makeStyles } from '@utils/styles';
 import { getDateFromTimestamp, formatDate } from '@utils/date';
 import { LinkToUser } from './links/link-to-user';
+import { LinkToGame } from './links/link-to-game';
 
 export interface Props {
   game: GamePreviewData;
@@ -43,9 +44,11 @@ export const GamePreview: FunctionComponent<Props> = ({ game, className }) => {
 
   return (
     <div className={clsx(styles.root, className)}>
-      {getImage(styles, imageUrl)}
+      {getImage(styles, id, imageUrl)}
       <div className={styles.details}>
-        <div className={styles.name}>{name}</div>
+        <LinkToGame gameId={id} className={styles.name}>
+          {name}
+        </LinkToGame>
         <div className={styles.description}>{description}</div>
         {getCreation(styles, game)}
       </div>
@@ -55,10 +58,15 @@ export const GamePreview: FunctionComponent<Props> = ({ game, className }) => {
 
 function getImage(
   styles: Styles,
+  gameId: GamePreviewData['id'],
   imageUrl: string | null
 ): JSX.Element | undefined {
   if (!imageUrl) return;
-  return <img className={styles.image} src={imageUrl} />;
+  return (
+    <LinkToGame gameId={gameId}>
+      <img className={styles.image} src={imageUrl} />
+    </LinkToGame>
+  );
 }
 
 function getCreation(
@@ -70,7 +78,7 @@ function getCreation(
     updatedOn !== createdOn
       ? formatDate(getDateFromTimestamp(updatedOn))
       : undefined;
-  const updatedElem = updateDate && `Last updated on ${updateDate}`;
+  const updatedElem = updateDate && ` Last updated on ${updateDate}`;
 
   return (
     <div className={styles.creation}>
