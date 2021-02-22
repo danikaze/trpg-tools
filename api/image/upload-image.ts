@@ -60,12 +60,15 @@ export const uploadImage: ApiHandler<ApiResponse, {}, RequestBody> = async (
       createdOn: getTimestamp(),
     });
 
-    // store the thumbnails in the database
     thumbnails.forEach((thumb) => {
+      // fix the thumbnails path
+      thumb.path = getUrlFromPath(thumb.path, PUBLIC_URL_FOLDER, true);
+
+      // store the thumbnails in the database
       db.insertOne(sql.createThumbnail, {
         imageId: originalInsertResult!.insertId,
         type: thumb.type,
-        path: getUrlFromPath(thumb.path, PUBLIC_URL_FOLDER, true),
+        path: thumb.path,
         width: thumb.width,
         height: thumb.height,
         bytes: thumb.size,
