@@ -36,9 +36,9 @@ export type GetServerSidePropsContext<
 export type GetServerSideProps<
   // tslint:disable-next-line:no-any
   P extends { [key: string]: any } = { [key: string]: any },
-  Q extends ParsedUrlQuery = ParsedUrlQuery
+  Q extends {} = {}
 > = (
-  context: GetServerSidePropsContext<Q>
+  context: GetServerSidePropsContext<Q & ParsedUrlQuery>
 ) => Promise<GetServerSidePropsResult<P>>;
 
 interface WithInitialProps {
