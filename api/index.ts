@@ -14,6 +14,7 @@ export enum HttpStatus {
   // 4xx Client Error
   BAD_REQUEST = 400,
   NOT_FOUND = 404,
+  METHOD_NOT_ALLOWED = 405,
   // 5xx Server Error
 }
 
@@ -25,20 +26,28 @@ export type RestApiHandlerMethods<
   GETR = void,
   GETQ extends {} = {},
   GETB extends {} = {},
+  GETK extends string = never,
+  GETI extends number | string = never,
   POSTR = void,
   POSTQ extends {} = {},
   POSTB extends {} = {},
+  POSTK extends string = never,
+  POSTI extends number | string = never,
   PUTR = void,
   PUTQ extends {} = {},
   PUTB extends {} = {},
+  PUTK extends string = never,
+  PUTI extends number | string = never,
   DELETER = void,
   DELETEQ extends {} = {},
-  DELETEB extends {} = {}
+  DELETEB extends {} = {},
+  DELETEK extends string = never,
+  DELETEI extends number | string = never
 > = {
-  GET?: ApiHandler<GETR, GETQ, GETB>;
-  POST?: ApiHandler<POSTR, POSTQ, POSTB>;
-  PUT?: ApiHandler<PUTR, PUTQ, PUTB>;
-  DELETE?: ApiHandler<DELETER, DELETEQ, DELETEB>;
+  GET?: ApiHandler<GETR, GETQ, GETB, GETK, GETI>;
+  POST?: ApiHandler<POSTR, POSTQ, POSTB, POSTK, POSTI>;
+  PUT?: ApiHandler<PUTR, PUTQ, PUTB, PUTK, PUTI>;
+  DELETE?: ApiHandler<DELETER, DELETEQ, DELETEB, DELETEK, DELETEI>;
 };
 
 export type ApiResponse<R> =
@@ -62,9 +71,23 @@ export interface ApiRequest<Q, B> extends IncomingMessage {
   env: Env;
 }
 
-/* Redeclaration of NextApiHandler to provide typings on `query` and `body` */
-export type ApiHandler<R = void, Q extends {} = {}, B extends {} = {}> = (
-  req: ApiRequest<Q, B>,
+/*
+ * Redeclaration of NextApiHandler to provide typings on:
+ * R: Return type
+ * Q: Query parameters
+ * B: Body data
+ * K and I provides an extra parameter to the query, for those restful APIs
+ *   which accept a resource ID in the url as /api/resourceId
+ * K is usually the name of the parameter as [K].ts, and I the value of the type
+ */
+export type ApiHandler<
+  R = void,
+  Q extends {} = {},
+  B extends {} = {},
+  K extends string = never,
+  I extends number | string = never
+> = (
+  req: ApiRequest<Q & { [k in K]: I }, B>,
   res: NextApiResponse<ApiResponse<R>>
 ) => void | Promise<void>;
 
@@ -72,42 +95,61 @@ export function restApiHandler<
   GETR = void,
   GETQ extends {} = {},
   GETB extends {} = {},
+  GETK extends string = never,
+  GETI extends number | string = never,
   POSTR = void,
   POSTQ extends {} = {},
   POSTB extends {} = {},
+  POSTK extends string = never,
+  POSTI extends number | string = never,
   PUTR = void,
   PUTQ extends {} = {},
   PUTB extends {} = {},
+  PUTK extends string = never,
+  PUTI extends number | string = never,
   DELETER = void,
   DELETEQ extends {} = {},
-  DELETEB extends {} = {}
+  DELETEB extends {} = {},
+  DELETEK extends string = never,
+  DELETEI extends number | string = never
 >(
   handlers: RestApiHandlerMethods<
     GETR,
     GETQ,
     GETB,
+    GETK,
+    GETI,
     POSTR,
     POSTQ,
     POSTB,
+    POSTK,
+    POSTI,
     PUTR,
     PUTQ,
     PUTB,
+    PUTK,
+    PUTI,
     DELETER,
     DELETEQ,
-    DELETEB
+    DELETEB,
+    DELETEK,
+    DELETEI
   >
 ): NextApiHandler {
   return async (req, res) => {
     const handler = handlers[req.method as HttpMethod] as NextApiHandler;
     if (!handler) {
-      res.status(HttpStatus.NOT_FOUND).end();
+      res.setHeader('Allow', Object.keys(handlers));
+      res
+        .status(HttpStatus.METHOD_NOT_ALLOWED)
+        .end(`Method ${req.method} Not Allowed`);
       return;
     }
 
     try {
       await handler(req, res);
     } catch (error) {
-      apiError(res, error);
+      apiError(res, { error });
     }
   };
 }

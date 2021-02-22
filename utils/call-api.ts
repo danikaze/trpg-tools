@@ -5,6 +5,11 @@ export type CallApiType = 'names' | 'image' | 'game';
 
 export interface CallApiOptions<Q extends {} = {}, B extends {} = {}> {
   /**
+   * Resource ID for RESTful APIs, to be appended to the url as
+   * baseUrl/apiType/resourceId
+   */
+  resourceId?: number | string;
+  /**
    * Data to pass in the query string
    */
   params?: Q;
@@ -58,9 +63,14 @@ export function callApi<
     }
 
     const body = options.data ? JSON.stringify(options.data) : undefined;
-    const url = options.params
-      ? addUrlParams(`/api/${api}`, options.params)
-      : `/api/${api}`;
+    let url = `/api/${api}`;
+
+    if (options.resourceId) {
+      url = `${url}/${options.resourceId}`;
+    }
+    if (options.params) {
+      url = addUrlParams(url, options.params);
+    }
 
     fetch(url, {
       method,
