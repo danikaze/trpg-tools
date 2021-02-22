@@ -8,7 +8,7 @@ import {
   CreateGameBody,
 } from './interface';
 
-export const newGame: ApiHandler<
+export const newGameApiHandler: ApiHandler<
   CreateGameResponse,
   CreateGameQuery,
   CreateGameBody

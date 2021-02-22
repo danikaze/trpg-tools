@@ -50,14 +50,18 @@ export const sql = {
       WHERE id = :id AND userId = :userId
   `,
   updateGame: `
-    UPDATE games
-      SET
-        name = COALESCE(:name, name),
-        description = COALESCE(:description, description),
-        imageId = COALESCE(:imageId, imageId),
-        updatedOn = :updatedOn
-      WHERE id = :id
-        AND userId = :userId
+    UPDATE games AS g
+      JOIN users u ON g.userId = u.id
+      LEFT JOIN games_permissions p ON g.id = p.gameId
+    SET
+      g.name = COALESCE(:name, name),
+      g.description = COALESCE(:description, description),
+      g.imageId = COALESCE(:imageId, imageId),
+      g.updatedOn = :updatedOn
+    WHERE g.id = :id
+      AND g.userId = :userId
+      AND g.updatedOn = :lastUpdate
+      AND COALESCE(p.permission, 'owner') != 'none'
   `,
   updateGameImage: `
     UPDATE games
@@ -69,27 +73,26 @@ export const sql = {
   `,
   selectGame: `
     SELECT
-        g.id, g.name, g.description, g.createdOn, g.updatedOn,
-        p.permission,
-        u.id AS userId, u.username,
-        i.path AS imageUrl
-      FROM
-        games g,
-        games_permissions p,
-        images_thumbnails i,
-        users u
-      WHERE g.id = :id
-        AND (
-          g.userId = :userId
-          OR (
-            g.id = p.gameId
-            AND p.userId = :userId
-            AND p.permission != 'none'
-          )
-        )
-        AND g.imageId = i.imageId
-        AND i.type = 'gameBanner'
-        AND u.id = :userId
+      g.id,
+      g.name,
+      g.description,
+      g.createdOn,
+      g.updatedOn,
+      COALESCE(p.permission, 'owner') AS permission,
+      u.id AS userId,
+      u.username,
+      i.path AS imagePath
+    FROM games g
+      LEFT JOIN images_thumbnails i ON g.imageId = i.imageId
+      JOIN users u ON g.userId = u.id
+      LEFT JOIN games_permissions p ON g.id = p.gameId
+	  WHERE g.id = :id
+      AND g.userId = :userId
+		  AND COALESCE(p.permission, 'owner') != 'none'
+      AND (
+        ISNULL(g.imageId) OR
+        i.type = 'gameBanner'
+		  )
   `,
   selectUserGames: `
     SELECT

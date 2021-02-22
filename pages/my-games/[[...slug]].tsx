@@ -30,7 +30,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 
   const props: Props = {};
   if (user) {
-    props.pages = await selectUserGames(user.id, page);
+    props.pages = await selectUserGames(user, page);
   }
 
   return {
