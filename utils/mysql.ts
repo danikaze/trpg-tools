@@ -8,6 +8,11 @@ export type SqlParams = {
 export interface MySqlOptions {
   /** If provided, it will log some */
   logger?: NsLogger;
+  /**
+   * If greater than 0, ping the connection every this value (ms)
+   * Default: 60 secs
+   */
+  keepAlive?: number;
 }
 
 export type DbInitFunction = (db: MySql) => Promise<void>;
@@ -70,6 +75,7 @@ interface DbControl {
 export class MySql {
   public static readonly CONTROL_TABLE_NAME = '_dbcontrol';
   public static readonly INIT_VERSION = 0;
+  public static readonly DEFAULT_KEEPALIVE = 60000;
 
   public readonly logger?: NsLogger;
   protected readonly connection: Connection;
@@ -78,6 +84,11 @@ export class MySql {
     this.logger = options && options.logger;
     this.connection = connection;
     this.connection.config.namedPlaceholders = true;
+
+    this.logger && this.logger.verbose('Database connected');
+    const keepAlive = (options && options.keepAlive) || MySql.DEFAULT_KEEPALIVE;
+    if (keepAlive <= 0) return;
+    setInterval(this.ping.bind(this), keepAlive);
   }
 
   /**
@@ -382,5 +393,14 @@ export class MySql {
       await item.callback(this);
       await this.execute(updateVersionSql, { version: item.toVersion });
     });
+  }
+
+  protected async ping(): Promise<void> {
+    try {
+      this.logger && this.logger.verbose('Pinging the database');
+      this.connection.ping();
+    } catch (e) {
+      this.logger && this.logger.error('Error while pinging the database', e);
+    }
   }
 }
