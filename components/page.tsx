@@ -8,8 +8,11 @@ import { PRODUCT_NAME } from '@utils/constants';
 import { SideBar } from './side-bar';
 
 export interface Props {
+  /** Document title to appear as the tab name */
   title: string;
+  /** Content for the `<meta name="description">` tag */
   description: string;
+  /** Header at the top of the page */
   header?: string;
 }
 

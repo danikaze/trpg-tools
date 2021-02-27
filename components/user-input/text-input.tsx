@@ -4,6 +4,30 @@ import { makeStyles } from '@utils/styles';
 import { Label } from './label';
 import { getTextValidator } from './utils/get-validator';
 
+export type TextInputType =
+  | 'button'
+  | 'checkbox'
+  | 'color'
+  | 'date'
+  | 'datetime-local'
+  | 'email'
+  | 'file'
+  | 'hidden'
+  | 'image'
+  | 'month'
+  | 'number'
+  | 'password'
+  | 'radio'
+  | 'range'
+  | 'reset'
+  | 'search'
+  | 'submit'
+  | 'tel'
+  | 'text'
+  | 'time'
+  | 'url'
+  | 'week';
+
 export interface Props {
   className?: string;
   inputRef?: RefObject<HTMLInputElement>;
@@ -15,6 +39,9 @@ export interface Props {
   maxLength?: number;
   pattern?: string;
   title?: string;
+  type?: TextInputType;
+  min?: number;
+  max?: number;
   onChange?: (value: string) => void;
 }
 
@@ -38,6 +65,9 @@ export const TextInput: FunctionComponent<Props> = ({
   maxLength,
   pattern,
   title,
+  type,
+  min,
+  max,
   onChange,
 }) => {
   const styles = useStyles();
@@ -64,6 +94,9 @@ export const TextInput: FunctionComponent<Props> = ({
         pattern={pattern}
         title={title}
         onChange={changeHandler}
+        type={type}
+        min={min}
+        max={max}
       />
     </div>
   );
