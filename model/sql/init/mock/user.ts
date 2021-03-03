@@ -1,31 +1,61 @@
-import { DbInitFunction } from '../../../../utils/mysql';
+import { DbInitFunction, MySql } from '../../../../utils/mysql';
 import { createLocalUser } from '../../../user/local';
-import { createUser } from '../../../user';
+import { createUser, User, UserRole } from '../../../user';
+import { UserType } from '../../../sql/user';
+
+interface DevUserDefinition {
+  type: UserType;
+  role: UserRole;
+  username: string;
+  password: string;
+}
+
+export const devUsers: Record<string, User> = {};
 
 export const userDevData: DbInitFunction = async (db) => {
-  // create test user (admin access)
-  await db.transaction(
-    async () => {
-      const admin = await createUser('lc', 'admin', 'admin');
-      await createLocalUser(admin.id, admin.username, 'pass');
+  const devUserDefinitions: Record<string, DevUserDefinition> = {
+    admin: {
+      type: UserType.LOCAL_USER,
+      role: 'admin',
+      username: 'admin',
+      password: 'pass',
     },
-    { throw: true }
-  );
+    user1: {
+      type: UserType.LOCAL_USER,
+      role: 'user',
+      username: 'user1',
+      password: 'pass',
+    },
+    user2: {
+      type: UserType.LOCAL_USER,
+      role: 'user',
+      username: 'user2',
+      password: 'pass',
+    },
+  };
 
-  await db.transaction(
-    async () => {
-      const user1 = await createUser('lc', 'user1', 'user');
-      await createLocalUser(user1.id, user1.username, 'pass');
-    },
-    { throw: true }
-  );
-
-  // create test user (admin access)
-  await db.transaction(
-    async () => {
-      const user2 = await createUser('lc', 'user2', 'user');
-      await createLocalUser(user2.id, user2.username, 'pass');
-    },
-    { throw: true }
+  await Promise.all(
+    Object.values(devUserDefinitions).map(
+      async (user) => await createDevUser(db, user)
+    )
   );
 };
+
+async function createDevUser(db: MySql, def: DevUserDefinition): Promise<User> {
+  return db.transaction(
+    async () => {
+      devUsers[def.username] = await createUser(
+        def.type,
+        def.username,
+        def.role
+      );
+      await createLocalUser(
+        devUsers[def.username].id,
+        def.username,
+        def.password
+      );
+      return devUsers[def.username];
+    },
+    { throw: true }
+  ) as Promise<User>;
+}

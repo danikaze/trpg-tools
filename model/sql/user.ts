@@ -1,9 +1,11 @@
 import { UserRole } from '@model/user';
 import { TimestampTable } from '..';
 
-export type UserType =
-  | 'lc' // local (user + pass)
-  | 'tw'; // twitter
+export enum UserType {
+  SYSTEM_USER = 'sy', // system (no login)
+  LOCAL_USER = 'lc', // local (user + pass)
+  TWITTER_USER = 'tw',
+} // twitter
 
 export interface DbUser extends TimestampTable {
   id: number;

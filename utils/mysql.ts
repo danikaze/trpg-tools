@@ -136,7 +136,9 @@ export class MySql {
     } catch (e) {
       this.logger &&
         this.logger.error(
-          `Error on queryOne: "${sql}" with params ${JSON.stringify(params)}`
+          `Error on queryOne: "${sql}" with params ${JSON.stringify(
+            params
+          )}: ${e}`
         );
       throw e;
     }
@@ -345,7 +347,8 @@ export class MySql {
   protected async getDbVersion(): Promise<number> {
     try {
       const sql = `SELECT version FROM ${MySql.CONTROL_TABLE_NAME}`;
-      return (await this.queryOne<DbControl>(sql))!.version;
+      return ((await this.connection.execute(sql))[0] as DbControl[])[0]!
+        .version;
     } catch (e) {
       this.logger && this.logger.info('Initializating database');
       await this.createControlTable();

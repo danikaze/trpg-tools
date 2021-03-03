@@ -1,6 +1,6 @@
 import { Profile } from 'passport';
 import { getDb } from '../../utils/db';
-import { DbUser, sql } from '../sql/user';
+import { DbUser, sql, UserType } from '../sql/user';
 import { User } from '../user';
 import { createUser } from './';
 
@@ -13,7 +13,6 @@ export async function getUserIdFromTwitter(
 ): Promise<User['id']> {
   const profileId = profile.id;
   const username = profile.username!;
-  const type = 'tw';
   const role = 'user';
 
   const db = await getDb();
@@ -25,7 +24,7 @@ export async function getUserIdFromTwitter(
   }
 
   return (await db.transaction(async () => {
-    const newUser = await createUser(type, username, role);
+    const newUser = await createUser(UserType.TWITTER_USER, username, role);
     await createUserFromTwitter(newUser.id, profileId);
     return newUser.id;
   })) as User['id'];
