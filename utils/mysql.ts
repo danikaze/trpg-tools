@@ -2,7 +2,7 @@ import { Connection, ResultSetHeader } from 'mysql2/promise';
 import { NsLogger } from './logger';
 
 export type SqlParams = {
-  [key: string]: string | number | null;
+  [key: string]: string | number | null | string[] | number[];
 };
 
 export interface MySqlOptions {
@@ -69,6 +69,13 @@ interface DbControl {
   version: number;
 }
 
+type SimpleParams = Record<string, string | number | null>;
+type ArrayParams = Record<string, (string | number | null)[]>;
+interface InClauseTransform<P extends SimpleParams> {
+  sql: string;
+  params?: P;
+}
+
 /**
  * Generic wrapper to operate with MySQL databases
  */
@@ -92,11 +99,81 @@ export class MySql {
   }
 
   /**
+   * Transforms a query when needed to support running WHERE IN clauses
+   * from prepared statements, which are not supported by default on mysql2
+   * due to having a variable number of parameters
+   */
+  protected static transformInClauses<P extends {} = SqlParams>(
+    sql: string,
+    params?: P
+  ): InClauseTransform<P> {
+    // if no params, use it as it is
+    if (!params) {
+      return { sql, params };
+    }
+
+    // separate array and no array params
+    const regExp = / IN \(:([^)]+)\)/gi;
+    const simpleParams = {} as SimpleParams;
+    const arrayParams = {} as ArrayParams;
+    const entries = Object.entries(params) as [
+      string,
+      string | number | null
+    ][];
+    let anyArray = false;
+    for (const [key, value] of entries) {
+      if (Array.isArray(value)) {
+        arrayParams[key] = value;
+        anyArray = true;
+      } else {
+        simpleParams[key] = value;
+      }
+    }
+
+    // only transform when there are array parameters
+    if (!anyArray) {
+      return { sql, params };
+    }
+
+    const query = sql.replace(regExp, (match, paramName) => {
+      const values = arrayParams[paramName];
+      if (!IS_PRODUCTION && !values) {
+        throw new Error(
+          `Mysql: Parameter (:${paramName}) for the IN clause needs to be an Array in: ${sql}`
+        );
+      }
+
+      if (values.length === 0) {
+        return ' IN(null)';
+      }
+
+      const newParams: string[] = [];
+      for (let i = 0; i < values.length; i++) {
+        simpleParams[`${paramName}${i}`] = values[i];
+        newParams.push(`:${paramName}${i}`);
+      }
+      return ` IN(${newParams.join(', ')})`;
+    });
+
+    return {
+      sql: query,
+      params: simpleParams as P,
+    };
+  }
+
+  /**
    * Executes SQL without expecting a result
    */
-  public async execute<P extends {} = SqlParams>(sql: string, params?: P) {
+  public async execute<P extends {} = SqlParams>(
+    sql: string,
+    params?: P
+  ): Promise<void> {
     try {
-      return this.connection.execute(sql, params);
+      const transformedQuery = MySql.transformInClauses(sql, params);
+      await this.connection.execute(
+        transformedQuery.sql,
+        transformedQuery.params
+      );
     } catch (e) {
       this.logger &&
         this.logger.error(
@@ -114,7 +191,13 @@ export class MySql {
     params?: P
   ): Promise<T[]> {
     try {
-      return (await this.connection.execute(sql, params))[0] as T[];
+      const transformedQuery = MySql.transformInClauses(sql, params);
+      return (
+        await this.connection.execute(
+          transformedQuery.sql,
+          transformedQuery.params
+        )
+      )[0] as T[];
     } catch (e) {
       this.logger &&
         this.logger.error(
@@ -132,7 +215,13 @@ export class MySql {
     params?: P
   ): Promise<T | undefined> {
     try {
-      return ((await this.connection.execute(sql, params))[0] as T[])[0];
+      const transformedQuery = MySql.transformInClauses(sql, params);
+      return ((
+        await this.connection.execute(
+          transformedQuery.sql,
+          transformedQuery.params
+        )
+      )[0] as T[])[0];
     } catch (e) {
       this.logger &&
         this.logger.error(
@@ -208,9 +297,18 @@ export class MySql {
     (options.dataParams as SqlParams).offset = Math.max(0, page) * rpp;
 
     try {
+      const txqData = MySql.transformInClauses(
+        options.dataSql,
+        options.dataParams
+      );
+      const txqCount = MySql.transformInClauses(
+        options.countSql,
+        options.countParams
+      );
+
       const [dataQuery, countQuery] = await Promise.all([
-        this.connection.execute(options.dataSql, options.dataParams),
-        this.connection.execute(options.countSql, options.countParams),
+        this.connection.execute(txqData.sql, txqData.params),
+        this.connection.execute(txqCount.sql, txqCount.params),
       ]);
       const data = dataQuery[0] as T[];
       const count = (countQuery[0] as { total: number }[])[0]!;
@@ -248,7 +346,11 @@ export class MySql {
     params?: P
   ): Promise<ResultSetHeader> {
     try {
-      const res = await this.connection.execute(sql, params);
+      const transformedQuery = MySql.transformInClauses(sql, params);
+      const res = await this.connection.execute(
+        transformedQuery.sql,
+        transformedQuery.params
+      );
       return res[0] as ResultSetHeader;
     } catch (e) {
       this.logger &&
@@ -267,7 +369,11 @@ export class MySql {
     params?: P
   ): Promise<ResultSetHeader> {
     try {
-      const res = await this.connection.execute(sql, params);
+      const transformedQuery = MySql.transformInClauses(sql, params);
+      const res = await this.connection.execute(
+        transformedQuery.sql,
+        transformedQuery.params
+      );
       return res[0] as ResultSetHeader;
     } catch (e) {
       this.logger &&
@@ -286,7 +392,11 @@ export class MySql {
     params?: P
   ): Promise<ResultSetHeader> {
     try {
-      const res = await this.connection.execute(sql, params);
+      const transformedQuery = MySql.transformInClauses(sql, params);
+      const res = await this.connection.execute(
+        transformedQuery.sql,
+        transformedQuery.params
+      );
       return res[0] as ResultSetHeader;
     } catch (e) {
       this.logger &&
