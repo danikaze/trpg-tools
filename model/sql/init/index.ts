@@ -2,21 +2,29 @@ import { DbInitFunction, InitDbOptions } from '../../../utils/mysql';
 
 import { initUser } from './user';
 import { initImage } from './image';
-import { userDevData } from './mock/user';
 import { initGame } from './game';
+import { initNoteDefinition } from './note-definition';
+import { initNote } from './note';
+import { userDevData } from './mock/user';
 import { gameDevData } from './mock/game';
+import { noteDefinitionDevData } from './mock/note-definition';
+import { noteDevData } from './mock/note';
 
 const init: DbInitFunction = async (db) => {
   await initUser(db);
   await initImage(db);
   await initGame(db);
+  await initNoteDefinition(db);
+  await initNote(db);
 
   if (IS_PRODUCTION) return;
 
-  db.logger!.debug('Inserting Dev Data into the database...');
+  db.logger && db.logger.debug('Inserting Dev Data into the database...');
   await userDevData(db);
   await gameDevData(db);
-  db.logger!.debug('Dev Data done!');
+  await noteDefinitionDevData(db);
+  await noteDevData(db);
+  db.logger && db.logger.debug('Dev Data done!');
 };
 
 /**

@@ -23,3 +23,11 @@ export const GAME_DESC_MAX_CHARS = 2000;
  */
 export const TREASURE_CR_QUANTITY_MIN = 1;
 export const TREASURE_CR_QUANTITY_MAX = 99;
+
+/*
+ * Notes and fields
+ */
+export const FIELD_COL_NAME_MAX_LENGTH = 255;
+export const NOTE_TYPE_COL_NAME_MAX_LENGTH = 255;
+export const NOTE_COL_NAME_MAX_LENGTH = 255;
+export const FIELD_TEXT_MAX_LENGTH = 2000;

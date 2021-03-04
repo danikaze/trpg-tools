@@ -42,20 +42,13 @@ export const userDevData: DbInitFunction = async (db) => {
 };
 
 async function createDevUser(db: MySql, def: DevUserDefinition): Promise<User> {
-  return db.transaction(
-    async () => {
-      devUsers[def.username] = await createUser(
-        def.type,
-        def.username,
-        def.role
-      );
-      await createLocalUser(
-        devUsers[def.username].id,
-        def.username,
-        def.password
-      );
-      return devUsers[def.username];
-    },
-    { throw: true }
-  ) as Promise<User>;
+  return db.transaction(async () => {
+    devUsers[def.username] = await createUser(def.type, def.username, def.role);
+    await createLocalUser(
+      devUsers[def.username].id,
+      def.username,
+      def.password
+    );
+    return devUsers[def.username];
+  }) as Promise<User>;
 }
