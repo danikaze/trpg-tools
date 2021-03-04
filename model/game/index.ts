@@ -1,7 +1,7 @@
 import { ResultSetHeader } from 'mysql2/promise';
-import { UpdateGameResponse } from '@api/game/interface';
-import { Paginated } from '@utils/mysql';
-import { generateUniqueId, getDb, getTimestamp } from '@utils/db';
+import { UpdateGameResponse } from '../../api/game/interface';
+import { Paginated } from '../../utils/mysql';
+import { generateUniqueId, getDb, getTimestamp } from '../../utils/db';
 import {
   DbGame,
   DbSelectGame,
@@ -40,9 +40,14 @@ export interface GameUpdateData {
   imageId?: DbGame['imageId'];
 }
 
+export type CreateGameData = Omit<
+  DbGame,
+  'userId' | 'id' | 'permission' | 'createdOn' | 'updatedOn'
+>;
+
 export async function createGame(
   user: UserAuthData,
-  data: Omit<DbGame, 'userId' | 'id' | 'permission' | 'createdOn' | 'updatedOn'>
+  data: CreateGameData
 ): Promise<GamePreviewData> {
   const db = await getDb();
   const dbGame: Omit<DbGame, 'updatedOn'> = {
