@@ -1,4 +1,4 @@
-import { SqlLimits } from '@utils/mysql';
+import { SqlLimits } from '../../utils/mysql';
 import { DbUser } from './user';
 import { DbTimestampTable } from '.';
 import { DbImageThumbnail } from './image';

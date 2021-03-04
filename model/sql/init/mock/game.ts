@@ -1,31 +1,51 @@
 import { DbInitFunction } from '../../../../utils/mysql';
-import { createGame, shareGame } from '../../../../model/game';
+import {
+  createGame,
+  CreateGameData,
+  GamePreviewData,
+} from '../../../../model/game';
+import { devUsers } from './user';
+import { User } from '@model/user';
+
+export const devGames: Record<GamePreviewData['id'], GamePreviewData> = {};
+
+interface DevGameDef {
+  user: User;
+  game: CreateGameData;
+}
 
 export const gameDevData: DbInitFunction = async (db) => {
-  // tslint:disable:no-magic-numbers
-  // await createGame({
-  //   userId: 2,
-  //   name: 'Game 1',
-  //   description: `User1's game 1.`,
-  // });
-  // await db.transaction(
-  //   async () => {
-  //     const game = await createGame({
-  //       userId: 2,
-  //       name: 'Game 2',
-  //       description: `User1's game 2.`,
-  //       imageUrl: '',
-  //       thumbUrl: '',
-  //     });
-  //     await shareGame(game.id, 3, 'view');
-  //   },
-  //   { throw: true }
-  // );
-  // await createGame({
-  //   userId: 3,
-  //   name: 'Game 3',
-  //   description: `User2's game.`,
-  //   imageUrl: '',
-  //   thumbUrl: '',
-  // });
+  const gameDefinitions: DevGameDef[] = [
+    {
+      user: devUsers['user1'],
+      game: {
+        name: 'Game 1',
+        description: `User1's game 1.`,
+        imageId: null,
+      },
+    },
+    {
+      user: devUsers['user1'],
+      game: {
+        name: 'Game 2',
+        description: `User1's game 2.`,
+        imageId: null,
+      },
+    },
+    {
+      user: devUsers['user2'],
+      game: {
+        name: 'Game 3',
+        description: `User2's game.`,
+        imageId: null,
+      },
+    },
+  ];
+
+  await Promise.all(
+    gameDefinitions.map(async (def) => {
+      const game = await createGame(def.user, def.game);
+      devGames[game.id] = game;
+    })
+  );
 };
