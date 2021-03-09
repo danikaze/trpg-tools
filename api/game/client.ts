@@ -1,4 +1,5 @@
 import { GameUpdateData } from '@model/game';
+import { RetrievedNoteDefinition } from '@model/note-definition';
 import { DbGame } from '@model/sql/game';
 import { callApi } from '@utils/call-api';
 import {
@@ -11,6 +12,9 @@ import {
   UpdateGameBody,
   UpdateGameQuery,
   UpdateGameResponse,
+  GetNotesBody,
+  GetNotesQuery,
+  GetNotesResponse,
 } from './interface';
 
 export async function createNewGame(
@@ -55,5 +59,24 @@ export async function deleteGame(
     DeleteGameQuery,
     DeleteGameBody
   >('game', 'DELETE', { resourceId: gameId });
+  return res.data;
+}
+
+export async function getNotes(
+  gameId: DbGame['id'],
+  noteDefId: RetrievedNoteDefinition['noteDefId'],
+  page: number
+): Promise<GetNotesResponse> {
+  const res = await callApi<GetNotesResponse, GetNotesQuery, GetNotesBody>(
+    `game/${gameId}/notes`,
+    'GET',
+    {
+      params: {
+        noteDefId,
+        page,
+      },
+    }
+  );
+
   return res.data;
 }
