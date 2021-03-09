@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { FunctionComponent } from 'react';
 import { makeStyles } from '@utils/styles';
 
@@ -13,8 +14,8 @@ const useStyles = makeStyles(() => ({
 
 type Styles = ReturnType<typeof useStyles>;
 
-export const TemplateElement: FunctionComponent<Props> = () => {
+export const TemplateElement: FunctionComponent<Props> = ({ className }) => {
   const styles = useStyles();
 
-  return <div className={styles.root}>Template</div>;
+  return <div className={clsx(styles.root, className)}>Template</div>;
 };

@@ -5,6 +5,8 @@ import { Game, Props } from '@components/pages/game';
 import { selectGameDetails } from '@model/game';
 import { userRequired } from '@utils/auth';
 import { DbGame } from '@model/sql/game';
+import { getUserNoteDefinitions } from '@model/note-definition';
+import { selectNotes } from '@model/note';
 
 const GameDetailPage: AppPage<Props> = (props) => {
   return (
@@ -26,17 +28,44 @@ interface Query {
   id: DbGame['id'];
 }
 
+const notValidProps = {
+  props: {
+    noteDefinitions: null,
+    game: null,
+    selectednoteDefId: null,
+    notes: null,
+  },
+} as { props: Props };
+
 export const getServerSideProps: GetServerSideProps<Props, Query> = async (
   ctx
 ) => {
-  userRequired(ctx);
+  if (userRequired(ctx) || !ctx.req.user) {
+    return notValidProps;
+  }
+
   const {
     req: { user },
   } = ctx;
   const gameId = ctx.params?.id;
 
+  const [game, noteDefinitions] = await Promise.all([
+    (user && gameId && selectGameDetails(user, gameId)) || null,
+    (user && gameId && getUserNoteDefinitions(user)) || null,
+  ]);
+  if (!game || !noteDefinitions) return notValidProps;
+
+  const selectednoteDefId = noteDefinitions[0].noteDefId || null;
+  const notes =
+    selectednoteDefId && gameId
+      ? await selectNotes(user, selectednoteDefId, gameId, 0)
+      : null;
+
   const props: Props = {
-    game: (user && gameId && (await selectGameDetails(user, gameId))) || null,
+    noteDefinitions,
+    notes,
+    selectednoteDefId,
+    game: game || null,
   };
 
   return {
