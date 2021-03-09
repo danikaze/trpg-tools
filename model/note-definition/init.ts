@@ -14,9 +14,9 @@ import {
 import { DbInitFunction } from '../../utils/mysql';
 import {
   EDIT_TIME_COLS,
-  ENUM_TYPE,
-  INTERNAL_ID,
-  PUBLIC_ID,
+  MYSQL_TYPE_ENUM,
+  MYSQL_TYPE_INTERNAL_ID,
+  MYSQL_TYPE_PUBLIC_ID,
 } from '../constants/sql';
 
 export const systemNoteTypes = {} as Record<
@@ -35,8 +35,8 @@ const initNoteDefinitionTables: DbInitFunction = async (db) => {
       // Definition of different types of notes (NPCs, Cities, etc.)
       `
       CREATE TABLE IF NOT EXISTS notes_def (
-        noteDefId ${PUBLIC_ID} PRIMARY KEY,
-        userId ${INTERNAL_ID} NOT NULL,
+        noteDefId ${MYSQL_TYPE_PUBLIC_ID} PRIMARY KEY,
+        userId ${MYSQL_TYPE_INTERNAL_ID} NOT NULL,
         name VARCHAR(${NOTE_TYPE_COL_NAME_MAX_LENGTH}) NOT NULL DEFAULT '',
         ${EDIT_TIME_COLS},
 
@@ -49,11 +49,11 @@ const initNoteDefinitionTables: DbInitFunction = async (db) => {
       // Definition of fields for a type of note
       `
       CREATE TABLE IF NOT EXISTS notes_fields_def (
-        noteFieldDefId ${INTERNAL_ID} AUTO_INCREMENT PRIMARY KEY,
-        noteDefId ${PUBLIC_ID},
+        noteFieldDefId ${MYSQL_TYPE_INTERNAL_ID} AUTO_INCREMENT PRIMARY KEY,
+        noteDefId ${MYSQL_TYPE_PUBLIC_ID},
         position TINYINT UNSIGNED NOT NULL,
         name VARCHAR(${FIELD_COL_NAME_MAX_LENGTH}) NOT NULL DEFAULT '',
-        type ${ENUM_TYPE} NOT NULL,
+        type ${MYSQL_TYPE_ENUM} NOT NULL,
         options VARCHAR(${FIELD_TEXT_MAX_LENGTH}),
 
         INDEX position_idx (position),

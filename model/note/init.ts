@@ -3,7 +3,11 @@ import {
   NOTE_COL_NAME_MAX_LENGTH as NOTE_COL_TITLE_MAX_LENGTH,
 } from '../../utils/constants';
 import { DbInitFunction } from '../../utils/mysql';
-import { EDIT_TIME_COLS, INTERNAL_ID, PUBLIC_ID } from '../constants/sql';
+import {
+  EDIT_TIME_COLS,
+  MYSQL_TYPE_INTERNAL_ID,
+  MYSQL_TYPE_PUBLIC_ID,
+} from '../constants/sql';
 
 export const initNote: DbInitFunction = async (db) => {
   await Promise.all(
@@ -11,10 +15,10 @@ export const initNote: DbInitFunction = async (db) => {
       // User notes
       `
       CREATE TABLE IF NOT EXISTS notes (
-        noteId ${PUBLIC_ID} PRIMARY KEY,
-        userId ${INTERNAL_ID} NOT NULL,
-        noteDefId ${PUBLIC_ID} NOT NULL,
-        gameId ${PUBLIC_ID} NOT NULL,
+        noteId ${MYSQL_TYPE_PUBLIC_ID} PRIMARY KEY,
+        userId ${MYSQL_TYPE_INTERNAL_ID} NOT NULL,
+        noteDefId ${MYSQL_TYPE_PUBLIC_ID} NOT NULL,
+        gameId ${MYSQL_TYPE_PUBLIC_ID} NOT NULL,
         title VARCHAR(${NOTE_COL_TITLE_MAX_LENGTH}) NOT NULL DEFAULT '',
         ${EDIT_TIME_COLS},
 
@@ -37,8 +41,8 @@ export const initNote: DbInitFunction = async (db) => {
       // Contents for each field of each user note
       `
       CREATE TABLE IF NOT EXISTS notes_contents (
-        noteId ${PUBLIC_ID} NOT NULL,
-        noteFieldDefId ${INTERNAL_ID} NOT NULL,
+        noteId ${MYSQL_TYPE_PUBLIC_ID} NOT NULL,
+        noteFieldDefId ${MYSQL_TYPE_INTERNAL_ID} NOT NULL,
         value VARCHAR(${FIELD_TEXT_MAX_LENGTH}),
 
         PRIMARY KEY (noteId, noteFieldDefId),

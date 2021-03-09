@@ -1,5 +1,12 @@
+import { GAME_NAME_MAX_CHARS } from '../../utils/constants';
 import { DbInitFunction } from '../../utils/mysql';
-import { EDIT_TIME_COLS, INTERNAL_ID, PUBLIC_ID } from '../constants/sql';
+import {
+  EDIT_TIME_COLS,
+  MYSQL_TYPE_ENUM,
+  GAME_SHARE_LINK_LENGTH,
+  MYSQL_TYPE_INTERNAL_ID,
+  MYSQL_TYPE_PUBLIC_ID,
+} from '../constants/sql';
 
 export const initGame: DbInitFunction = async (db) => {
   await Promise.all(
@@ -7,11 +14,11 @@ export const initGame: DbInitFunction = async (db) => {
       // game, campaign... that contains all the elements (chars, maps, notes, etc.)
       `
       CREATE TABLE IF NOT EXISTS games (
-        id ${PUBLIC_ID} PRIMARY KEY,
-        userId ${INTERNAL_ID} NOT NULL,
-        name VARCHAR(255) NOT NULL DEFAULT '',
-        description TEXT NOT NULL,
-        imageId ${INTERNAL_ID},
+        id ${MYSQL_TYPE_PUBLIC_ID} PRIMARY KEY,
+        userId ${MYSQL_TYPE_INTERNAL_ID} NOT NULL,
+        name VARCHAR(${GAME_NAME_MAX_CHARS}) NOT NULL DEFAULT '',
+        description VARCHAR(${GAME_NAME_MAX_CHARS}) NOT NULL DEFAULT '',
+        imageId ${MYSQL_TYPE_INTERNAL_ID},
         ${EDIT_TIME_COLS},
 
         FOREIGN KEY (imageId)
@@ -23,9 +30,9 @@ export const initGame: DbInitFunction = async (db) => {
       // rel-table to allow sharing games with multiple users
       `
       CREATE TABLE IF NOT EXISTS games_permissions (
-        gameId ${PUBLIC_ID} NOT NULL,
-        userId ${INTERNAL_ID} KEY,
-        permission VARCHAR(32) NOT NULL,
+        gameId ${MYSQL_TYPE_PUBLIC_ID} NOT NULL,
+        userId ${MYSQL_TYPE_INTERNAL_ID} KEY,
+        permission ${MYSQL_TYPE_ENUM} NOT NULL,
 
         CONSTRAINT UNIQUE (gameId, userId),
 
@@ -43,9 +50,9 @@ export const initGame: DbInitFunction = async (db) => {
       // links to share games with users
       `
       CREATE TABLE IF NOT EXISTS games_share_links (
-        id CHAR(16) PRIMARY KEY,
-        gameId ${PUBLIC_ID} NOT NULL,
-        permission VARCHAR(32) NOT NULL
+        id CHAR(${GAME_SHARE_LINK_LENGTH}) PRIMARY KEY,
+        gameId ${MYSQL_TYPE_PUBLIC_ID} NOT NULL,
+        permission ${MYSQL_TYPE_ENUM} NOT NULL
       );
       `,
     ].map(async (sql, i) => {
