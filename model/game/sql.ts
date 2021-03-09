@@ -1,11 +1,11 @@
 import { SqlLimits } from '../../utils/mysql';
-import { DbUser } from './user';
-import { DbTimestampTable } from '.';
-import { DbImageThumbnail } from './image';
+import { DbUser } from '../user/sql';
+import { DbImageThumbnail } from '../image/sql';
+import { TimestampTable } from '../interfaces';
 
 export type GamePermission = 'owner' | 'view' | 'edit' | 'none';
 
-export interface DbGame extends DbTimestampTable {
+export interface DbGame extends TimestampTable {
   id: string;
   userId: DbUser['id'];
   name: string;

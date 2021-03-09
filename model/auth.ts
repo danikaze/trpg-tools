@@ -1,7 +1,7 @@
 import { Profile } from 'passport';
 import { selectUser, User, UserAuthData } from './user';
-import { getUserIdFromLocal } from './user/local';
-import { getUserIdFromTwitter } from './user/twitter';
+import { getUserIdFromLocal } from './user/strats/local';
+import { getUserIdFromTwitter } from './user/strats/twitter';
 
 export async function getUserAuthData(
   id: User['id'] | undefined

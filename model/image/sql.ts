@@ -1,5 +1,5 @@
-import { TimestampTable } from '@model';
-import { DbUser } from './user';
+import { TimestampTable } from '@model/interfaces';
+import { DbUser } from '../user/sql';
 
 export type ImageType = 'game';
 export type ImageThumbnail = 'gameBanner' | 'gameThumb';

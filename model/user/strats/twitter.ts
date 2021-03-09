@@ -1,8 +1,8 @@
 import { Profile } from 'passport';
-import { getDb } from '../../utils/db';
-import { DbUser, sql, UserType } from '../sql/user';
-import { User } from '../user';
-import { createUser } from './';
+import { getDb } from '../../../utils/db';
+import { DbUser, sql, UserType } from '../../user/sql';
+import { User } from '../../user';
+import { createUser } from '../';
 
 /**
  * Get a UserId from a Twitter profile.

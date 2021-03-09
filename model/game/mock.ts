@@ -1,10 +1,6 @@
-import { DbInitFunction } from '../../../../utils/mysql';
-import {
-  createGame,
-  CreateGameData,
-  GamePreviewData,
-} from '../../../../model/game';
-import { devUsers } from './user';
+import { DbInitFunction } from '../../utils/mysql';
+import { createGame, CreateGameData, GamePreviewData } from '.';
+import { devUsers } from '../user/mock';
 import { User } from '@model/user';
 
 export const devGames: Record<GamePreviewData['id'], GamePreviewData> = {};

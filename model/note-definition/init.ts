@@ -3,16 +3,21 @@ import {
   CreateNoteDefinitionData,
   CreateNoteFieldDefinition,
   NoteDefinition,
-} from '../../note-definition';
-import { SYSTEM_USER } from '../../user';
+} from '.';
+import { SYSTEM_USER } from '../user';
 import { basename } from 'path';
 import {
   FIELD_COL_NAME_MAX_LENGTH,
   FIELD_TEXT_MAX_LENGTH,
   NOTE_TYPE_COL_NAME_MAX_LENGTH,
-} from '../../../utils/constants';
-import { DbInitFunction } from '../../../utils/mysql';
-import { EDIT_TIME_COLS, ENUM_TYPE, INTERNAL_ID, PUBLIC_ID } from './constants';
+} from '../../utils/constants';
+import { DbInitFunction } from '../../utils/mysql';
+import {
+  EDIT_TIME_COLS,
+  ENUM_TYPE,
+  INTERNAL_ID,
+  PUBLIC_ID,
+} from '../constants/sql';
 
 export const systemNoteTypes = {} as Record<
   'locations' | 'npcs',

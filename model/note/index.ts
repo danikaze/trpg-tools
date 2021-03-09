@@ -1,9 +1,9 @@
 import { Paginated } from '../../utils/mysql';
 import { generateUniqueId, getDb, getTimestamp } from '../../utils/db';
-import { TimestampTable } from '../';
-import { DbNote, DbNoteContent, limits, sql } from '../sql/note';
-import { DbGame } from '../sql/game';
-import { DbNoteDefinition } from '../sql/note-definition';
+import { TimestampTable } from '../interfaces';
+import { DbNote, DbNoteContent, limits, sql } from './sql';
+import { DbGame } from '../game/sql';
+import { DbNoteDefinition } from '../note-definition/sql';
 import { UserAuthData } from '../user';
 
 export interface CreateNoteData {

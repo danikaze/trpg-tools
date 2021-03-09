@@ -1,17 +1,14 @@
-import {
-  NoteDefinition,
-  RetrievedNoteDefinition,
-} from '../../../note-definition';
-import { DbInitFunction } from '../../../../utils/mysql';
-import { User } from '../../../user';
-import { devUsers } from './user';
-import { systemNoteTypes } from '../note-definition';
-import { createNote } from '../../../note';
+import { NoteDefinition, RetrievedNoteDefinition } from '../note-definition';
+import { DbInitFunction } from '../../utils/mysql';
+import { User } from '../user';
+import { devUsers } from '../user/mock';
+import { systemNoteTypes } from '../note-definition/init';
+import { createNote } from '.';
 import { basename } from 'path';
-import { devGames } from './game';
-import { GamePreviewData } from '../../../game';
-import { limits } from '../../../sql/note';
-import { noteDefinitionsDevData } from './note-definition';
+import { devGames } from '../game/mock';
+import { GamePreviewData } from '../game';
+import { limits } from './sql';
+import { noteDefinitionsDevData } from '../note-definition/mock';
 
 interface NoteDef {
   user: User;

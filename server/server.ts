@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import next from 'next';
 import { useAuth } from './auth';
 import { initDb } from '../utils/db';
-import { dbUpdates } from '../model/sql/init';
+import { dbUpdates } from '../model/init';
 
 export function run() {
   const port = Number(process.env.PORT || '3000');

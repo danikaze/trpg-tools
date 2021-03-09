@@ -1,9 +1,4 @@
-import {
-  DbNoteDefinition,
-  DbNoteFieldDefinition,
-  FieldType,
-  sql,
-} from '../sql/note-definition';
+import { DbNoteDefinition, DbNoteFieldDefinition, FieldType, sql } from './sql';
 import { SYSTEM_USER, UserAuthData } from '../user';
 import { generateUniqueId, getDb, getTimestamp } from '../../utils/db';
 

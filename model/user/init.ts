@@ -1,8 +1,8 @@
-import { getTimestamp } from '../../../utils/db';
-import { DbInitFunction } from '../../../utils/mysql';
-import { PUBLIC_USER_MIN_ID, SYSTEM_USER } from '../../user';
-import { UserType } from '../user';
-import { LOCAL_SALT_SIZE, INTERNAL_ID, EDIT_TIME_COLS } from './constants';
+import { getTimestamp } from '../../utils/db';
+import { DbInitFunction } from '../../utils/mysql';
+import { PUBLIC_USER_MIN_ID, SYSTEM_USER } from '.';
+import { UserType } from './sql';
+import { LOCAL_SALT_SIZE, INTERNAL_ID, EDIT_TIME_COLS } from '../constants/sql';
 
 const USERNAME_ROWTYPE = 'VARCHAR(32)';
 

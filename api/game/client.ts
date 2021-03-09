@@ -1,6 +1,6 @@
 import { GameUpdateData } from '@model/game';
 import { RetrievedNoteDefinition } from '@model/note-definition';
-import { DbGame } from '@model/sql/game';
+import { DbGame } from '@model/game/sql';
 import { callApi } from '@utils/call-api';
 import {
   CreateGameBody,

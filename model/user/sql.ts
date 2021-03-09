@@ -1,5 +1,5 @@
 import { UserRole } from '@model/user';
-import { TimestampTable } from '..';
+import { TimestampTable } from '../interfaces';
 
 export enum UserType {
   SYSTEM_USER = 'sy', // system (no login)

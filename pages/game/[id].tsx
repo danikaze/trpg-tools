@@ -4,7 +4,7 @@ import { Page } from '@components/page';
 import { Game, Props } from '@components/pages/game';
 import { selectGameDetails } from '@model/game';
 import { userRequired } from '@utils/auth';
-import { DbGame } from '@model/sql/game';
+import { DbGame } from '@model/game/sql';
 import { getUserNoteDefinitions } from '@model/note-definition';
 import { selectNotes } from '@model/note';
 

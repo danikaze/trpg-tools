@@ -1,8 +1,8 @@
 import { ApiHandler, HttpStatus } from '@api';
 import { apiUserRequired } from '@utils/auth';
 import { UserAuthData } from '@model/user';
-import { DbGame } from '@model/sql/game';
-import { DbNote } from '@model/sql/note';
+import { DbGame } from '@model/game/sql';
+import { DbNote } from '@model/note/sql';
 import { updateNote } from '@model/note';
 import {
   UpdateNoteResponse,

@@ -1,7 +1,6 @@
-import { OkPacket } from 'mysql2/promise';
 import { getDb, getTimestamp } from '../../utils/db';
-import { DbUser, sql, UserType } from '../sql/user';
-import { TimestampTable } from '../';
+import { DbUser, sql, UserType } from './sql';
+import { TimestampTable } from '../interfaces';
 
 export type UserRole = 'system' | 'admin' | 'user';
 export type UserAuthData = Pick<User, 'id' | 'username' | 'role'>;

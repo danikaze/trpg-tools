@@ -2,7 +2,7 @@ import mkdirp from 'mkdirp';
 import { join } from 'path';
 import { writeFile } from 'fs';
 import { apiError, ApiHandler } from '@api';
-import { sql } from '@model/sql/image';
+import { sql } from '@model/image/sql';
 import { UserAuthData } from '@model/user';
 import { decodeBase64Image } from '@utils/decode-base64-image';
 import { getDb, getTimestamp } from '@utils/db';

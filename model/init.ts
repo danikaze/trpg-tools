@@ -1,14 +1,15 @@
-import { DbInitFunction, InitDbOptions } from '../../../utils/mysql';
+import { DbInitFunction, InitDbOptions } from '../utils/mysql';
 
-import { initUser } from './user';
-import { initImage } from './image';
-import { initGame } from './game';
-import { initNoteDefinition } from './note-definition';
-import { initNote } from './note';
-import { userDevData } from './mock/user';
-import { gameDevData } from './mock/game';
-import { noteDefinitionDevData } from './mock/note-definition';
-import { noteDevData } from './mock/note';
+import { initUser } from './user/init';
+import { initImage } from './image/init';
+import { initGame } from './game/init';
+import { initNoteDefinition } from './note-definition/init';
+import { initNote } from './note/init';
+
+import { userDevData } from './user/mock';
+import { gameDevData } from './game/mock';
+import { noteDefinitionDevData } from './note-definition/mock';
+import { noteDevData } from './note/mock';
 
 const init: DbInitFunction = async (db) => {
   await initUser(db);
