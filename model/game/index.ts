@@ -1,18 +1,16 @@
 import { ResultSetHeader } from 'mysql2/promise';
-import { UpdateGameResponse } from '../../api/game/interface';
-import { Paginated } from '../../utils/mysql';
 import { generateUniqueId, getDb, getTimestamp } from '../../utils/db';
+import { Rng } from '../../utils/rng';
+import { Paginated } from '../../utils/mysql';
+import { UpdateGameResponse } from '../../api/game/interface';
 import {
-  DbGame,
-  DbSelectGame,
-  DbSelectGameImage,
-  GamePermission,
-  sql,
-  limits,
-} from './sql';
+  GAME_SHARE_LINK_CHARSET,
+  GAME_SHARE_LINK_LENGTH,
+} from '../constants/sql';
 import { DbUser } from '../user/sql';
 import { UserAuthData } from '../user';
 import { TimestampTable } from '../interfaces';
+import { DbGame, GamePermission, sql, DbGameShareLinks } from './sql';
 
 export interface GamePreviewData extends TimestampTable {
   id: DbGame['id'];
@@ -45,6 +43,8 @@ export type CreateGameData = Omit<
   'userId' | 'id' | 'permission' | 'createdOn' | 'updatedOn'
 >;
 
+const rng = new Rng();
+
 export async function createGame(
   user: UserAuthData,
   data: CreateGameData
@@ -58,22 +58,22 @@ export async function createGame(
     imageId: data.imageId || null,
     createdOn: getTimestamp(),
   };
-  const promises: Promise<ResultSetHeader | DbSelectGameImage | undefined>[] = [
-    db.insertOne(sql.createGame, dbGame),
-  ];
+  const promises: Promise<unknown>[] = [sql.insertGame(db, dbGame)];
 
   if (dbGame.imageId) {
     promises.push(
-      db.queryOne<DbSelectGameImage>(sql.selectGamePreviewImage, {
+      sql.selectGamePreviewImage(db, {
         imageId: dbGame.imageId,
       })
     );
   }
 
-  const [, image] = (await Promise.all(promises)) as [
-    ResultSetHeader,
-    DbSelectGameImage | undefined
-  ];
+  const [, image] = await Promise.all(
+    promises as [
+      ReturnType<typeof sql.insertGame>,
+      ReturnType<typeof sql.selectGamePreviewImage> | undefined
+    ]
+  );
 
   return {
     id: dbGame.id,
@@ -93,7 +93,7 @@ export async function deleteGame(
   id: DbGame['id']
 ): Promise<void> {
   const db = await getDb();
-  const res = await db.delete(sql.deleteGame, { id, userId: user.id });
+  const res = await sql.deleteGame(db, { id, userId: user.id });
 
   if (!res.affectedRows) {
     throw new Error('No game found to delete or not enough permissions');
@@ -108,7 +108,7 @@ export async function updateGame(
 ): Promise<UpdateGameResponse> {
   const db = await getDb();
   const now = getTimestamp();
-  const res = await db.update(sql.updateGame, {
+  const res = await sql.updateGame(db, {
     lastUpdate,
     id: gameId,
     userId: user.id,
@@ -133,11 +133,10 @@ export async function updateGameImage(
   imageId: DbGame['imageId']
 ): Promise<void> {
   const db = await getDb();
-  await db.execute(sql.createGame, {
+  await sql.updateGameImage(db, {
     id,
     imageId,
-    user: user.id,
-    updatedOn: getTimestamp(),
+    userId: user.id,
   });
 }
 
@@ -146,7 +145,7 @@ export async function selectGameDetails(
   id: DbGame['id']
 ): Promise<GameDetailsData | undefined> {
   const db = await getDb();
-  const game = await db.queryOne<DbSelectGame>(sql.selectGame, {
+  const game = await sql.selectGame(db, {
     id,
     userId: user.id,
   });
@@ -170,15 +169,7 @@ export async function selectUserGames(
   page: number = 0
 ): Promise<Paginated<GamePreviewData>> {
   const db = await getDb();
-  const pages = await db.paginate<DbSelectGame>({
-    page,
-    rpp: limits.selectUserGames!.default,
-    limit: limits.selectUserGames!,
-    dataSql: sql.selectUserGames,
-    dataParams: { userId: user.id },
-    countSql: sql.countUserGames,
-    countParams: { userId: user.id },
-  });
+  const pages = await sql.paginateUserGames(db, page, { userId: user.id });
 
   return {
     ...pages,
@@ -200,11 +191,25 @@ export async function shareGame(
   user: UserAuthData,
   gameId: DbGame['id'],
   permission: GamePermission
-): Promise<void> {
+): Promise<DbGameShareLinks['id']> {
   const db = await getDb();
-  await db.execute(sql.shareGame, {
-    gameId,
-    permission,
-    user: user.id,
-  });
+  const id = rng.randomString(GAME_SHARE_LINK_CHARSET, GAME_SHARE_LINK_LENGTH);
+  let n = 3;
+  let res: ResultSetHeader;
+
+  // TODO: Check that the gameId is really from the userId
+  while (!(res!.affectedRows > 0) && n > 0) {
+    n--;
+    res = await sql.insertGameShareLink(db, {
+      id,
+      gameId,
+      permission,
+    });
+  }
+
+  if (n <= 0) {
+    throw new Error(`Game share link couldn't be created`);
+  }
+
+  return id;
 }

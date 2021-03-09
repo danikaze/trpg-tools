@@ -92,27 +92,21 @@ export async function createNoteDefinition(
   const db = await getDb();
   const res = await db.transaction<NoteDefinition>(async () => {
     const noteDefId = generateUniqueId();
-    const now = getTimestamp();
-    await db.insertOne<DbNoteDefinition>(sql.createNoteDefinition, {
+    await sql.insertNoteDefinition(db, {
       noteDefId,
       userId: user.id,
       name: definition.name,
-      createdOn: now,
-      updatedOn: now,
     });
 
     // create its fields
     const promises = definition.fields.map((field, position) => {
-      return db.insertOne<Omit<DbNoteFieldDefinition, 'noteFieldDefId'>>(
-        sql.createNoteFieldDefinition,
-        {
-          noteDefId,
-          position,
-          name: field.name,
-          type: field.type,
-          options: field.options ? JSON.stringify(field.options) : '',
-        }
-      );
+      return sql.insertNoteFieldDefinition(db, {
+        noteDefId,
+        position,
+        name: field.name,
+        type: field.type,
+        options: field.options ? JSON.stringify(field.options) : '',
+      });
     });
 
     // construct the result
@@ -142,7 +136,15 @@ export async function createNoteDefinition(
 export async function deleteNoteDefinition(
   user: UserAuthData,
   noteDefId: DbNoteDefinition['noteDefId']
-): Promise<void> {}
+): Promise<boolean> {
+  const db = await getDb();
+
+  const res = await sql.deleteNoteDefinition(db, {
+    noteDefId,
+    userId: user.id,
+  });
+  return res.affectedRows > 0;
+}
 
 export async function editNoteDefinition(): Promise<void> {}
 
@@ -152,19 +154,13 @@ export async function getUserNoteDefinitions(
   const db = await getDb();
 
   // get the note definitions
-  const noteDefinitionResult = await db.query<DbNoteDefinition>(
-    sql.selectUserNoteDefinitions,
-    { systemUserId: SYSTEM_USER.id, userId: user.id }
-  );
+  const noteDefinitionResult = await sql.selectUserNoteDefinitions(db, {
+    userId: user.id,
+  });
 
   // get the field types
   const noteDefIds = noteDefinitionResult.map((n) => n.noteDefId);
-  const fieldDefs = await db.query<DbNoteFieldDefinition>(
-    sql.selectNoteFieldsDefinitions,
-    {
-      noteDefIds,
-    }
-  );
+  const fieldDefs = await sql.selectNoteFieldsDefinitions(db, { noteDefIds });
 
   const noteFields = fieldDefs.reduce(
     (all, field) => {

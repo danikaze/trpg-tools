@@ -6,3 +6,7 @@ export const EDIT_TIME_COLS = `createdOn ${TIMESTAMP},
     updatedOn ${TIMESTAMP},
     INDEX updatedOn_idx (updatedOn)`;
 export const ENUM_TYPE = 'VARCHAR(64)';
+
+export const GAME_SHARE_LINK_LENGTH = 16;
+export const GAME_SHARE_LINK_CHARSET =
+  '1234567890' + 'abcdefghijklmnopqrstuvwxyz' + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';

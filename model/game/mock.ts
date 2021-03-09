@@ -1,12 +1,12 @@
 import { DbInitFunction } from '../../utils/mysql';
 import { createGame, CreateGameData, GamePreviewData } from '.';
 import { devUsers } from '../user/mock';
-import { User } from '@model/user';
+import { UserAuthData } from '@model/user';
 
 export const devGames: Record<GamePreviewData['id'], GamePreviewData> = {};
 
 interface DevGameDef {
-  user: User;
+  user: UserAuthData;
   game: CreateGameData;
 }
 

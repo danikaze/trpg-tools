@@ -1,5 +1,7 @@
-import { TimestampTable } from '@model/interfaces';
+import { getTimestamp } from '../../utils/db';
+import { MySql } from '../../utils/mysql';
 import { DbUser } from '../user/sql';
+import { TimestampTable } from '../interfaces';
 
 export type ImageType = 'game';
 export type ImageThumbnail = 'gameBanner' | 'gameThumb';
@@ -23,24 +25,45 @@ export interface DbImageThumbnail {
 }
 
 export const sql = {
-  createImage: `
+  insertImage: (
+    db: MySql,
+    params: Pick<DbImage, 'userId' | 'path' | 'width' | 'height' | 'bytes'>
+  ) => {
+    const time = getTimestamp();
+    return db.insertOne(queries.insertImage, {
+      ...params,
+      time,
+    });
+  },
+
+  deleteImage: (db: MySql, params: Pick<DbImage, 'id' | 'userId'>) => {
+    return db.delete(queries.deleteImage, params);
+  },
+
+  insertThumbnail: (
+    db: MySql,
+    params: Pick<
+      DbImageThumbnail,
+      'imageId' | 'type' | 'path' | 'width' | 'height' | 'bytes'
+    >
+  ) => {
+    return db.insertOne(queries.insertThumbnail, params);
+  },
+};
+
+const queries = {
+  insertImage: `
     INSERT INTO
       images (userId, path, width, height, bytes, createdOn, updatedOn)
-      VALUES (:userId, :path, :width, :height, :bytes, :createdOn, :createdOn)
+      VALUES (:userId, :path, :width, :height, :bytes, :time, :time)
   `,
   deleteImage: `
     DELETE FROM images
       WHERE id = :id AND userId = :userId
   `,
-  createThumbnail: `
+  insertThumbnail: `
     INSERT INTO
       images_thumbnails (imageId, type, path, width, height, bytes)
       VALUES (:imageId, :type, :path, :width, :height, :bytes)
-  `,
-  deleteThumbnail: `
-    DELETE FROM images_thumbnails
-      WHERE id = :id
-        AND type = :type
-        AND userId = :userId
   `,
 };

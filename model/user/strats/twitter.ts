@@ -16,7 +16,7 @@ export async function getUserIdFromTwitter(
   const role = 'user';
 
   const db = await getDb();
-  const user = await db.queryOne<DbUser>(sql.selectUserFromTwitter, {
+  const user = await sql.selectTwitterUser(db, {
     profileId,
   });
   if (user) {
@@ -39,5 +39,5 @@ async function createUserFromTwitter(
   profileId: string
 ): Promise<void> {
   const db = await getDb();
-  await db.execute(sql.createTwitterUser, { userId, profileId });
+  await sql.insertTwitterUser(db, { userId, profileId });
 }
