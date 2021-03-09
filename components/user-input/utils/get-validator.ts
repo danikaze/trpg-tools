@@ -2,7 +2,7 @@ import { RefObject } from 'react';
 
 export function getTextValidator(
   pattern: string | undefined,
-  ref: RefObject<HTMLInputElement | HTMLTextAreaElement>,
+  ref: RefObject<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   setValid: (valid: boolean) => void,
   required: boolean | undefined
 ) {
