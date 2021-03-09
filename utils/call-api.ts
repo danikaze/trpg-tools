@@ -1,14 +1,7 @@
 import { HttpMethod } from '@api';
 import { addUrlParams } from './url';
 
-export type CallApiType = 'names' | 'image' | 'game' | 'treasures';
-
 export interface CallApiOptions<Q extends {} = {}, B extends {} = {}> {
-  /**
-   * Resource ID for RESTful APIs, to be appended to the url as
-   * baseUrl/apiType/resourceId
-   */
-  resourceId?: number | string;
   /**
    * Data to pass in the query string
    */
@@ -44,7 +37,7 @@ export function callApi<
   B extends {} = {},
   M extends HttpMethod = HttpMethod
 >(
-  api: CallApiType,
+  apiUrl: string,
   method: M,
   opt: MethodOptions<M, Q, B> = {}
 ): Promise<ApiResponse<R>> {
@@ -63,11 +56,8 @@ export function callApi<
     }
 
     const body = options.data ? JSON.stringify(options.data) : undefined;
-    let url = `/api/${api}`;
+    let url = `/api/${apiUrl}`;
 
-    if (options.resourceId) {
-      url = `${url}/${options.resourceId}`;
-    }
     if (options.params) {
       url = addUrlParams(url, options.params);
     }

@@ -26,28 +26,24 @@ export type RestApiHandlerMethods<
   GETR = void,
   GETQ extends {} = {},
   GETB extends {} = {},
-  GETK extends string = never,
-  GETI extends number | string = never,
+  GETU extends {} = {},
   POSTR = void,
   POSTQ extends {} = {},
   POSTB extends {} = {},
-  POSTK extends string = never,
-  POSTI extends number | string = never,
+  POSTU extends {} = {},
   PUTR = void,
   PUTQ extends {} = {},
   PUTB extends {} = {},
-  PUTK extends string = never,
-  PUTI extends number | string = never,
+  PUTU extends {} = {},
   DELETER = void,
   DELETEQ extends {} = {},
   DELETEB extends {} = {},
-  DELETEK extends string = never,
-  DELETEI extends number | string = never
+  DELETEU extends {} = {}
 > = {
-  GET?: ApiHandler<GETR, GETQ, GETB, GETK, GETI>;
-  POST?: ApiHandler<POSTR, POSTQ, POSTB, POSTK, POSTI>;
-  PUT?: ApiHandler<PUTR, PUTQ, PUTB, PUTK, PUTI>;
-  DELETE?: ApiHandler<DELETER, DELETEQ, DELETEB, DELETEK, DELETEI>;
+  GET?: ApiHandler<GETR, GETQ, GETB, GETU>;
+  POST?: ApiHandler<POSTR, POSTQ, POSTB, POSTU>;
+  PUT?: ApiHandler<PUTR, PUTQ, PUTB, PUTU>;
+  DELETE?: ApiHandler<DELETER, DELETEQ, DELETEB, DELETEU>;
 };
 
 export type ApiResponse<R> =
@@ -76,18 +72,17 @@ export interface ApiRequest<Q, B> extends IncomingMessage {
  * R: Return type
  * Q: Query parameters
  * B: Body data
- * K and I provides an extra parameter to the query, for those restful APIs
- *   which accept a resource ID in the url as /api/resourceId
- * K is usually the name of the parameter as [K].ts, and I the value of the type
+ * U: URL data. It's also provided in the query but coming from the slug url,
+ *    not from the `params` option. So if a url is like `/game/[gameId]`
+ *    `U` would be `{ gameId: string }`
  */
 export type ApiHandler<
   R = void,
   Q extends {} = {},
   B extends {} = {},
-  K extends string = never,
-  I extends number | string = never
+  U extends {} = {}
 > = (
-  req: ApiRequest<Q & { [k in K]: I }, B>,
+  req: ApiRequest<Q & U, B>,
   res: NextApiResponse<ApiResponse<R>>
 ) => void | Promise<void>;
 
@@ -95,45 +90,37 @@ export function restApiHandler<
   GETR = void,
   GETQ extends {} = {},
   GETB extends {} = {},
-  GETK extends string = never,
-  GETI extends number | string = never,
+  GETU extends {} = {},
   POSTR = void,
   POSTQ extends {} = {},
   POSTB extends {} = {},
-  POSTK extends string = never,
-  POSTI extends number | string = never,
+  POSTU extends {} = {},
   PUTR = void,
   PUTQ extends {} = {},
   PUTB extends {} = {},
-  PUTK extends string = never,
-  PUTI extends number | string = never,
+  PUTU extends {} = {},
   DELETER = void,
   DELETEQ extends {} = {},
   DELETEB extends {} = {},
-  DELETEK extends string = never,
-  DELETEI extends number | string = never
+  DELETEU extends {} = {}
 >(
   handlers: RestApiHandlerMethods<
     GETR,
     GETQ,
     GETB,
-    GETK,
-    GETI,
+    GETU,
     POSTR,
     POSTQ,
     POSTB,
-    POSTK,
-    POSTI,
+    POSTU,
     PUTR,
     PUTQ,
     PUTB,
-    PUTK,
-    PUTI,
+    PUTU,
     DELETER,
     DELETEQ,
     DELETEB,
-    DELETEK,
-    DELETEI
+    DELETEU
   >
 ): NextApiHandler {
   return async (req, res) => {

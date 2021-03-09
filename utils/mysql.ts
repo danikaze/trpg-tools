@@ -23,7 +23,7 @@ export type TransactionWork<T> = (transaction: {
 }) => Promise<T | undefined>;
 
 export interface TransactionOptions {
-  throw?: boolean;
+  noThrow?: boolean;
   errHandler?: (e: Error) => void;
 }
 
@@ -431,7 +431,7 @@ export class MySql {
       });
     } catch (e) {
       await this.connection.rollback();
-      if (options.throw) throw e;
+      if (options.noThrow !== false) throw e;
       if (options.errHandler) options.errHandler(e);
       return;
     }
