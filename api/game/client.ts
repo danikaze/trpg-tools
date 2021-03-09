@@ -39,8 +39,7 @@ export async function updateGame(
     UpdateGameResponse,
     UpdateGameQuery,
     UpdateGameBody
-  >('game', 'PUT', {
-    resourceId: gameId,
+  >(`game/${gameId}`, 'PUT', {
     params: {
       lastUpdate,
     },
@@ -58,7 +57,7 @@ export async function deleteGame(
     DeleteGameResponse,
     DeleteGameQuery,
     DeleteGameBody
-  >('game', 'DELETE', { resourceId: gameId });
+  >(`game/${gameId}`, 'DELETE');
   return res.data;
 }
 
