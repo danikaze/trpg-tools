@@ -1,5 +1,8 @@
 import { GamePreviewData, GameUpdateData } from '@model/game';
+import { NoteData } from '@model/note';
+import { RetrievedNoteDefinition } from '@model/note-definition';
 import { DbGame } from '@model/sql/game';
+import { Paginated } from '@utils/mysql';
 
 export type CreateGameResponse = GamePreviewData;
 export type CreateGameQuery = {};
@@ -22,3 +25,10 @@ export type UpdateGameBody = {
 export type DeleteGameResponse = {};
 export type DeleteGameQuery = {};
 export type DeleteGameBody = {};
+
+export type GetNotesResponse = Paginated<NoteData>;
+export type GetNotesQuery = {
+  noteDefId: RetrievedNoteDefinition['noteDefId'];
+  page: number;
+};
+export type GetNotesBody = {};
