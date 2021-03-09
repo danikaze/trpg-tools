@@ -1,10 +1,20 @@
 import { getTimestamp } from '../../utils/db';
 import { DbInitFunction } from '../../utils/mysql';
+import {
+  LOCAL_SALT_SIZE,
+  PASSWORD_MAX_CHARS,
+  TWITTER_PROFILE_LENGTH,
+  USERNAME_MAX_CHARS,
+} from '../../utils/constants';
 import { PUBLIC_USER_MIN_ID, SYSTEM_USER } from '.';
+import {
+  MYSQL_TYPE_INTERNAL_ID,
+  EDIT_TIME_COLS,
+  MYSQL_TYPE_ENUM,
+} from '../constants/sql';
 import { UserType } from './sql';
-import { LOCAL_SALT_SIZE, INTERNAL_ID, EDIT_TIME_COLS } from '../constants/sql';
 
-const USERNAME_ROWTYPE = 'VARCHAR(32)';
+const USERNAME_ROWTYPE = `VARCHAR(${USERNAME_MAX_CHARS})`;
 
 export const initUser: DbInitFunction = async (db) => {
   const now = getTimestamp();
@@ -14,19 +24,19 @@ export const initUser: DbInitFunction = async (db) => {
       // app users
       `
       CREATE TABLE IF NOT EXISTS users (
-        id ${INTERNAL_ID} AUTO_INCREMENT PRIMARY KEY,
+        id ${MYSQL_TYPE_INTERNAL_ID} AUTO_INCREMENT PRIMARY KEY,
         type CHAR(2) NOT NULL,
         username ${USERNAME_ROWTYPE} NOT NULL UNIQUE,
-        role VARCHAR(36) DEFAULT 'user',
+        role ${MYSQL_TYPE_ENUM} DEFAULT 'user',
         ${EDIT_TIME_COLS}
       );
       `,
       // auth data for users based on username and password
       `
       CREATE TABLE IF NOT EXISTS users_local (
-        userId ${INTERNAL_ID} NOT NULL,
+        userId ${MYSQL_TYPE_INTERNAL_ID} NOT NULL,
         username ${USERNAME_ROWTYPE} NOT NULL UNIQUE,
-        password VARCHAR(256) NOT NULL COLLATE utf8_bin,
+        password VARCHAR(${PASSWORD_MAX_CHARS}) NOT NULL COLLATE utf8_bin,
         salt CHAR(${LOCAL_SALT_SIZE}),
 
         FOREIGN KEY (userId)
@@ -43,8 +53,8 @@ export const initUser: DbInitFunction = async (db) => {
       // auth data for users based on twitter accounts
       `
       CREATE TABLE IF NOT EXISTS users_twitter (
-        userId ${INTERNAL_ID} NOT NULL,
-        profileId VARCHAR(36) NOT NULL PRIMARY KEY,
+        userId ${MYSQL_TYPE_INTERNAL_ID} NOT NULL,
+        profileId VARCHAR(${TWITTER_PROFILE_LENGTH}) NOT NULL PRIMARY KEY,
 
         FOREIGN KEY (userId)
           REFERENCES users(id)
