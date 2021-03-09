@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { FunctionComponent, ReactNode } from 'react';
-import { DbGame } from '@model/sql/game';
+import { DbGame } from '@model/game/sql';
 
 export interface Props {
   gameId: DbGame['id'];

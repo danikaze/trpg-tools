@@ -7,7 +7,7 @@ import {
   DeleteNoteBody,
   DeleteNoteQuery,
 } from './interface';
-import { DbNote } from '@model/sql/note';
+import { DbNote } from '@model/note/sql';
 
 export const deleteNoteApiHandler: ApiHandler<
   DeleteNoteResponse,

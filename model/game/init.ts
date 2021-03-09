@@ -1,5 +1,5 @@
-import { DbInitFunction } from '../../../utils/mysql';
-import { EDIT_TIME_COLS, INTERNAL_ID, PUBLIC_ID } from './constants';
+import { DbInitFunction } from '../../utils/mysql';
+import { EDIT_TIME_COLS, INTERNAL_ID, PUBLIC_ID } from '../constants/sql';
 
 export const initGame: DbInitFunction = async (db) => {
   await Promise.all(

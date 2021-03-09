@@ -1,4 +1,4 @@
-import { ImageThumbnail, ImageType } from '@model/sql/image';
+import { ImageThumbnail, ImageType } from '@model/image/sql';
 import { sync as mkdirpSync } from 'mkdirp';
 import { join } from 'path';
 import sharp, { Metadata, ResizeOptions } from 'sharp';

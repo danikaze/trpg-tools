@@ -9,10 +9,10 @@ import {
   GamePermission,
   sql,
   limits,
-} from '../sql/game';
-import { DbUser } from '../sql/user';
+} from './sql';
+import { DbUser } from '../user/sql';
 import { UserAuthData } from '../user';
-import { TimestampTable } from '..';
+import { TimestampTable } from '../interfaces';
 
 export interface GamePreviewData extends TimestampTable {
   id: DbGame['id'];

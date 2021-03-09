@@ -4,7 +4,7 @@ import { makeStyles } from '@utils/styles';
 import { Paginated } from '@utils/mysql';
 import { callDeleteNoteApi, callUpdateNoteApi } from '@api/game/note/client';
 import { getNotes } from '@api/game/client';
-import { DbGame } from '@model/sql/game';
+import { DbGame } from '@model/game/sql';
 import { RetrievedNoteDefinition } from '@model/note-definition';
 import { UpdateNoteData, NoteData } from '@model/note';
 import { Button } from '@components/user-input/button';

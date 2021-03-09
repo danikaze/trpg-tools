@@ -1,7 +1,7 @@
-import { DbInitFunction, MySql } from '../../../../utils/mysql';
-import { createLocalUser } from '../../../user/local';
-import { createUser, User, UserRole } from '../../../user';
-import { UserType } from '../../../sql/user';
+import { DbInitFunction, MySql } from '../../utils/mysql';
+import { createLocalUser } from './strats/local';
+import { createUser, User, UserRole } from '.';
+import { UserType } from './sql';
 
 interface DevUserDefinition {
   type: UserType;

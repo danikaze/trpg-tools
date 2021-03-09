@@ -1,4 +1,4 @@
-import { ImageType } from '@model/sql/image';
+import { ImageType } from '@model/image/sql';
 import { callApi } from '@utils/call-api';
 import { ThumbnailInfo } from '@utils/create-thumbnails';
 

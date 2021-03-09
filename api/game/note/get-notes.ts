@@ -2,7 +2,7 @@ import { ApiHandler, HttpStatus } from '@api';
 import { apiUserRequired } from '@utils/auth';
 import { UserAuthData } from '@model/user';
 import { selectNotes } from '@model/note';
-import { DbGame } from '@model/sql/game';
+import { DbGame } from '@model/game/sql';
 import { GetNotesResponse, GetNotesBody, GetNotesQuery } from '../interface';
 
 export const getNotesApiHandler: ApiHandler<

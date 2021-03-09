@@ -1,5 +1,5 @@
 import { UpdateNoteData } from '@model/note';
-import { DbGame } from '@model/sql/game';
+import { DbGame } from '@model/game/sql';
 
 export type DeleteNoteResponse = {};
 export type DeleteNoteQuery = {};

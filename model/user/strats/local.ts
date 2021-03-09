@@ -1,9 +1,9 @@
-import { encryptPassword } from '../../utils/crypt';
-import { Rng } from '../../utils/rng';
-import { getDb } from '../../utils/db';
-import { LOCAL_SALT_SIZE } from '../sql/init/constants';
-import { DbLocalUser, sql } from '../sql/user';
-import { User } from '../user';
+import { encryptPassword } from '../../../utils/crypt';
+import { Rng } from '../../../utils/rng';
+import { getDb } from '../../../utils/db';
+import { LOCAL_SALT_SIZE } from '../../constants/sql';
+import { DbLocalUser, sql } from '../sql';
+import { User } from '..';
 
 const SALT_CHARSET =
   '1234567890!@#$%^&*()+=-_?~' +

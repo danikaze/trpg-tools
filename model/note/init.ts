@@ -1,9 +1,9 @@
 import {
   FIELD_TEXT_MAX_LENGTH,
   NOTE_COL_NAME_MAX_LENGTH as NOTE_COL_TITLE_MAX_LENGTH,
-} from '../../../utils/constants';
-import { DbInitFunction } from '../../../utils/mysql';
-import { EDIT_TIME_COLS, INTERNAL_ID, PUBLIC_ID } from './constants';
+} from '../../utils/constants';
+import { DbInitFunction } from '../../utils/mysql';
+import { EDIT_TIME_COLS, INTERNAL_ID, PUBLIC_ID } from '../constants/sql';
 
 export const initNote: DbInitFunction = async (db) => {
   await Promise.all(

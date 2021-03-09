@@ -1,6 +1,6 @@
-import { TimestampTable } from '../../model';
+import { TimestampTable } from '../interfaces';
 import { SqlLimits } from '../../utils/mysql';
-import { DbUser } from './user';
+import { DbUser } from '../user/sql';
 
 export type FieldType =
   | 'int'

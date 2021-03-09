@@ -7,14 +7,13 @@ import {
   DeleteGameQuery,
 } from './interface';
 import { UserAuthData } from '@model/user';
-import { DbGame } from '@model/sql/game';
+import { DbGame } from '@model/game/sql';
 
 export const deleteGameApiHandler: ApiHandler<
   DeleteGameResponse,
   DeleteGameQuery,
   DeleteGameBody,
-  'gameId',
-  DbGame['id']
+  { gameId: DbGame['id'] }
 > = async (req, res) => {
   if (apiUserRequired(req, res)) return;
   const { gameId } = req.query;

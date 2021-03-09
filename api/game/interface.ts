@@ -1,7 +1,7 @@
 import { GamePreviewData, GameUpdateData } from '@model/game';
 import { NoteData } from '@model/note';
 import { RetrievedNoteDefinition } from '@model/note-definition';
-import { DbGame } from '@model/sql/game';
+import { DbGame } from '@model/game/sql';
 import { Paginated } from '@utils/mysql';
 
 export type CreateGameResponse = GamePreviewData;
