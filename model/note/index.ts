@@ -1,7 +1,7 @@
 import { Paginated } from '../../utils/mysql';
 import { generateUniqueId, getDb, getTimestamp } from '../../utils/db';
 import { TimestampTable } from '../interfaces';
-import { DbNote, DbNoteContent, limits, sql } from './sql';
+import { DbNote, DbNoteContent, sql } from './sql';
 import { DbGame } from '../game/sql';
 import { DbNoteDefinition } from '../note-definition/sql';
 import { UserAuthData } from '../user';
@@ -50,38 +50,31 @@ export async function createNote(
   data: CreateNoteData
 ): Promise<CreatedNoteData> {
   const db = await getDb();
-  const now = getTimestamp();
-  const note: DbNote = {
-    noteId: generateUniqueId(),
-    userId: user.id,
-    noteDefId: data.noteDefId,
-    gameId: data.gameId,
-    title: data.title,
-    createdOn: now,
-    updatedOn: now,
-  };
-  const content: DbNoteContent[] = data.content.map((field) => ({
-    noteContentId: generateUniqueId(),
-    noteId: note.noteId,
-    noteFieldDefId: field.noteFieldDefId,
-    value: field.value,
-  }));
+  const noteId = generateUniqueId();
 
   await db.transaction(async () => {
     // note
-    db.insertOne<DbNote>(sql.createNote, note);
+    await sql.insertNote(db, {
+      noteId,
+      userId: user.id,
+      noteDefId: data.noteDefId,
+      gameId: data.gameId,
+      title: data.title,
+    });
 
     // contents
     await Promise.all(
-      content.map((contentData) =>
-        db.insertOne<DbNoteContent>(sql.createNoteContent, contentData)
+      data.content.map((field) =>
+        sql.insertNoteContent(db, {
+          noteId,
+          noteFieldDefId: field.noteFieldDefId,
+          value: field.value,
+        })
       )
     );
   });
 
-  return {
-    noteId: note.noteId,
-  };
+  return { noteId };
 }
 
 export async function selectNotes(
@@ -93,20 +86,16 @@ export async function selectNotes(
   const db = await getDb();
 
   // notes
-  const paginatedNotes = await db.paginate<NoteData>({
-    page,
-    rpp: limits.selectUserNotesOfType!.default,
-    limit: limits.selectUserNotesOfType!,
-    dataSql: sql.selectUserNotesOfType,
-    dataParams: { noteDefId, gameId, userId: user.id },
-    countSql: sql.countUserNotesOfType,
-    countParams: { noteDefId, gameId, userId: user.id },
+  const paginatedNotes = await sql.paginateUserNotes(db, page, {
+    gameId,
+    noteDefId,
+    userId: user.id,
   });
 
   // note contents
-  const contents = await db.query<NoteContentData>(sql.selectNoteContents, {
-    noteIds: paginatedNotes.data.map((note) => note.noteId),
+  const contents = await sql.selectNoteContents(db, {
     userId: user.id,
+    noteIds: paginatedNotes.data.map((note) => note.noteId),
   });
 
   // create output
@@ -140,7 +129,7 @@ export async function deleteNote(
   noteId: NoteData['noteId']
 ): Promise<void> {
   const db = await getDb();
-  const res = await db.delete(sql.deleteNote, {
+  const res = await sql.deleteNote(db, {
     noteId,
     userId: user.id,
   });
@@ -161,7 +150,7 @@ export async function updateNote(
 
   await db.transaction(async () => {
     // update the note
-    const noteUpdate = await db.update(sql.updateNote, {
+    const noteUpdate = await sql.updateNote(db, {
       updatedOn,
       lastUpdate,
       noteId,
@@ -178,7 +167,7 @@ export async function updateNote(
     // update all the fields
     await Promise.all(
       Object.entries(note.content).map(([noteFieldDefId, value]) => {
-        return db.update(sql.updateNoteContent, {
+        return sql.updateNoteContent(db, {
           value,
           noteId,
           noteFieldDefId: Number(noteFieldDefId),

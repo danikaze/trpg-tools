@@ -1,6 +1,6 @@
 import { DbInitFunction, MySql } from '../../utils/mysql';
 import { createLocalUser } from './strats/local';
-import { createUser, User, UserRole } from '.';
+import { createUser, UserAuthData, UserRole } from '.';
 import { UserType } from './sql';
 
 interface DevUserDefinition {
@@ -10,7 +10,7 @@ interface DevUserDefinition {
   password: string;
 }
 
-export const devUsers: Record<string, User> = {};
+export const devUsers: Record<string, UserAuthData> = {};
 
 export const userDevData: DbInitFunction = async (db) => {
   const devUserDefinitions: Record<string, DevUserDefinition> = {
@@ -41,7 +41,7 @@ export const userDevData: DbInitFunction = async (db) => {
   );
 };
 
-async function createDevUser(db: MySql, def: DevUserDefinition): Promise<User> {
+async function createDevUser(db: MySql, def: DevUserDefinition): Promise<void> {
   return db.transaction(async () => {
     devUsers[def.username] = await createUser(def.type, def.username, def.role);
     await createLocalUser(
@@ -49,6 +49,5 @@ async function createDevUser(db: MySql, def: DevUserDefinition): Promise<User> {
       def.username,
       def.password
     );
-    return devUsers[def.username];
-  }) as Promise<User>;
+  });
 }

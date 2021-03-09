@@ -1,5 +1,5 @@
-import { getDb, getTimestamp } from '../../utils/db';
-import { DbUser, sql, UserType } from './sql';
+import { getDb } from '../../utils/db';
+import { sql, UserType } from './sql';
 import { TimestampTable } from '../interfaces';
 
 export type UserRole = 'system' | 'admin' | 'user';
@@ -30,22 +30,19 @@ export async function createUser(
   type: UserType,
   username: string,
   role: UserRole
-): Promise<User> {
+): Promise<UserAuthData> {
   const db = await getDb();
 
-  const insertResult = await db.insertOne(sql.createUser, {
-    type,
-    username,
-    role,
-    createdOn: getTimestamp(),
-  });
+  const insertResult = await sql.insertUser(db, { type, username, role });
 
   return (await selectUser(insertResult.insertId))!;
 }
 
-export async function selectUser(id: User['id']): Promise<User | undefined> {
+export async function selectUser(
+  id: User['id']
+): Promise<UserAuthData | undefined> {
   const db = await getDb();
-  const rawUser = await db.queryOne<DbUser>(sql.selectUser, { id });
+  const rawUser = await sql.selectUser(db, id);
   if (!rawUser) return;
 
   return {

@@ -5,7 +5,7 @@ import { apiError, ApiHandler } from '@api';
 import { sql } from '@model/image/sql';
 import { UserAuthData } from '@model/user';
 import { decodeBase64Image } from '@utils/decode-base64-image';
-import { getDb, getTimestamp } from '@utils/db';
+import { getDb } from '@utils/db';
 import { PUBLIC_URL_FOLDER, UPLOADS_IMG_FOLDER } from '@utils/constants';
 import { createThumbnails } from '@utils/create-thumbnails';
 import { getFileHash } from '@utils/get-file-hash';
@@ -51,13 +51,12 @@ export const uploadImage: ApiHandler<ApiResponse, {}, RequestBody> = async (
 
   try {
     // store the original image in the database
-    const originalInsertResult = await db.insertOne(sql.createImage, {
+    const originalInsertResult = await sql.insertImage(db, {
       userId: (req.user as UserAuthData).id,
       path: imgPath,
       width: original.width as number,
       height: original.height as number,
       bytes: original.size as number,
-      createdOn: getTimestamp(),
     });
 
     thumbnails.forEach((thumb) => {
@@ -65,7 +64,7 @@ export const uploadImage: ApiHandler<ApiResponse, {}, RequestBody> = async (
       thumb.path = getUrlFromPath(thumb.path, PUBLIC_URL_FOLDER, true);
 
       // store the thumbnails in the database
-      db.insertOne(sql.createThumbnail, {
+      sql.insertThumbnail(db, {
         imageId: originalInsertResult!.insertId,
         type: thumb.type,
         path: thumb.path,

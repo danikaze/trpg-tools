@@ -1,7 +1,8 @@
-import { SqlLimits } from '../../utils/mysql';
+import { MySql, SqlLimits } from '../../utils/mysql';
+import { getTimestamp } from '../../utils/db';
 import { DbUser } from '../user/sql';
 import { DbImageThumbnail } from '../image/sql';
-import { TimestampTable } from '../interfaces';
+import { Nullable, TimestampTable } from '../interfaces';
 
 export type GamePermission = 'owner' | 'view' | 'edit' | 'none';
 
@@ -25,7 +26,7 @@ export interface DbGameShareLinks {
   permission: GamePermission;
 }
 
-export type DbSelectGame = Pick<
+type SelectGame = Pick<
   DbGame,
   'id' | 'name' | 'description' | 'createdOn' | 'updatedOn'
 > & {
@@ -35,15 +36,101 @@ export type DbSelectGame = Pick<
   imagePath: DbImageThumbnail['path'];
 };
 
-export type DbSelectGameImage = {
+type SelectGameImage = {
   imagePath: DbImageThumbnail['path'];
 };
 
 export const sql = {
-  createGame: `
+  insertGame: (
+    db: MySql,
+    params: Pick<DbGame, 'id' | 'userId' | 'name' | 'description' | 'imageId'>
+  ) => {
+    const time = getTimestamp();
+    return db.insertOne(queries.insertGame, {
+      ...params,
+      time,
+    });
+  },
+
+  deleteGame: (db: MySql, params: Pick<DbGame, 'id' | 'userId'>) => {
+    return db.delete(queries.deleteGame, params);
+  },
+
+  updateGame: (
+    db: MySql,
+    params: Pick<DbGame, 'updatedOn' | 'id' | 'userId'> &
+      Nullable<Pick<DbGame, 'name' | 'description' | 'imageId'>> & {
+        lastUpdate: DbGame['updatedOn'];
+      }
+  ) => {
+    return db.update(queries.updateGame, params);
+  },
+
+  updateGameImage: (
+    db: MySql,
+    params: Pick<DbGame, 'imageId' | 'id' | 'userId'>
+  ) => {
+    const updatedOn = getTimestamp();
+    return db.update(queries.updateGameImage, {
+      ...params,
+      updatedOn,
+    });
+  },
+
+  selectGame: (db: MySql, params: Pick<DbGame, 'id' | 'userId'>) => {
+    return db.queryOne<SelectGame>(queries.selectGame, params);
+  },
+
+  paginateUserGames: (
+    db: MySql,
+    page: number,
+    params: Pick<DbGame, 'userId'>
+  ) => {
+    return db.paginate<SelectGame>({
+      page,
+      rpp: limits.selectUserGames!.default,
+      limit: limits.selectUserGames!,
+      dataSql: queries.selectUserGames,
+      dataParams: params,
+      countSql: queries.countUserGames,
+      countParams: params,
+    });
+  },
+
+  insertGameShareLink: (
+    db: MySql,
+    params: Pick<DbGameShareLinks, 'id' | 'gameId' | 'permission'>
+  ) => {
+    return db.insertOne(queries.insertGameShareLink, params);
+  },
+
+  deleteGameShareLink: (
+    db: MySql,
+    params: Pick<DbGameShareLinks, 'id'> & Pick<DbGame, 'userId'>
+  ) => {
+    return db.delete(queries.deleteGameShareLink, params);
+  },
+
+  insertGamePermission: (
+    db: MySql,
+    params: Pick<DbGamePermissions, 'gameId' | 'userId' | 'permission'>
+  ) => {
+    return db.insertOne(queries.insertGamePermission, params);
+  },
+
+  selectGamePreviewImage: (
+    db: MySql,
+    params: Pick<DbImageThumbnail, 'imageId'>
+  ) => {
+    return db.queryOne<SelectGameImage>(queries.selectGamePreviewImage, params);
+  },
+};
+
+const queries = {
+  insertGame: `
     INSERT INTO
       games (id, userId, name, description, imageId, createdOn, updatedOn)
-      VALUES (:id, :userId, :name, :description, :imageId, :createdOn, :createdOn)
+      VALUES (:id, :userId, :name, :description, :imageId, :time, :time)
   `,
   deleteGame: `
     DELETE FROM games
@@ -129,17 +216,19 @@ export const sql = {
       FROM games
       WHERE games.userId = :userId
   `,
-  createGameShareLink: `
+  insertGameShareLink: `
     INSERT INTO
       games_share_links (id, gameId, permission)
       VALUES (:id, :gameId, :permission)
   `,
   deleteGameShareLink: `
-    DELETE FROM games_share_links
-      WHERE id = :id
-      -- AND (SELECT userId FROM games) = :userId
+    DELETE l
+      FROM games_share_links l
+      JOIN games g ON l.gameId = g.id
+      WHERE l.id = :id:
+        AND g.userId = :userId
   `,
-  shareGame: `
+  insertGamePermission: `
     INSERT INTO
       games_permissions (gameId, userId, permission)
       VALUES (:gameId, :userId, :permission)
@@ -152,6 +241,6 @@ export const sql = {
   `,
 };
 
-export const limits: SqlLimits<typeof sql> = {
+export const limits: SqlLimits<typeof queries> = {
   selectUserGames: { default: 10, max: 25, min: 5 },
 };

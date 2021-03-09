@@ -1,17 +1,16 @@
 import { NoteDefinition, RetrievedNoteDefinition } from '../note-definition';
 import { DbInitFunction } from '../../utils/mysql';
-import { User } from '../user';
+import { UserAuthData } from '../user';
 import { devUsers } from '../user/mock';
 import { systemNoteTypes } from '../note-definition/init';
 import { createNote } from '.';
 import { basename } from 'path';
 import { devGames } from '../game/mock';
 import { GamePreviewData } from '../game';
-import { limits } from './sql';
 import { noteDefinitionsDevData } from '../note-definition/mock';
 
 interface NoteDef {
-  user: User;
+  user: UserAuthData;
   noteDef: NoteDefinition;
   gameDef: GamePreviewData;
   title: string;
@@ -158,7 +157,8 @@ export const noteDevData: DbInitFunction = async () => {
   ];
 
   // push enough note to test pagination
-  for (let i = 0; i < limits.selectUserNotesOfType!.default * 2 + 2; i++) {
+  const N_NOTES = 55;
+  for (let i = 0; i < N_NOTES; i++) {
     devNoteDefinitions.push({
       user: devUsers.user1,
       noteDef: systemNoteTypes.locations,

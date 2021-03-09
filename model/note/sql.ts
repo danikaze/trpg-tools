@@ -1,11 +1,12 @@
-import { SqlLimits } from '../../utils/mysql';
-import { TimestampTable } from '../interfaces';
+import { MySql, SqlLimits } from '../../utils/mysql';
+import { getTimestamp } from '../../utils/db';
 import {
   DbNoteDefinition,
   DbNoteFieldDefinition,
 } from '../note-definition/sql';
 import { DbGame } from '../game/sql';
 import { DbUser } from '../user/sql';
+import { TimestampTable } from '../interfaces';
 
 export interface DbNote extends TimestampTable {
   noteId: string;
@@ -21,8 +22,76 @@ export interface DbNoteContent {
   value: string;
 }
 
+type SelectNoteContents = Pick<
+  DbNoteContent,
+  'noteFieldDefId' | 'noteId' | 'value'
+>;
+
 export const sql = {
-  createNote: `
+  insertNote: (
+    db: MySql,
+    params: Pick<DbNote, 'noteId' | 'userId' | 'noteDefId' | 'gameId' | 'title'>
+  ) => {
+    const time = getTimestamp();
+    return db.insertOne(queries.insertNote, {
+      ...params,
+      time,
+    });
+  },
+
+  insertNoteContent: (
+    db: MySql,
+    params: Pick<DbNoteContent, 'noteId' | 'noteFieldDefId' | 'value'>
+  ) => {
+    return db.insertOne(queries.insertNoteContent, params);
+  },
+
+  paginateUserNotes: (
+    db: MySql,
+    page: number,
+    params: Pick<DbNote, 'userId' | 'gameId' | 'noteDefId'>
+  ) => {
+    return db.paginate<DbNote>({
+      page,
+      rpp: limits.selectUserNotesOfType!.default,
+      limit: limits.selectUserNotesOfType!,
+      dataSql: queries.selectUserNotesOfType,
+      dataParams: params,
+      countSql: queries.countUserNotesOfType,
+      countParams: params,
+    });
+  },
+
+  selectNoteContents: (
+    db: MySql,
+    params: { userId: DbUser['id']; noteIds: DbNote['noteId'][] }
+  ) => {
+    return db.query<SelectNoteContents>(queries.selectNoteContents, params);
+  },
+
+  updateNote: (
+    db: MySql,
+    params: Pick<DbNote, 'title' | 'updatedOn' | 'noteId' | 'userId'> & {
+      lastUpdate: DbNote['updatedOn'];
+    }
+  ) => {
+    return db.update(queries.updateNote, params);
+  },
+
+  updateNoteContent: (
+    db: MySql,
+    params: Pick<DbNoteContent, 'noteId' | 'noteFieldDefId' | 'value'>
+  ) => {
+    return db.update(queries.updateNoteContent, params);
+  },
+
+  deleteNote: (db: MySql, params: Pick<DbNote, 'userId' | 'noteId'>) => {
+    return db.delete(queries.deleteNote, params);
+  },
+};
+
+const queries = {
+  insertNote: `
     INSERT INTO notes (
       noteId,
       userId,
@@ -38,11 +107,11 @@ export const sql = {
       :noteDefId,
       :gameId,
       :title,
-      :createdOn,
-      :updatedOn
+      :time,
+      :time
     )
   `,
-  createNoteContent: `
+  insertNoteContent: `
     INSERT INTO notes_contents (
       noteId,
       noteFieldDefId,
@@ -72,9 +141,9 @@ export const sql = {
         AND userId = :userId
   `,
   selectNoteContents: `
-  SELECT c.noteFieldDefId, c.noteId, c.value
-  FROM notes_contents c
-    JOIN notes n ON c.noteId = n.noteId
+    SELECT c.noteFieldDefId, c.noteId, c.value
+      FROM notes_contents c
+      JOIN notes n ON c.noteId = n.noteId
       WHERE c.noteId IN (:noteIds)
         AND n.userId = :userId
   `,
@@ -89,9 +158,9 @@ export const sql = {
   // note that ON DUPLICATE is not safe for replication
   // https://dev.mysql.com/doc/refman/8.0/en/insert-on-duplicate.html
   updateNoteContent: `
-  INSERT INTO notes_contents (noteId, noteFieldDefId, value)
-    VALUES (:noteId, :noteFieldDefId, :value)
-    ON DUPLICATE KEY UPDATE value = :value
+    INSERT INTO notes_contents (noteId, noteFieldDefId, value)
+      VALUES (:noteId, :noteFieldDefId, :value)
+      ON DUPLICATE KEY UPDATE value = :value
   `,
   deleteNote: `
     DELETE
@@ -100,6 +169,6 @@ export const sql = {
         AND userId = :userId`,
 };
 
-export const limits: SqlLimits<typeof sql> = {
+const limits: SqlLimits<typeof queries> = {
   selectUserNotesOfType: { default: 25, max: 25, min: 25 },
 };

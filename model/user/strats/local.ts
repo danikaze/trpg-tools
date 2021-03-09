@@ -20,7 +20,7 @@ export async function getUserIdFromLocal(
 ): Promise<User['id'] | undefined> {
   // 1. Find the user in the database
   const db = await getDb();
-  const user = await db.queryOne<DbLocalUser>(sql.selectLocalUser, {
+  const user = await sql.selectLocalUser(db, {
     username,
   });
   if (!user) return;
@@ -47,7 +47,7 @@ export async function createLocalUser(
   const rng = new Rng();
   const salt = rng.randomString(SALT_CHARSET, LOCAL_SALT_SIZE);
   const pwd = await encryptPassword(password, salt);
-  await db.execute(sql.createLocalUser, {
+  await sql.insertLocalUser(db, {
     userId,
     username,
     salt,
