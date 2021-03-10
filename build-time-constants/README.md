@@ -34,3 +34,11 @@ Also, the build process add the values defined in [build.d.ts](./build.d.ts) and
 This values will be replaced in the code in the same way that `#define` work in C/C++ (they will not be declared as constants anywhere), so better not to use build time constants to declare big values used everywhere (it would be ok if declared but reassigned to a constant somewhere in the code, and then that constant imported from other files).
 
 The only difference is for the custom server code ([/server](../server)), where values will be imported because this build doesn't go through webpack.
+
+When retrieving the constants, their value will be printed only if the environment variable `PRINT_CONSTANTS` is `true`.
+
+For example:
+
+```
+PRINT_CONSTANTS=true npm run build
+```
