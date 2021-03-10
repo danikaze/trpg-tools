@@ -34,3 +34,5 @@ declare const MYSQL_USER: string;
 declare const MYSQL_PASS: string;
 /** Database for the MySQL connection */
 declare const MYSQL_DATABASE: string;
+/** Use MySql pool connection or not */
+declare const MYSQL_USE_POOL: boolean;
