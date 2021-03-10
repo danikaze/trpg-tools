@@ -24,7 +24,7 @@ export const initUser: DbInitFunction = async (db) => {
       // app users
       `
       CREATE TABLE IF NOT EXISTS users (
-        id ${MYSQL_TYPE_INTERNAL_ID} AUTO_INCREMENT PRIMARY KEY,
+        userId ${MYSQL_TYPE_INTERNAL_ID} AUTO_INCREMENT PRIMARY KEY,
         type CHAR(2) NOT NULL,
         username ${USERNAME_ROWTYPE} NOT NULL UNIQUE,
         role ${MYSQL_TYPE_ENUM} DEFAULT 'user',
@@ -40,7 +40,7 @@ export const initUser: DbInitFunction = async (db) => {
         salt CHAR(${LOCAL_SALT_SIZE}),
 
         FOREIGN KEY (userId)
-          REFERENCES users(id)
+          REFERENCES users(userId)
           ON UPDATE CASCADE
           ON DELETE CASCADE,
 
@@ -57,25 +57,25 @@ export const initUser: DbInitFunction = async (db) => {
         profileId VARCHAR(${TWITTER_PROFILE_LENGTH}) NOT NULL PRIMARY KEY,
 
         FOREIGN KEY (userId)
-          REFERENCES users(id)
+          REFERENCES users(userId)
           ON UPDATE CASCADE
           ON DELETE CASCADE
       );
       `,
       // system user ID is hardcoded
-      `ALTER TABLE users AUTO_INCREMENT=${SYSTEM_USER.id};`,
+      `ALTER TABLE users AUTO_INCREMENT=${SYSTEM_USER.userId};`,
       // Insert the system user
       // (special user without login options,
       // for user-referenced system resources)
       `
-      INSERT INTO users(id, type, username, role, createdOn, updatedOn)
+      INSERT INTO users(userId, type, username, role, createdOn, updatedOn)
         VALUES (
-          ${SYSTEM_USER.id},
+          ${SYSTEM_USER.userId},
           '${UserType.SYSTEM_USER}',
           '${SYSTEM_USER.username}',
           '${SYSTEM_USER.role}',
           ${now},
-          0
+          ${now}
         )
       `,
       // Public users start on the specified ID

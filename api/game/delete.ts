@@ -13,7 +13,7 @@ export const deleteGameApiHandler: ApiHandler<
   DeleteGameResponse,
   DeleteGameQuery,
   DeleteGameBody,
-  { gameId: DbGame['id'] }
+  { gameId: DbGame['gameId'] }
 > = async (req, res) => {
   if (apiUserRequired(req, res)) return;
   const { gameId } = req.query;

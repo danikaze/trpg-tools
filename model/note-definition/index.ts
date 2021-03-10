@@ -94,7 +94,7 @@ export async function createNoteDefinition(
     const noteDefId = generateUniqueId();
     await sql.insertNoteDefinition(db, {
       noteDefId,
-      userId: user.id,
+      userId: user.userId,
       name: definition.name,
     });
 
@@ -141,7 +141,7 @@ export async function deleteNoteDefinition(
 
   const res = await sql.deleteNoteDefinition(db, {
     noteDefId,
-    userId: user.id,
+    userId: user.userId,
   });
   return res.affectedRows > 0;
 }
@@ -155,7 +155,7 @@ export async function getUserNoteDefinitions(
 
   // get the note definitions
   const noteDefinitionResult = await sql.selectUserNoteDefinitions(db, {
-    userId: user.id,
+    userId: user.userId,
   });
 
   // get the field types

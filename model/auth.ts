@@ -1,17 +1,17 @@
 import { Profile } from 'passport';
-import { selectUser, User, UserAuthData } from './user';
+import { selectUser, UserAuthData } from './user';
 import { getUserIdFromLocal } from './user/strats/local';
 import { getUserIdFromTwitter } from './user/strats/twitter';
 
 export async function getUserAuthData(
-  id: User['id'] | undefined
+  userId: UserAuthData['userId'] | undefined
 ): Promise<UserAuthData | undefined> {
-  if (!id) return;
-  const user = await selectUser(id);
+  if (!userId) return;
+  const user = await selectUser(userId);
   if (!user) return;
 
   return {
-    id: user.id,
+    userId: user.userId,
     username: user.username,
     role: user.role,
   };

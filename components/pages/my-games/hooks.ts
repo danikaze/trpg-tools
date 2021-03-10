@@ -37,7 +37,7 @@ export function useMyGames(props: Props) {
     let imageId: number | undefined;
     if (image) {
       const uploadedImage = await uploadImage(['game'], image);
-      imageId = uploadedImage.id;
+      imageId = uploadedImage.imageId;
     }
 
     setState({

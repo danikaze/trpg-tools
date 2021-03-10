@@ -1,7 +1,7 @@
-import { User } from '@model/user';
+import { UserAuthData } from '@model/user';
 
 export type UserState = null | {
-  id: User['id'];
-  username: User['username'];
-  role: User['role'];
+  userId: UserAuthData['userId'];
+  username: UserAuthData['username'];
+  role: UserAuthData['role'];
 };

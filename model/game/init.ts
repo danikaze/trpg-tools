@@ -14,7 +14,7 @@ export const initGame: DbInitFunction = async (db) => {
       // game, campaign... that contains all the elements (chars, maps, notes, etc.)
       `
       CREATE TABLE IF NOT EXISTS games (
-        id ${MYSQL_TYPE_PUBLIC_ID} PRIMARY KEY,
+        gameId ${MYSQL_TYPE_PUBLIC_ID} PRIMARY KEY,
         userId ${MYSQL_TYPE_INTERNAL_ID} NOT NULL,
         name VARCHAR(${GAME_NAME_MAX_CHARS}) NOT NULL DEFAULT '',
         description VARCHAR(${GAME_NAME_MAX_CHARS}) NOT NULL DEFAULT '',
@@ -22,7 +22,7 @@ export const initGame: DbInitFunction = async (db) => {
         ${EDIT_TIME_COLS},
 
         FOREIGN KEY (imageId)
-          REFERENCES images(id)
+          REFERENCES images(imageId)
           ON UPDATE CASCADE
           ON DELETE SET NULL
       );
@@ -37,12 +37,12 @@ export const initGame: DbInitFunction = async (db) => {
         CONSTRAINT UNIQUE (gameId, userId),
 
         FOREIGN KEY (gameId)
-          REFERENCES games(id)
+          REFERENCES games(gameId)
           ON UPDATE CASCADE
           ON DELETE CASCADE,
 
         FOREIGN KEY (userId)
-          REFERENCES users(id)
+          REFERENCES users(userId)
           ON UPDATE CASCADE
           ON DELETE CASCADE
       );
@@ -50,7 +50,7 @@ export const initGame: DbInitFunction = async (db) => {
       // links to share games with users
       `
       CREATE TABLE IF NOT EXISTS games_share_links (
-        id CHAR(${GAME_SHARE_LINK_LENGTH}) PRIMARY KEY,
+        linkId CHAR(${GAME_SHARE_LINK_LENGTH}) PRIMARY KEY,
         gameId ${MYSQL_TYPE_PUBLIC_ID} NOT NULL,
         permission ${MYSQL_TYPE_ENUM} NOT NULL
       );

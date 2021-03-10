@@ -3,7 +3,7 @@ import { callApi } from '@utils/call-api';
 import { ThumbnailInfo } from '@utils/create-thumbnails';
 
 export interface ApiResponse {
-  id: number;
+  imageId: number;
   thumbnails: ThumbnailInfo[];
 }
 

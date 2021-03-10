@@ -12,7 +12,7 @@ import { GameNotesTypes } from './game-notes-types';
 import { GameNote } from './game-note';
 
 export interface Props {
-  gameId: DbGame['id'];
+  gameId: DbGame['gameId'];
   noteDefinitions: RetrievedNoteDefinition[];
   selectednoteDefId?: RetrievedNoteDefinition['noteDefId'] | null;
   notes: Paginated<NoteData>;

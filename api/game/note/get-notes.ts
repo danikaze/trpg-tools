@@ -9,7 +9,7 @@ export const getNotesApiHandler: ApiHandler<
   GetNotesResponse,
   GetNotesQuery,
   GetNotesBody,
-  { gameId: DbGame['id'] }
+  { gameId: DbGame['gameId'] }
 > = async (req, res) => {
   if (apiUserRequired(req, res)) return;
   const { noteDefId, gameId, page, user } = getQueryData(req);

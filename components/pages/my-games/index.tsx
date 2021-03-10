@@ -64,7 +64,9 @@ function renderGameList(
   pages: Paginated<GamePreviewData>
 ): JSX.Element {
   const games = pages.data;
-  const list = games.map((game) => <GamePreview key={game.id} game={game} />);
+  const list = games.map((game) => (
+    <GamePreview key={game.gameId} game={game} />
+  ));
   const pagination = (
     <Pagination
       page={pages.page}

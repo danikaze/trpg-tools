@@ -1,25 +1,18 @@
 import { getDb } from '../../utils/db';
-import { sql, UserType } from './sql';
-import { TimestampTable } from '../interfaces';
+import { DbUser, sql, UserType } from './sql';
 
 export type UserRole = 'system' | 'admin' | 'user';
-export type UserAuthData = Pick<User, 'id' | 'username' | 'role'>;
-
-export interface User extends TimestampTable {
-  id: number;
-  username: string;
-  role: UserRole;
-}
+export type UserAuthData = Pick<DbUser, 'userId' | 'username' | 'role'>;
 
 export interface LocalUser {
-  userId: User['id'];
-  username: string;
+  userId: DbUser['userId'];
+  username: DbUser['username'];
   salt: string;
   password: string;
 }
 
 export const SYSTEM_USER: UserAuthData = {
-  id: 1,
+  userId: 1,
   username: 'system',
   role: 'system',
 };
@@ -39,10 +32,10 @@ export async function createUser(
 }
 
 export async function selectUser(
-  id: User['id']
+  userId: DbUser['userId']
 ): Promise<UserAuthData | undefined> {
   const db = await getDb();
-  const rawUser = await sql.selectUser(db, id);
+  const rawUser = await sql.selectUser(db, { userId });
   if (!rawUser) return;
 
   return {

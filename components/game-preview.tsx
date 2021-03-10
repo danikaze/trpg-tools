@@ -40,13 +40,13 @@ type Styles = ReturnType<typeof useStyles>;
 
 export const GamePreview: FunctionComponent<Props> = ({ game, className }) => {
   const styles = useStyles();
-  const { id, name, description, imageUrl } = game;
+  const { gameId, name, description, imageUrl } = game;
 
   return (
     <div className={clsx(styles.root, className)}>
-      {getImage(styles, id, imageUrl)}
+      {getImage(styles, gameId, imageUrl)}
       <div className={styles.details}>
-        <LinkToGame gameId={id} className={styles.name}>
+        <LinkToGame gameId={gameId} className={styles.name}>
           {name}
         </LinkToGame>
         <div className={styles.description}>{description}</div>
@@ -58,7 +58,7 @@ export const GamePreview: FunctionComponent<Props> = ({ game, className }) => {
 
 function getImage(
   styles: Styles,
-  gameId: GamePreviewData['id'],
+  gameId: GamePreviewData['gameId'],
   imageUrl: string | null
 ): JSX.Element | undefined {
   if (!imageUrl) return;

@@ -3,7 +3,7 @@ import { createGame, CreateGameData, GamePreviewData } from '.';
 import { devUsers } from '../user/mock';
 import { UserAuthData } from '@model/user';
 
-export const devGames: Record<GamePreviewData['id'], GamePreviewData> = {};
+export const devGames: Record<GamePreviewData['gameId'], GamePreviewData> = {};
 
 interface DevGameDef {
   user: UserAuthData;
@@ -41,7 +41,7 @@ export const gameDevData: DbInitFunction = async (db) => {
   await Promise.all(
     gameDefinitions.map(async (def) => {
       const game = await createGame(def.user, def.game);
-      devGames[game.id] = game;
+      devGames[game.gameId] = game;
     })
   );
 };

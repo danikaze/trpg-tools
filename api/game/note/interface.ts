@@ -10,7 +10,7 @@ export type UpdateNoteResponse = {
 };
 export type UpdateNoteQuery = {};
 export type UpdateNoteBody = {
-  lastUpdate: number;
-  gameId: DbGame['id'];
+  lastUpdate: DbGame['updatedOn'];
+  gameId: DbGame['gameId'];
   note: UpdateNoteData;
 };
