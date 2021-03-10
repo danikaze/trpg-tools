@@ -41,7 +41,7 @@ const initNoteDefinitionTables: DbInitFunction = async (db) => {
         ${EDIT_TIME_COLS},
 
         FOREIGN KEY (userId)
-          REFERENCES users(id)
+          REFERENCES users(userId)
           ON UPDATE CASCADE
           ON DELETE CASCADE
       );

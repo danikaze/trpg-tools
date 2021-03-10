@@ -1,6 +1,6 @@
 import 'jest';
-import { GetServerSidePropsContext } from 'next';
 import sinon from 'sinon';
+import { GetServerSidePropsContext } from 'next';
 import { Request, Response, NextFunction } from 'express';
 import { UserAuthData, UserRole } from '@model/user';
 import { resetAllGlobalValues, setGlobalValue } from '@test/set-global-value';
@@ -131,7 +131,7 @@ function getTestData(role: UserRole | false, originalUrl: string = 'url') {
     (role && {
       role,
       username: 'username',
-      id: 1,
+      userId: 1,
     }) ||
     false;
   const req = { originalUrl, user };

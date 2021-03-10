@@ -7,8 +7,8 @@ export type ImageType = 'game';
 export type ImageThumbnail = 'gameBanner' | 'gameThumb';
 
 export interface DbImage extends TimestampTable {
-  id: number;
-  userId: DbUser['id'];
+  imageId: number;
+  userId: DbUser['userId'];
   path: string;
   width: number;
   height: number;
@@ -36,7 +36,7 @@ export const sql = {
     });
   },
 
-  deleteImage: (db: MySql, params: Pick<DbImage, 'id' | 'userId'>) => {
+  deleteImage: (db: MySql, params: Pick<DbImage, 'imageId' | 'userId'>) => {
     return db.delete(queries.deleteImage, params);
   },
 
@@ -59,7 +59,7 @@ const queries = {
   `,
   deleteImage: `
     DELETE FROM images
-      WHERE id = :id AND userId = :userId
+      WHERE imageId = :imageId AND userId = :userId
   `,
   insertThumbnail: `
     INSERT INTO

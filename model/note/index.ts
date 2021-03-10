@@ -8,7 +8,7 @@ import { UserAuthData } from '../user';
 
 export interface CreateNoteData {
   noteDefId: DbNoteDefinition['noteDefId'];
-  gameId: DbGame['id'];
+  gameId: DbGame['gameId'];
   title: DbNote['title'];
   content: CreateNoteContentData[];
 }
@@ -56,7 +56,7 @@ export async function createNote(
     // note
     await sql.insertNote(db, {
       noteId,
-      userId: user.id,
+      userId: user.userId,
       noteDefId: data.noteDefId,
       gameId: data.gameId,
       title: data.title,
@@ -80,7 +80,7 @@ export async function createNote(
 export async function selectNotes(
   user: UserAuthData,
   noteDefId: DbNoteDefinition['noteDefId'],
-  gameId: DbGame['id'],
+  gameId: DbGame['gameId'],
   page: number = 0
 ): Promise<Paginated<NoteData>> {
   const db = await getDb();
@@ -89,12 +89,12 @@ export async function selectNotes(
   const paginatedNotes = await sql.paginateUserNotes(db, page, {
     gameId,
     noteDefId,
-    userId: user.id,
+    userId: user.userId,
   });
 
   // note contents
   const contents = await sql.selectNoteContents(db, {
-    userId: user.id,
+    userId: user.userId,
     noteIds: paginatedNotes.data.map((note) => note.noteId),
   });
 
@@ -131,7 +131,7 @@ export async function deleteNote(
   const db = await getDb();
   const res = await sql.deleteNote(db, {
     noteId,
-    userId: user.id,
+    userId: user.userId,
   });
 
   if (!res.affectedRows) {
@@ -155,7 +155,7 @@ export async function updateNote(
       lastUpdate,
       noteId,
       title: note.title,
-      userId: user.id,
+      userId: user.userId,
     });
 
     if (!noteUpdate.affectedRows) {

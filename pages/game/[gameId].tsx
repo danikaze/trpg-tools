@@ -25,7 +25,7 @@ GameDetailPage.defaultProps = {
 };
 
 interface Query {
-  id: DbGame['id'];
+  gameId: DbGame['gameId'];
 }
 
 const notValidProps = {
@@ -47,7 +47,7 @@ export const getServerSideProps: GetServerSideProps<Props, Query> = async (
   const {
     req: { user },
   } = ctx;
-  const gameId = ctx.params?.id;
+  const gameId = ctx.params?.gameId;
 
   const [game, noteDefinitions] = await Promise.all([
     (user && gameId && selectGameDetails(user, gameId)) || null,

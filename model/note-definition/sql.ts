@@ -13,7 +13,7 @@ export type FieldType =
 
 export interface DbNoteDefinition extends TimestampTable {
   noteDefId: string;
-  userId: DbUser['id'];
+  userId: DbUser['userId'];
   name: string;
 }
 
@@ -62,7 +62,7 @@ export const sql = {
       queries.selectUserNoteDefinitions,
       {
         ...params,
-        systemUserId: SYSTEM_USER.id,
+        systemUserId: SYSTEM_USER.userId,
       }
     );
   },

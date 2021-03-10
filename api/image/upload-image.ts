@@ -52,7 +52,7 @@ export const uploadImage: ApiHandler<ApiResponse, {}, RequestBody> = async (
   try {
     // store the original image in the database
     const originalInsertResult = await sql.insertImage(db, {
-      userId: (req.user as UserAuthData).id,
+      userId: (req.user as UserAuthData).userId,
       path: imgPath,
       width: original.width as number,
       height: original.height as number,
@@ -77,7 +77,7 @@ export const uploadImage: ApiHandler<ApiResponse, {}, RequestBody> = async (
     res.json({
       data: {
         thumbnails,
-        id: originalInsertResult.insertId,
+        imageId: originalInsertResult.insertId,
       },
     });
   } catch (error) {

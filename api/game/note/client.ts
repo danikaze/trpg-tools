@@ -12,7 +12,7 @@ import {
 } from './interface';
 
 export async function callDeleteNoteApi(
-  gameId: DbGame['id'],
+  gameId: DbGame['gameId'],
   noteId: DbNote['noteId']
 ): Promise<DeleteNoteResponse> {
   const res = await callApi<
@@ -25,7 +25,7 @@ export async function callDeleteNoteApi(
 }
 
 export async function callUpdateNoteApi(
-  gameId: DbGame['id'],
+  gameId: DbGame['gameId'],
   noteId: NoteData['noteId'],
   lastUpdate: NoteData['updatedOn'],
   note: UpdateNoteData

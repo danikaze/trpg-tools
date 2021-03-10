@@ -15,7 +15,7 @@ interface NoteDef {
   gameDef: GamePreviewData;
   title: string;
   content: {
-    id: RetrievedNoteDefinition['fields'][0]['noteFieldDefId'];
+    noteFieldDefId: RetrievedNoteDefinition['fields'][0]['noteFieldDefId'];
     value: string;
   }[];
 }
@@ -49,15 +49,15 @@ export const noteDevData: DbInitFunction = async () => {
       title: 'Amira Shadowhorn',
       content: [
         {
-          id: getFieldId(systemNoteTypes.npcs, 'Description'),
+          noteFieldDefId: getFieldId(systemNoteTypes.npcs, 'Description'),
           value: 'Tiefling woman with a pale purple skil tone.',
         },
         {
-          id: getFieldId(systemNoteTypes.npcs, 'Alignment'),
+          noteFieldDefId: getFieldId(systemNoteTypes.npcs, 'Alignment'),
           value: 'NN',
         },
         {
-          id: getFieldId(systemNoteTypes.npcs, 'Location'),
+          noteFieldDefId: getFieldId(systemNoteTypes.npcs, 'Location'),
           value: 'Eseneas',
         },
       ],
@@ -69,11 +69,11 @@ export const noteDevData: DbInitFunction = async () => {
       title: 'Kashak, Kobold Shaman',
       content: [
         {
-          id: getFieldId(systemNoteTypes.npcs, 'Alignment'),
+          noteFieldDefId: getFieldId(systemNoteTypes.npcs, 'Alignment'),
           value: 'CE',
         },
         {
-          id: getFieldId(systemNoteTypes.npcs, 'Location'),
+          noteFieldDefId: getFieldId(systemNoteTypes.npcs, 'Location'),
           value: 'Lewick/Malnia',
         },
       ],
@@ -85,7 +85,7 @@ export const noteDevData: DbInitFunction = async () => {
       title: 'Lewick',
       content: [
         {
-          id: getFieldId(systemNoteTypes.locations, 'Description'),
+          noteFieldDefId: getFieldId(systemNoteTypes.locations, 'Description'),
           value: 'Farming town close to the Black Forest',
         },
       ],
@@ -97,7 +97,7 @@ export const noteDevData: DbInitFunction = async () => {
       title: 'Grog',
       content: [
         {
-          id: getFieldId(systemNoteTypes.npcs, 'Description'),
+          noteFieldDefId: getFieldId(systemNoteTypes.npcs, 'Description'),
           value: `Goliath Barbarian`,
         },
       ],
@@ -109,7 +109,7 @@ export const noteDevData: DbInitFunction = async () => {
       title: 'Emon',
       content: [
         {
-          id: getFieldId(systemNoteTypes.locations, 'Description'),
+          noteFieldDefId: getFieldId(systemNoteTypes.locations, 'Description'),
           value: `Goliath Barbarian`,
         },
       ],
@@ -121,7 +121,7 @@ export const noteDevData: DbInitFunction = async () => {
       title: 'Placeholder NPC',
       content: [
         {
-          id: getFieldId(systemNoteTypes.npcs, 'Description'),
+          noteFieldDefId: getFieldId(systemNoteTypes.npcs, 'Description'),
           value: `Emon is the capital city of the kingdom of Tal'Dorei, and the largest city on the continent`,
         },
       ],
@@ -133,23 +133,38 @@ export const noteDevData: DbInitFunction = async () => {
       title: 'Custom note 1',
       content: [
         {
-          id: getFieldId(noteDefinitionsDevData.user1note, 'Text area'),
+          noteFieldDefId: getFieldId(
+            noteDefinitionsDevData.user1note,
+            'Text area'
+          ),
           value: 'text area value',
         },
         {
-          id: getFieldId(noteDefinitionsDevData.user1note, 'Select'),
+          noteFieldDefId: getFieldId(
+            noteDefinitionsDevData.user1note,
+            'Select'
+          ),
           value: '1',
         },
         {
-          id: getFieldId(noteDefinitionsDevData.user1note, 'Text field'),
+          noteFieldDefId: getFieldId(
+            noteDefinitionsDevData.user1note,
+            'Text field'
+          ),
           value: 'text field\ntest value',
         },
         {
-          id: getFieldId(noteDefinitionsDevData.user1note, 'Int [0-10]'),
+          noteFieldDefId: getFieldId(
+            noteDefinitionsDevData.user1note,
+            'Int [0-10]'
+          ),
           value: '5',
         },
         {
-          id: getFieldId(noteDefinitionsDevData.user1note, 'Checkbox'),
+          noteFieldDefId: getFieldId(
+            noteDefinitionsDevData.user1note,
+            'Checkbox'
+          ),
           value: 'true',
         },
       ],
@@ -166,7 +181,7 @@ export const noteDevData: DbInitFunction = async () => {
       title: `Test Location ${i}`,
       content: [
         {
-          id: getFieldId(systemNoteTypes.locations, 'Description'),
+          noteFieldDefId: getFieldId(systemNoteTypes.locations, 'Description'),
           value: `Description for Test Location ${i}`,
         },
       ],
@@ -177,10 +192,10 @@ export const noteDevData: DbInitFunction = async () => {
     devNoteDefinitions.map((note) => {
       return createNote(note.user, {
         noteDefId: note.noteDef.noteDefId,
-        gameId: note.gameDef.id,
+        gameId: note.gameDef.gameId,
         title: note.title,
         content: note.content.map((data) => ({
-          noteFieldDefId: data.id,
+          noteFieldDefId: data.noteFieldDefId,
           value: data.value,
         })),
       });

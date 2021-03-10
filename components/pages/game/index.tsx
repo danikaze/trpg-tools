@@ -36,7 +36,7 @@ export const Game: FunctionComponent<Props> = (props) => {
     <div className={styles.root}>
       <GameDetails game={props.game} />
       <GameNotes
-        gameId={props.game.id}
+        gameId={props.game.gameId}
         noteDefinitions={props.noteDefinitions}
         selectednoteDefId={props.selectednoteDefId}
         notes={props.notes}

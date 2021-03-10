@@ -3,7 +3,7 @@ import { LOCAL_SALT_SIZE } from '../../../utils/constants';
 import { Rng } from '../../../utils/rng';
 import { getDb } from '../../../utils/db';
 import { DbLocalUser, sql } from '../sql';
-import { User } from '..';
+import { UserAuthData } from '..';
 
 const SALT_CHARSET =
   '1234567890!@#$%^&*()+=-_?~' +
@@ -17,7 +17,7 @@ const SALT_CHARSET =
 export async function getUserIdFromLocal(
   username: DbLocalUser['username'],
   password: DbLocalUser['password']
-): Promise<User['id'] | undefined> {
+): Promise<UserAuthData['userId'] | undefined> {
   // 1. Find the user in the database
   const db = await getDb();
   const user = await sql.selectLocalUser(db, {

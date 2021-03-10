@@ -3,7 +3,7 @@ import { FunctionComponent, ReactNode } from 'react';
 import { DbGame } from '@model/game/sql';
 
 export interface Props {
-  gameId: DbGame['id'];
+  gameId: DbGame['gameId'];
   children: ReactNode;
   className?: string;
 }

@@ -13,7 +13,7 @@ export const updateGameApiHandler: ApiHandler<
   UpdateGameResponse,
   UpdateGameQuery,
   UpdateGameBody,
-  { gameId: DbGame['id'] }
+  { gameId: DbGame['gameId'] }
 > = async (req, res) => {
   if (apiUserRequired(req, res)) return;
   const { gameId, lastUpdate } = req.query;

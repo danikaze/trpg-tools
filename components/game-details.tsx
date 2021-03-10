@@ -45,7 +45,7 @@ interface State {
   newImage:
     | undefined
     | {
-        id: number;
+        imageId: number;
         path: string;
       };
   game: GameDetailsData;
@@ -81,7 +81,7 @@ export function useGameDetails(props: Props) {
     )!.path;
     setState({
       ...state,
-      newImage: { id: uploadedImage.id, path: imageUrl },
+      newImage: { imageId: uploadedImage.imageId, path: imageUrl },
     });
   }
 
@@ -92,10 +92,10 @@ export function useGameDetails(props: Props) {
       description: data.description,
     };
     if (state.newImage !== undefined) {
-      updateData.imageId = state.newImage.id;
+      updateData.imageId = state.newImage.imageId;
     }
     const res = await updateGame(
-      game.id,
+      game.gameId,
       state.game.updatedOn as number,
       updateData
     );
@@ -119,7 +119,7 @@ export function useGameDetails(props: Props) {
     if (!doIt) return;
 
     try {
-      await deleteGame(state.game.id);
+      await deleteGame(state.game.gameId);
       router.push('/my-games');
     } catch (e) {}
   }

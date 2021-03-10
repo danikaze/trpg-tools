@@ -10,9 +10,9 @@ import { TimestampTable } from '../interfaces';
 
 export interface DbNote extends TimestampTable {
   noteId: string;
-  userId: DbUser['id'];
+  userId: DbUser['userId'];
   noteDefId: DbNoteDefinition['noteDefId'];
-  gameId: DbGame['id'];
+  gameId: DbGame['gameId'];
   title: string;
 }
 
@@ -64,7 +64,7 @@ export const sql = {
 
   selectNoteContents: (
     db: MySql,
-    params: { userId: DbUser['id']; noteIds: DbNote['noteId'][] }
+    params: { userId: DbUser['userId']; noteIds: DbNote['noteId'][] }
   ) => {
     return db.query<SelectNoteContents>(queries.selectNoteContents, params);
   },

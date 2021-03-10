@@ -7,31 +7,31 @@ import { Nullable, TimestampTable } from '../interfaces';
 export type GamePermission = 'owner' | 'view' | 'edit' | 'none';
 
 export interface DbGame extends TimestampTable {
-  id: string;
-  userId: DbUser['id'];
+  gameId: string;
+  userId: DbUser['userId'];
   name: string;
   description: string;
   imageId: number | null;
 }
 
 export interface DbGamePermissions {
-  gameId: DbGame['id'];
-  userId: DbUser['id'];
+  gameId: DbGame['gameId'];
+  userId: DbUser['userId'];
   permission: GamePermission;
 }
 
 export interface DbGameShareLinks {
-  id: string;
-  gameId: DbGame['id'];
+  linkId: string;
+  gameId: DbGame['gameId'];
   permission: GamePermission;
 }
 
 type SelectGame = Pick<
   DbGame,
-  'id' | 'name' | 'description' | 'createdOn' | 'updatedOn'
+  'gameId' | 'name' | 'description' | 'createdOn' | 'updatedOn'
 > & {
   permission: DbGamePermissions['permission'];
-  userId: DbUser['id'];
+  userId: DbUser['userId'];
   username: DbUser['username'];
   imagePath: DbImageThumbnail['path'];
 };
@@ -43,7 +43,10 @@ type SelectGameImage = {
 export const sql = {
   insertGame: (
     db: MySql,
-    params: Pick<DbGame, 'id' | 'userId' | 'name' | 'description' | 'imageId'>
+    params: Pick<
+      DbGame,
+      'gameId' | 'userId' | 'name' | 'description' | 'imageId'
+    >
   ) => {
     const time = getTimestamp();
     return db.insertOne(queries.insertGame, {
@@ -52,13 +55,13 @@ export const sql = {
     });
   },
 
-  deleteGame: (db: MySql, params: Pick<DbGame, 'id' | 'userId'>) => {
+  deleteGame: (db: MySql, params: Pick<DbGame, 'gameId' | 'userId'>) => {
     return db.delete(queries.deleteGame, params);
   },
 
   updateGame: (
     db: MySql,
-    params: Pick<DbGame, 'updatedOn' | 'id' | 'userId'> &
+    params: Pick<DbGame, 'updatedOn' | 'gameId' | 'userId'> &
       Nullable<Pick<DbGame, 'name' | 'description' | 'imageId'>> & {
         lastUpdate: DbGame['updatedOn'];
       }
@@ -68,7 +71,7 @@ export const sql = {
 
   updateGameImage: (
     db: MySql,
-    params: Pick<DbGame, 'imageId' | 'id' | 'userId'>
+    params: Pick<DbGame, 'imageId' | 'gameId' | 'userId'>
   ) => {
     const updatedOn = getTimestamp();
     return db.update(queries.updateGameImage, {
@@ -77,7 +80,7 @@ export const sql = {
     });
   },
 
-  selectGame: (db: MySql, params: Pick<DbGame, 'id' | 'userId'>) => {
+  selectGame: (db: MySql, params: Pick<DbGame, 'gameId' | 'userId'>) => {
     return db.queryOne<SelectGame>(queries.selectGame, params);
   },
 
@@ -99,14 +102,14 @@ export const sql = {
 
   insertGameShareLink: (
     db: MySql,
-    params: Pick<DbGameShareLinks, 'id' | 'gameId' | 'permission'>
+    params: Pick<DbGameShareLinks, 'linkId' | 'gameId' | 'permission'>
   ) => {
     return db.insertOne(queries.insertGameShareLink, params);
   },
 
   deleteGameShareLink: (
     db: MySql,
-    params: Pick<DbGameShareLinks, 'id'> & Pick<DbGame, 'userId'>
+    params: Pick<DbGameShareLinks, 'linkId'> & Pick<DbGame, 'userId'>
   ) => {
     return db.delete(queries.deleteGameShareLink, params);
   },
@@ -129,23 +132,23 @@ export const sql = {
 const queries = {
   insertGame: `
     INSERT INTO
-      games (id, userId, name, description, imageId, createdOn, updatedOn)
-      VALUES (:id, :userId, :name, :description, :imageId, :time, :time)
+      games (gameId, userId, name, description, imageId, createdOn, updatedOn)
+      VALUES (:gameId, :userId, :name, :description, :imageId, :time, :time)
   `,
   deleteGame: `
     DELETE FROM games
-      WHERE id = :id AND userId = :userId
+      WHERE gameId = :gameId AND userId = :userId
   `,
   updateGame: `
     UPDATE games AS g
-      JOIN users u ON g.userId = u.id
-      LEFT JOIN games_permissions p ON g.id = p.gameId
+      JOIN users u ON g.userId = u.userId
+      LEFT JOIN games_permissions p ON g.gameId = p.gameId
     SET
       g.name = COALESCE(:name, name),
       g.description = COALESCE(:description, description),
       g.imageId = COALESCE(:imageId, imageId),
       g.updatedOn = :updatedOn
-    WHERE g.id = :id
+    WHERE g.gameId = :gameId
       AND g.userId = :userId
       AND g.updatedOn = :lastUpdate
       AND COALESCE(p.permission, 'owner') != 'none'
@@ -155,25 +158,25 @@ const queries = {
       SET
         imageId = :imageId,
         updatedOn = :updatedOn
-      WHERE id = :id
+      WHERE gameId = :gameId
         AND userId = :userId
   `,
   selectGame: `
     SELECT
-      g.id,
+      g.gameId,
       g.name,
       g.description,
       g.createdOn,
       g.updatedOn,
       COALESCE(p.permission, 'owner') AS permission,
-      u.id AS userId,
+      u.userId,
       u.username,
       i.path AS imagePath
     FROM games g
       LEFT JOIN images_thumbnails i ON g.imageId = i.imageId
-      JOIN users u ON g.userId = u.id
-      LEFT JOIN games_permissions p ON g.id = p.gameId
-	  WHERE g.id = :id
+      JOIN users u ON g.userId = u.userId
+      LEFT JOIN games_permissions p ON g.gameId = p.gameId
+	  WHERE g.gameId = :gameId
       AND g.userId = :userId
 		  AND COALESCE(p.permission, 'owner') != 'none'
       AND (
@@ -183,26 +186,26 @@ const queries = {
   `,
   selectUserGames: `
     SELECT
-      g.id,
+      g.gameId,
       g.name,
       g.description,
       g.createdOn,
       g.updatedOn,
       p.permission,
-      u.id AS userId,
+      u.userId,
       u.username,
       i.path AS imagePath
     FROM games g
       LEFT JOIN images_thumbnails i ON g.imageId = i.imageId
-      JOIN users u ON g.userId = u.id
-      LEFT JOIN games_permissions p ON g.id = p.gameId
+      JOIN users u ON g.userId = u.userId
+      LEFT JOIN games_permissions p ON g.gameId = p.gameId
     WHERE
       g.userId = :userId
       AND (
         ISNULL(g.imageId)
         OR i.type = 'gameThumb'
       )
-      AND u.id = :userId
+      AND u.userId = :userId
       AND (
         ISNULL(p.permission)
         OR p.permission != 'none'
@@ -218,14 +221,14 @@ const queries = {
   `,
   insertGameShareLink: `
     INSERT INTO
-      games_share_links (id, gameId, permission)
-      VALUES (:id, :gameId, :permission)
+      games_share_links (linkId, gameId, permission)
+      VALUES (:linkId, :gameId, :permission)
   `,
   deleteGameShareLink: `
     DELETE l
       FROM games_share_links l
-      JOIN games g ON l.gameId = g.id
-      WHERE l.id = :id:
+      JOIN games g ON l.gameId = g.gameId
+      WHERE l.linkId = :linkId:
         AND g.userId = :userId
   `,
   insertGamePermission: `

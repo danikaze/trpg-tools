@@ -16,7 +16,7 @@ export const updateNoteApiHandler: ApiHandler<
   UpdateNoteBody,
   {
     noteId: DbNote['noteId'];
-    gameId: DbGame['id'];
+    gameId: DbGame['gameId'];
   }
 > = async (req, res) => {
   if (apiUserRequired(req, res)) return;

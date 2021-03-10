@@ -13,7 +13,7 @@ export const initImage: DbInitFunction = async (db) => {
       // original uploaded images
       `
       CREATE TABLE IF NOT EXISTS images (
-        id ${MYSQL_TYPE_INTERNAL_ID} AUTO_INCREMENT PRIMARY KEY,
+        imageId ${MYSQL_TYPE_INTERNAL_ID} AUTO_INCREMENT PRIMARY KEY,
         userId ${MYSQL_TYPE_INTERNAL_ID},
         path VARCHAR(${UPLOAD_PATH_MAX_CHARS}) NOT NULL,
         width ${MYSQL_TYPE_IMAGE_WH} UNSIGNED NOT NULL,
@@ -22,7 +22,7 @@ export const initImage: DbInitFunction = async (db) => {
         ${EDIT_TIME_COLS},
 
         FOREIGN KEY (userId)
-          REFERENCES users(id)
+          REFERENCES users(userId)
           ON UPDATE CASCADE
           ON DELETE SET NULL
       );
@@ -40,7 +40,7 @@ export const initImage: DbInitFunction = async (db) => {
         INDEX imageId_type_idx (imageId, type),
 
         FOREIGN KEY (imageId)
-          REFERENCES images(id)
+          REFERENCES images(imageId)
           ON UPDATE CASCADE
           ON DELETE CASCADE
       );

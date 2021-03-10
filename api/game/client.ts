@@ -31,7 +31,7 @@ export async function createNewGame(
 }
 
 export async function updateGame(
-  gameId: DbGame['id'],
+  gameId: DbGame['gameId'],
   lastUpdate: number,
   game: GameUpdateData
 ): Promise<UpdateGameResponse> {
@@ -51,7 +51,7 @@ export async function updateGame(
 }
 
 export async function deleteGame(
-  gameId: DbGame['id']
+  gameId: DbGame['gameId']
 ): Promise<DeleteGameResponse> {
   const res = await callApi<
     DeleteGameResponse,
@@ -62,7 +62,7 @@ export async function deleteGame(
 }
 
 export async function getNotes(
-  gameId: DbGame['id'],
+  gameId: DbGame['gameId'],
   noteDefId: RetrievedNoteDefinition['noteDefId'],
   page: number
 ): Promise<GetNotesResponse> {

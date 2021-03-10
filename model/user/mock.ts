@@ -45,7 +45,7 @@ async function createDevUser(db: MySql, def: DevUserDefinition): Promise<void> {
   return db.transaction(async () => {
     devUsers[def.username] = await createUser(def.type, def.username, def.role);
     await createLocalUser(
-      devUsers[def.username].id,
+      devUsers[def.username].userId,
       def.username,
       def.password
     );

@@ -10,14 +10,14 @@ export enum UserType {
 }
 
 export interface DbUser extends TimestampTable {
-  id: number;
+  userId: number;
   type: UserType;
   username: string;
   role: UserRole;
 }
 
 export interface DbLocalUser {
-  userId: DbUser['id'];
+  userId: DbUser['userId'];
   /** salt used to encode the original password */
   salt: string;
   /** encoded password */
@@ -27,11 +27,11 @@ export interface DbLocalUser {
 }
 
 export interface DbTwitterUser {
-  userId: DbUser['id'];
+  userId: DbUser['userId'];
   profileId: string;
 }
 
-type SelectUser = Pick<DbUser, 'id' | 'username' | 'role'>;
+type SelectUser = Pick<DbUser, 'userId' | 'username' | 'role'>;
 type SelectLocalUser = Pick<DbLocalUser, 'userId' | 'salt' | 'password'>;
 
 export const sql = {
@@ -61,8 +61,8 @@ export const sql = {
     return db.insertOne(queries.insertTwitterUser, params);
   },
 
-  selectUser: (db: MySql, userId: DbUser['id']) => {
-    return db.queryOne<SelectUser>(queries.selectUser, { id: userId });
+  selectUser: (db: MySql, params: Pick<DbUser, 'userId'>) => {
+    return db.queryOne<SelectUser>(queries.selectUser, params);
   },
 
   selectLocalUser: (db: MySql, params: Pick<DbLocalUser, 'username'>) => {
@@ -90,9 +90,9 @@ const queries = {
       VALUES(:userId, :profileId)`,
 
   selectUser: `
-        SELECT id, username, role
+        SELECT userId, username, role
           FROM users
-          WHERE id = :id`,
+          WHERE userId = :userId`,
 
   selectLocalUser: `
     SELECT userId, salt, password
@@ -100,8 +100,8 @@ const queries = {
       WHERE username = :username`,
 
   selectTwitterUser: `
-    SELECT id, username, role
-      FROM users u, users_twitter t
-      WHERE u.id = t.userId
-        AND t.profileId = :profileId`,
+    SELECT u.userId, u.username, u.role
+      FROM users u
+      JOIN users_twitter t ON u.userId = t.userId
+      WHERE t.profileId = :profileId`,
 };
