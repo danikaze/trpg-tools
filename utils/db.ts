@@ -1,4 +1,9 @@
-import { default as mysql2 } from 'mysql2/promise';
+import {
+  createConnection,
+  createPool,
+  ConnectionOptions,
+  Pool,
+} from 'mysql2/promise';
 import { v4 as uuidv4 } from 'uuid';
 import { MySql, InitDbOptions } from './mysql';
 import { getLogger } from './logger';
@@ -7,22 +12,35 @@ import { getLogger } from './logger';
 // side, we can include the server implementation for the logger here
 import './logger/private/server';
 
-let db: MySql;
 const RATIO_SECS_MS = 1000;
+const logger = getLogger('db');
+const connectionConfig: ConnectionOptions = {
+  host: 'localhost',
+  user: MYSQL_USER,
+  password: MYSQL_PASS,
+  database: MYSQL_DATABASE,
+};
+let pool: Pool;
+let db: MySql;
+
+if (MYSQL_USE_POOL) {
+  pool = createPool({
+    ...connectionConfig,
+  });
+}
 
 /**
  * Get a connection to the database
- * TODO: Change it to use pools maybe
  */
 export async function getDb(): Promise<MySql> {
+  if (MYSQL_USE_POOL) {
+    const connection = await pool.getConnection();
+    return new MySql(connection, { logger, keepAlive: 0 });
+  }
+
   if (!db) {
-    const connection = await mysql2.createConnection({
-      host: 'localhost',
-      user: MYSQL_USER,
-      password: MYSQL_PASS,
-      database: MYSQL_DATABASE,
-    });
-    db = new MySql(connection, { logger: getLogger('db') });
+    const connection = await createConnection(connectionConfig);
+    db = new MySql(connection, { logger });
   }
 
   return db;
