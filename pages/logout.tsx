@@ -1,6 +1,5 @@
-import { GetServerSideProps } from 'next';
 import Head from 'next/head';
-import { logoutRequired } from '@utils/auth';
+import { logoutRequiredServerSideProps } from '@utils/auth';
 import { AppPage } from './_app';
 
 const Logout: AppPage = () => {
@@ -22,14 +21,10 @@ const Logout: AppPage = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  logoutRequired(ctx);
-
-  return {
-    props: {
-      user: false,
-    },
-  };
-};
+const props = { user: false };
+export const getServerSideProps = logoutRequiredServerSideProps(
+  props,
+  async () => ({ props })
+);
 
 export default Logout;

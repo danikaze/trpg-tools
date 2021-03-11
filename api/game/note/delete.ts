@@ -1,6 +1,5 @@
-import { ApiHandler, HttpStatus } from '@api';
-import { apiUserRequired } from '@utils/auth';
-import { UserAuthData } from '@model/user';
+import { HttpStatus } from '@api';
+import { userRequiredApiHandler } from '@utils/auth';
 import { deleteNote } from '@model/note';
 import {
   DeleteNoteResponse,
@@ -9,17 +8,15 @@ import {
 } from './interface';
 import { DbNote } from '@model/note/sql';
 
-export const deleteNoteApiHandler: ApiHandler<
+export const deleteNoteApiHandler = userRequiredApiHandler<
   DeleteNoteResponse,
   DeleteNoteQuery,
   DeleteNoteBody,
   { noteId: DbNote['noteId'] }
-> = async (req, res) => {
-  if (apiUserRequired(req, res)) return;
+>(async (req, res) => {
   const { noteId } = req.query;
-  const user = req.user as UserAuthData;
 
-  await deleteNote(user, noteId);
+  await deleteNote(req.user, noteId);
 
   res.status(HttpStatus.OK).json({ data: {} });
-};
+});

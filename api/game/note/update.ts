@@ -1,6 +1,5 @@
-import { ApiHandler, HttpStatus } from '@api';
-import { apiUserRequired } from '@utils/auth';
-import { UserAuthData } from '@model/user';
+import { HttpStatus } from '@api';
+import { userRequiredApiHandler } from '@utils/auth';
 import { DbGame } from '@model/game/sql';
 import { DbNote } from '@model/note/sql';
 import { updateNote } from '@model/note';
@@ -10,7 +9,7 @@ import {
   UpdateNoteBody,
 } from './interface';
 
-export const updateNoteApiHandler: ApiHandler<
+export const updateNoteApiHandler = userRequiredApiHandler<
   UpdateNoteResponse,
   UpdateNoteQuery,
   UpdateNoteBody,
@@ -18,15 +17,13 @@ export const updateNoteApiHandler: ApiHandler<
     noteId: DbNote['noteId'];
     gameId: DbGame['gameId'];
   }
-> = async (req, res) => {
-  if (apiUserRequired(req, res)) return;
+>(async (req, res) => {
   const { lastUpdate, note } = getData(req);
-  const user = req.user as UserAuthData;
 
-  const updated = await updateNote(user, lastUpdate, note);
+  const data = await updateNote(req.user, lastUpdate, note);
 
-  res.status(HttpStatus.OK).json({ data: updated });
-};
+  res.status(HttpStatus.OK).json({ data });
+});
 
 function getData(req: Parameters<typeof updateNoteApiHandler>[0]) {
   const { noteId } = req.query;
