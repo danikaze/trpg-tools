@@ -1,26 +1,30 @@
 import { apiError, ApiHandler } from '@api';
-import { callApi } from '@utils/call-api';
-import { generateName, NameType, Race } from '@utils/generate-name';
 import { getUniqueElems } from '@utils/get-unique-elems';
-
-type Return = string[];
-
-interface Query {
-  race: string;
-  type: string;
-}
+import { generateName, NameType, Race } from '@utils/generate-name';
+import {
+  GenerateNameReturn,
+  GenerateNameQuery,
+  GenerateNameBody,
+  NameGeneratorMode,
+} from './interface';
 
 const SHOW_NAMES = 10;
+const MIXED_MARKOV_PROB = 0.5;
 
 /*
  * API Handler
  */
-export const getNamesApi: ApiHandler<Return, Query> = (req, res) => {
+export const getNamesApi: ApiHandler<
+  GenerateNameReturn,
+  GenerateNameQuery,
+  GenerateNameBody
+> = (req, res) => {
   try {
     const race = req.query.race as Race;
     const type = req.query.type as NameType<Race>;
+    const mode = req.query.mode as NameGeneratorMode;
 
-    const names = getNameList(race, type);
+    const names = getNameList(race, type, mode);
     return res.json({ data: getUniqueElems(names) });
   } catch (error) {
     apiError(res, { error });
@@ -29,25 +33,20 @@ export const getNamesApi: ApiHandler<Return, Query> = (req, res) => {
 };
 
 /*
- * Function to call the API from the client
- */
-export const callGenerateNames = <R extends Race>(race: R, type: string) => {
-  return callApi<Return, Query>('names', 'GET', {
-    params: { race, type },
-  });
-};
-
-/*
  * Function to obtain the same result from the server (without calling the API)
  */
 export function getNameList<R extends Race>(
   race: R,
-  type: NameType<R>
+  type: NameType<R>,
+  mode: NameGeneratorMode
 ): string[] {
   const names: string[] = [];
 
   for (let i = 0; i < SHOW_NAMES; i++) {
-    names.push(generateName(race, type));
+    const markov =
+      mode === 'markov' ||
+      (mode === 'mix' && Math.random() < MIXED_MARKOV_PROB);
+    names.push(generateName(race, type, markov));
   }
 
   return getUniqueElems(names);

@@ -2,6 +2,7 @@ import { AppPage, GetServerSideProps } from '../_app';
 import { Page } from '@components/page';
 import { NameGenerator, Props } from '@components/pages/name-generator';
 import { getNameList } from '@api/names/get';
+import { NameGeneratorMode } from '@api/names/interface';
 import { namesByRace } from '@utils/constants/names';
 import { NameType, Race } from '@utils/generate-name';
 import { getFirstKey } from '@utils/get-first-key';
@@ -25,8 +26,8 @@ NameGeneratorPage.defaultProps = {
 export default NameGeneratorPage;
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
-  const { defaultRace, defaultType } = getParams(ctx.req.url!);
-  const defaultNames = getNameList(defaultRace, defaultType);
+  const { defaultRace, defaultType, defaultMode } = getParams(ctx.req.url!);
+  const defaultNames = getNameList(defaultRace, defaultType, defaultMode);
 
   const races = Object.entries(namesByRace).map(([key, def]) => ({
     key: key as Race,
@@ -44,6 +45,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
       defaultRace,
       defaultType,
       defaultNames,
+      defaultMode,
     },
   };
 };
@@ -72,5 +74,6 @@ function getParams(url: string) {
   return {
     defaultRace,
     defaultType,
+    defaultMode: 'mix' as NameGeneratorMode,
   };
 }

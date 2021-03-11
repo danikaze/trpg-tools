@@ -22,33 +22,42 @@ export const tritonNames: NameDefinitions<Type, Part> = {
     },
   },
   parts: {
-    male: [
-      // Volo 117
-      'Aryn',
-      'Belthyn',
-      'Duthyn',
-      'Feloren',
-      'Otanyn',
-      'Shalryn',
-      'Vlaryn',
-      'Wolyn',
-    ],
-    female: [
-      // Volo 117
-      'Corus',
-      'Delnis',
-      'Jhimas',
-      'Keros',
-      'Molos',
-      'Nalos',
-      'Vodos',
-      'Zunis',
-    ],
-    surname: [
-      // Volo 117
-      'Ahlorsath',
-      'Pumanath',
-      'Vuuvaxath',
-    ],
+    male: {
+      markov: true,
+      list: [
+        // Volo 117
+        'Aryn',
+        'Belthyn',
+        'Duthyn',
+        'Feloren',
+        'Otanyn',
+        'Shalryn',
+        'Vlaryn',
+        'Wolyn',
+      ],
+    },
+    female: {
+      markov: true,
+      list: [
+        // Volo 117
+        'Corus',
+        'Delnis',
+        'Jhimas',
+        'Keros',
+        'Molos',
+        'Nalos',
+        'Vodos',
+        'Zunis',
+      ],
+    },
+    surname: {
+      markov: true,
+      list: [
+        // Volo 117
+        'Ahlorsath',
+        'Pumanath',
+        'Vuuvaxath',
+      ],
+    },
   },
 };

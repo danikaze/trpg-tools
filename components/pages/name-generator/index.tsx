@@ -2,6 +2,7 @@ import { ChangeEvent, FunctionComponent } from 'react';
 import { makeStyles } from '@utils/styles';
 import { NameType, Race } from '@utils/generate-name';
 import { useNameGenerator } from './hooks';
+import { NameGeneratorMode } from '@api/names/interface';
 
 export interface TypeDef {
   key: string;
@@ -18,6 +19,7 @@ export interface Props {
   defaultRace: Race;
   defaultType: NameType<Race>;
   defaultNames: string[];
+  defaultMode: NameGeneratorMode;
 }
 
 const useStyles = makeStyles(() => ({
@@ -44,9 +46,11 @@ export const NameGenerator: FunctionComponent<Props> = (props) => {
     races,
     selectedRace,
     selectedType,
+    selectedMode,
     names,
     updateRace,
     updateType,
+    updateMode,
     reload,
   } = useNameGenerator(props);
 
@@ -55,7 +59,10 @@ export const NameGenerator: FunctionComponent<Props> = (props) => {
       <div className={styles.selector}>
         {getRaceSelector(races, selectedRace, updateRace)}
         {' ⇒ '}
-        {getTypeSelector(selectedRace.types, selectedType, updateType)}{' '}
+        {getTypeSelector(selectedRace.types, selectedType, updateType)}
+        {' ⇒ '}
+        {getModeSelector(selectedMode, updateMode)}
+        {' ⇒ '}
         <button onClick={reload}>Reload names</button>
       </div>
       <div className={styles.description}>{selectedRace.description}</div>
@@ -103,6 +110,33 @@ function getTypeSelector(
 
   return (
     <select value={selectedType} onChange={updateRace}>
+      {options}
+    </select>
+  );
+}
+
+function getModeSelector(
+  selectedMode: NameGeneratorMode,
+  setMode: (mode: NameGeneratorMode) => void
+) {
+  const updateMode = (ev: ChangeEvent<HTMLSelectElement>) => {
+    setMode(ev.target.value as NameGeneratorMode);
+  };
+
+  const values: Record<NameGeneratorMode, string> = {
+    markov: 'Super randomizer',
+    mix: 'Mixed options',
+    original: 'Only original sources',
+  };
+
+  const options = Object.entries(values).map(([value, name]) => (
+    <option key={value} value={value}>
+      {name}
+    </option>
+  ));
+
+  return (
+    <select value={selectedMode} onChange={updateMode}>
       {options}
     </select>
   );

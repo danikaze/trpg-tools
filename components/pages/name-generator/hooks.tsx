@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Props, RaceDef, TypeDef } from '.';
-import { callGenerateNames } from '@api/names/get';
 import { NameType, Race } from '@utils/generate-name';
+import { NameGeneratorMode } from '@api/names/interface';
+import { callGenerateNamesApi } from '@api/names/client';
+import { Props, RaceDef, TypeDef } from '.';
 
 interface State {
   race: RaceDef;
   type: string;
+  mode: NameGeneratorMode;
   reload: number;
   names: string[];
 }
@@ -20,11 +22,12 @@ export function useNameGenerator({
   defaultRace,
   defaultType,
   defaultNames,
+  defaultMode,
 }: Props) {
   useEffect(() => {
     function handleStateChange(ev: PopStateEvent) {
       const data = ev.state as HistoryState;
-      loadNameList(data.race, data.type);
+      loadNameList(data.race, data.type, state.mode);
     }
 
     updateData(state.race.key, state.type, true);
@@ -35,6 +38,7 @@ export function useNameGenerator({
   const [state, setState] = useState<State>({
     race: getRace(races, defaultRace as Race),
     type: defaultType as string,
+    mode: defaultMode,
     reload: 0,
     names: defaultNames,
   });
@@ -47,36 +51,48 @@ export function useNameGenerator({
       document.title,
       `/name-generator/${raceKey}/${race.types.length < 2 ? '' : type}`
     );
-    loadNameList(raceKey, type);
+    loadNameList(raceKey, type, state.mode);
   };
 
-  const loadNameList = async <R extends Race>(raceKey: R, type: string) => {
+  const updateMode = (mode: NameGeneratorMode) => {
+    loadNameList(state.race.key, state.type, mode);
+  };
+
+  const loadNameList = async <R extends Race>(
+    raceKey: R,
+    type: string,
+    mode: NameGeneratorMode
+  ) => {
     const race = getRace(races, raceKey);
     setState((state) => ({
       ...state,
       race,
       type,
+      mode,
       names: [],
     }));
-    const res = await callGenerateNames(raceKey, type);
+    const res = await callGenerateNamesApi(raceKey, type, mode);
     setState((state) => ({
       race,
       type,
+      mode,
       reload: state.reload + 1,
       names: res.data,
     }));
   };
 
   const updateType = (type: string) => updateData(state.race.key, type);
-  const reload = () => loadNameList(state.race.key, state.type);
+  const reload = () => loadNameList(state.race.key, state.type, state.mode);
 
   return {
-    updateType,
-    reload,
     races,
+    reload,
+    updateMode,
+    updateType,
     updateRace: updateData,
     selectedRace: state.race,
     selectedType: state.type,
+    selectedMode: state.mode,
     names: state.names,
   };
 }
