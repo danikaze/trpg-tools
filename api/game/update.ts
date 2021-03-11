@@ -1,30 +1,27 @@
-import { ApiHandler, HttpStatus } from '@api';
-import { apiUserRequired } from '@utils/auth';
+import { HttpStatus } from '@api';
+import { userRequiredApiHandler } from '@utils/auth';
 import { updateGame } from '@model/game';
 import {
   UpdateGameResponse,
   UpdateGameBody,
   UpdateGameQuery,
 } from './interface';
-import { UserAuthData } from '@model/user';
 import { DbGame } from '@model/game/sql';
 
-export const updateGameApiHandler: ApiHandler<
+export const updateGameApiHandler = userRequiredApiHandler<
   UpdateGameResponse,
   UpdateGameQuery,
   UpdateGameBody,
   { gameId: DbGame['gameId'] }
-> = async (req, res) => {
-  if (apiUserRequired(req, res)) return;
+>(async (req, res) => {
   const { gameId, lastUpdate } = req.query;
   const { game } = req.body;
-  const user = req.user as UserAuthData;
 
-  const data = await updateGame(user, gameId, Number(lastUpdate), {
+  const data = await updateGame(req.user, gameId, Number(lastUpdate), {
     name: game.name,
     description: game.description,
     imageId: game.imageId || null,
   });
 
   res.status(HttpStatus.OK).json({ data });
-};
+});

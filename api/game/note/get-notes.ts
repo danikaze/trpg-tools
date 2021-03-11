@@ -1,23 +1,21 @@
-import { ApiHandler, HttpStatus } from '@api';
-import { apiUserRequired } from '@utils/auth';
-import { UserAuthData } from '@model/user';
+import { HttpStatus } from '@api';
+import { userRequiredApiHandler } from '@utils/auth';
 import { selectNotes } from '@model/note';
 import { DbGame } from '@model/game/sql';
 import { GetNotesResponse, GetNotesBody, GetNotesQuery } from '../interface';
 
-export const getNotesApiHandler: ApiHandler<
+export const getNotesApiHandler = userRequiredApiHandler<
   GetNotesResponse,
   GetNotesQuery,
   GetNotesBody,
   { gameId: DbGame['gameId'] }
-> = async (req, res) => {
-  if (apiUserRequired(req, res)) return;
-  const { noteDefId, gameId, page, user } = getQueryData(req);
+>(async (req, res) => {
+  const { noteDefId, gameId, page } = getQueryData(req);
 
-  const pages = await selectNotes(user, noteDefId, gameId, page);
+  const pages = await selectNotes(req.user, noteDefId, gameId, page);
 
   res.status(HttpStatus.OK).json({ data: pages });
-};
+});
 
 function getQueryData(req: Parameters<typeof getNotesApiHandler>[0]) {
   const { noteDefId, gameId, page } = req.query;
@@ -26,6 +24,5 @@ function getQueryData(req: Parameters<typeof getNotesApiHandler>[0]) {
     noteDefId,
     gameId,
     page: Number(page) || 0,
-    user: req.user as UserAuthData,
   };
 }

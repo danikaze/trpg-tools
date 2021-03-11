@@ -13,6 +13,7 @@ export enum HttpStatus {
   OK = 200,
   // 4xx Client Error
   BAD_REQUEST = 400,
+  HTTP_FORBIDDEN = 401,
   NOT_FOUND = 404,
   METHOD_NOT_ALLOWED = 405,
   // 5xx Server Error

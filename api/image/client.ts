@@ -1,26 +1,16 @@
 import { ImageType } from '@model/image/sql';
 import { callApi } from '@utils/call-api';
-import { ThumbnailInfo } from '@utils/create-thumbnails';
-
-export interface ApiResponse {
-  imageId: number;
-  thumbnails: ThumbnailInfo[];
-}
-
-export interface RequestBody {
-  types: ImageType[];
-  data: string; // as base64
-}
+import { UploadImageResponse, UploadImageBody } from './interface';
 
 export function uploadImage(
   types: ImageType[],
   image: File
-): Promise<ApiResponse> {
-  return new Promise<ApiResponse>((resolve, reject) => {
+): Promise<UploadImageResponse> {
+  return new Promise<UploadImageResponse>((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (ev) => {
       const data = ev.target!.result as string;
-      callApi<ApiResponse, {}, RequestBody>('image', 'POST', {
+      callApi<UploadImageResponse, {}, UploadImageBody>('image', 'POST', {
         data: {
           types,
           data,

@@ -1,7 +1,7 @@
 import mkdirp from 'mkdirp';
 import { join } from 'path';
 import { writeFile } from 'fs';
-import { apiError, ApiHandler } from '@api';
+import { apiError } from '@api';
 import { sql } from '@model/image/sql';
 import { UserAuthData } from '@model/user';
 import { decodeBase64Image } from '@utils/decode-base64-image';
@@ -9,19 +9,22 @@ import { getDb } from '@utils/db';
 import { PUBLIC_URL_FOLDER, UPLOADS_IMG_FOLDER } from '@utils/constants';
 import { createThumbnails } from '@utils/create-thumbnails';
 import { getFileHash } from '@utils/get-file-hash';
-import { apiUserRequired } from '@utils/auth';
 import { getLogger } from '@utils/logger';
 import { getUrlFromPath } from '@utils/getUrlFromPath';
-import { ApiResponse, RequestBody } from './client';
+import {
+  UploadImageResponse,
+  UploadImageBody,
+  UploadImageQuery,
+} from './interface';
+import { userRequiredApiHandler } from '@utils/auth';
 
 const logger = getLogger('Api:image');
 
-export const uploadImage: ApiHandler<ApiResponse, {}, RequestBody> = async (
-  req,
-  res
-) => {
-  if (apiUserRequired(req, res)) return;
-
+export const uploadImage = userRequiredApiHandler<
+  UploadImageResponse,
+  UploadImageQuery,
+  UploadImageBody
+>(async (req, res) => {
   const types = req.body.types;
   if (!Array.isArray(types)) {
     return apiError(res, { error: 'No types' });
@@ -87,4 +90,4 @@ export const uploadImage: ApiHandler<ApiResponse, {}, RequestBody> = async (
       responseError: 'Error while uploading the image',
     });
   }
-};
+});
