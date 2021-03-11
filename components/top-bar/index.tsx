@@ -4,10 +4,10 @@ import { TOPBAR_Z_INDEX } from '@utils/constants/z-index';
 import { PRODUCT_NAME } from '@utils/constants';
 import { makeStyles } from '@utils/styles';
 import { useUserData } from '@utils/auth';
+import { LinkToIndex } from '@components/links/link-to-index';
+import { LinkToLogin } from '@components/links/link-to-login';
+import { LinkToLogout } from '@components/links/link-to-logout';
 import logoUrl from '@assets/images/trpg-d20-50px.png';
-import { LinkToIndex } from './links/link-to-index';
-import { LinkToLogin } from './links/link-to-login';
-import { LinkToLogout } from './links/link-to-logout';
 
 export const TOPBAR_HEIGHT = 40;
 

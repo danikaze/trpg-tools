@@ -3,8 +3,8 @@ import { FunctionComponent } from 'react';
 import { GamePreviewData } from '@model/game';
 import { makeStyles } from '@utils/styles';
 import { getDateFromTimestamp, formatDate } from '@utils/date';
-import { LinkToUser } from './links/link-to-user';
-import { LinkToGame } from './links/link-to-game';
+import { LinkToUser } from '@components/links/link-to-user';
+import { LinkToGame } from '@components/links/link-to-game';
 
 export interface Props {
   game: GamePreviewData;

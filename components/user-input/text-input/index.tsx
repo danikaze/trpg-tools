@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 import { createRef, FunctionComponent, RefObject, useState } from 'react';
 import { makeStyles } from '@utils/styles';
-import { Label } from './label';
-import { getTextValidator } from './utils/get-validator';
+import { Label } from '@components/user-input/label';
+import { getTextValidator } from '@components/user-input/get-validator';
 
 export type TextInputType =
   | 'button'

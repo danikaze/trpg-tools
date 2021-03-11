@@ -1,10 +1,10 @@
 import React, { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@utils/styles';
-import { LinkToIndex } from './links/link-to-index';
-import { LinkToCharacterNameGenerator } from './links/link-to-character-name-generator';
-import { LinkToTreasureGenerator } from './links/link-to-treasure-generator';
-import { LinkToMyGames } from './links/link-to-my-games';
+import { LinkToIndex } from '@components/links/link-to-index';
+import { LinkToCharacterNameGenerator } from '@components/links/link-to-character-name-generator';
+import { LinkToTreasureGenerator } from '@components/links/link-to-treasure-generator';
+import { LinkToMyGames } from '@components/links/link-to-my-games';
 
 export interface Props {
   className?: string;

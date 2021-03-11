@@ -1,11 +1,11 @@
 import { FunctionComponent } from 'react';
 import Head from 'next/head';
-import { makeStyles, ThemeProvider, useTheme } from '@utils/styles';
 import { defaultTheme } from '@themes/default';
+import { makeStyles, ThemeProvider, useTheme } from '@utils/styles';
+import { PRODUCT_NAME } from '@utils/constants';
 import { TopBar, TOPBAR_HEIGHT } from '@components/top-bar';
 import { Footer, FOOTER_HEIGHT } from '@components/footer';
-import { PRODUCT_NAME } from '@utils/constants';
-import { SideBar } from './side-bar';
+import { SideBar } from '@components/side-bar';
 
 export interface Props {
   /** Document title to appear as the tab name */

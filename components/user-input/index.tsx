@@ -2,7 +2,7 @@ import { RefObject } from 'react';
 import { Checkbox } from './checkbox';
 import { Select } from './select';
 import { TextInput } from './text-input';
-import { TextArea } from './textarea';
+import { TextArea } from './text-area';
 
 export interface UserInputTypeProps {
   int: IntProps;
