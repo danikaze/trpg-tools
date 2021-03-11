@@ -25,23 +25,29 @@ export const tabaxiNames: NameDefinitions<Type, Part> = {
     },
   },
   parts: {
-    name: [
-      // Volo 114
-      'Cloud on the Mountain top (Cloud)',
-      'Five Timber (Timber)',
-      'Jade Shoe (Jade)',
-      'Left-Handed Hummingbird (Bird)',
-      'Seven Thundercloud (Thunder)',
-      'Skirt of Snakes (Snake)',
-      'Smoking Mirror (Smoke)',
-    ],
-    clan: [
-      // Volo 114
-      'Bright Cliffs',
-      'Distant Rain',
-      'Mountain Tree',
-      'Rumbling River',
-      'Snoring Mountain',
-    ],
+    name: {
+      markov: false,
+      list: [
+        // Volo 114
+        'Cloud on the Mountain top (Cloud)',
+        'Five Timber (Timber)',
+        'Jade Shoe (Jade)',
+        'Left-Handed Hummingbird (Bird)',
+        'Seven Thundercloud (Thunder)',
+        'Skirt of Snakes (Snake)',
+        'Smoking Mirror (Smoke)',
+      ],
+    },
+    clan: {
+      markov: false,
+      list: [
+        // Volo 114
+        'Bright Cliffs',
+        'Distant Rain',
+        'Mountain Tree',
+        'Rumbling River',
+        'Snoring Mountain',
+      ],
+    },
   },
 };

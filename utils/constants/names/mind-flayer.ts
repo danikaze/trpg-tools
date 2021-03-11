@@ -28,20 +28,23 @@ export const mindFlayerNames: NameDefinitions<Type, Part> = {
     },
   },
   parts: {
-    name: [
-      // Volo 75
-      `Aurangaul`,
-      `Cephalossk`,
-      `Drukt`,
-      `Drusiss`,
-      `Lugribossk`,
-      `Quoor`,
-      `Ralayan`,
-      `Sardsult`,
-      `S'venchen`,
-      `Tharcereli`,
-      `Tobulux`,
-      `Zellix`,
-    ],
+    name: {
+      markov: true,
+      list: [
+        // Volo 75
+        `Aurangaul`,
+        `Cephalossk`,
+        `Drukt`,
+        `Drusiss`,
+        `Lugribossk`,
+        `Quoor`,
+        `Ralayan`,
+        `Sardsult`,
+        `S'venchen`,
+        `Tharcereli`,
+        `Tobulux`,
+        `Zellix`,
+      ],
+    },
   },
 };

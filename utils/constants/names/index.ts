@@ -24,12 +24,19 @@ export type NameDefinitions<T extends string, P extends string> = {
   description: string;
   types: {
     [type in T]: {
+      /** Description to show about the name */
       description: string;
+      /** List of parts to use */
       parts: P[];
     };
   };
   parts: {
-    [part in P]: string[];
+    [part in P]: {
+      /** List of strings to use for this part */
+      /** If this list of strings allows applying Markov Chains to it */
+      markov: boolean;
+      list: string[];
+    };
   };
 };
 
@@ -63,7 +70,9 @@ export const namesByRace = {
  */
 Object.values(namesByRace).forEach((definition) => {
   Object.keys(definition.parts).forEach((part) => {
-    const parts = definition.parts as { [key: string]: string[] };
-    parts[part] = getUniqueElems(parts[part]);
+    const parts = definition.parts as Record<string, { list: string[] }>;
+    parts[part].list = getUniqueElems(parts[part].list).map((str) =>
+      str.trim()
+    );
   });
 });

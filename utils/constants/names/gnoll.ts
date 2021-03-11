@@ -21,38 +21,47 @@ export const gnollNames: NameDefinitions<Type, Part> = {
     },
   },
   parts: {
-    name: [
-      // Volo 36
-      'Aargab',
-      'Alark',
-      'Andak',
-      'Ethak ',
-      'Eyeth ',
-      'Ignar ',
-      'Immor',
-      'Oduk',
-      'Orrom',
-      'Otal',
-      'Ulthak',
-      'Ustar',
-    ],
-    band1: [
-      // Volo 36
-      'Abyssal',
-      'Dire',
-      'Howling',
-      'Rabid',
-      'Rotted',
-      'Screaming',
-    ],
-    band2: [
-      // Volo 36
-      'Harbingers',
-      'Hunters',
-      'Mongrels',
-      'Mutilators',
-      'Ravagers',
-      'Slayers',
-    ],
+    name: {
+      markov: true,
+      list: [
+        // Volo 36
+        'Aargab',
+        'Alark',
+        'Andak',
+        'Ethak ',
+        'Eyeth ',
+        'Ignar ',
+        'Immor',
+        'Oduk',
+        'Orrom',
+        'Otal',
+        'Ulthak',
+        'Ustar',
+      ],
+    },
+    band1: {
+      markov: false,
+      list: [
+        // Volo 36
+        'Abyssal',
+        'Dire',
+        'Howling',
+        'Rabid',
+        'Rotted',
+        'Screaming',
+      ],
+    },
+    band2: {
+      markov: false,
+      list: [
+        // Volo 36
+        'Harbingers',
+        'Hunters',
+        'Mongrels',
+        'Mutilators',
+        'Ravagers',
+        'Slayers',
+      ],
+    },
   },
 };
