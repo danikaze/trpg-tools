@@ -2,10 +2,10 @@ import clsx from 'clsx';
 import { createRef, FunctionComponent, useState } from 'react';
 import { GAME_DESC_MAX_CHARS, GAME_NAME_MAX_CHARS } from '@utils/constants';
 import { makeStyles } from '@utils/styles';
-import { ImageDropInput } from './user-input/image-drop-input';
-import { TextInput } from './user-input/text-input';
-import { TextArea } from './user-input/textarea';
-import { Button } from './user-input/button';
+import { ImageDropInput } from '@components/user-input/image-drop-input';
+import { TextInput } from '@components/user-input/text-input';
+import { TextArea } from '@components/user-input/text-area';
+import { Button } from '@components/user-input/button';
 
 export interface GameEditorData {
   name: string;

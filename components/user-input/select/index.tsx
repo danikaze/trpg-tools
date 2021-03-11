@@ -1,69 +1,66 @@
 import clsx from 'clsx';
 import { createRef, FunctionComponent, RefObject, useState } from 'react';
 import { makeStyles } from '@utils/styles';
-import { Label } from './label';
-import { getTextValidator } from './utils/get-validator';
+import { Label } from '@components/user-input/label';
+import { getTextValidator } from '@components/user-input/get-validator';
 
 export interface Props {
-  className?: string;
-  inputRef?: RefObject<HTMLTextAreaElement>;
-  label?: string;
-  placeholder?: string;
+  inputRef?: RefObject<HTMLSelectElement>;
   defaultValue?: string;
-  value?: string;
+  label?: string;
+  options: { label: string; value: string }[];
   required?: boolean;
-  maxLength?: number;
-  pattern?: string;
-  title?: string;
   onChange?: (value: string) => void;
+  className?: string;
 }
 
 const useStyles = makeStyles(() => ({
-  root: {
-    margin: 10,
-  },
+  root: {},
   error: {
     borderColor: 'red',
   },
 }));
 
-export const TextArea: FunctionComponent<Props> = ({
+type Styles = ReturnType<typeof useStyles>;
+
+export const Select: FunctionComponent<Props> = ({
   className,
   inputRef,
-  label,
-  placeholder,
   defaultValue,
-  value,
+  label,
+  options,
   required,
-  maxLength,
-  pattern,
-  title,
   onChange,
 }) => {
   const styles = useStyles();
   const [isValid, setValid] = useState<boolean>(true);
-  const ref = inputRef || createRef<HTMLTextAreaElement>();
-  const validate = getTextValidator(pattern, ref, setValid, required);
+  const ref = inputRef || createRef<HTMLSelectElement>();
+  const validate = getTextValidator(undefined, ref, setValid, required);
   const changeHandler =
     (validate || onChange) &&
     (() => {
       validate && validate();
       onChange && onChange(ref.current!.value);
     });
+  const optionsList = options.map(({ label, value }) => (
+    <option key={value} value={value}>
+      {label}
+    </option>
+  ));
+
+  optionsList.unshift(<option key="_empty" />);
 
   return (
     <div className={clsx(styles.root, className)}>
       {label && <Label required={required}>{label}</Label>}
-      <textarea
-        className={(!isValid && styles.error) || ''}
+      <select
         ref={ref}
+        className={clsx(styles.root, className, !isValid && styles.error)}
         defaultValue={defaultValue}
-        value={value}
-        maxLength={maxLength}
-        placeholder={placeholder}
-        title={title}
         onChange={changeHandler}
-      />
+      >
+        {optionsList}
+      </select>
     </div>
   );
 };

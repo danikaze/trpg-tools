@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { createRef, FunctionComponent, RefObject } from 'react';
 import { makeStyles } from '@utils/styles';
-import { Label } from './label';
+import { Label } from '@components/user-input/label';
 
 export interface Props {
   inputRef?: RefObject<HTMLInputElement>;

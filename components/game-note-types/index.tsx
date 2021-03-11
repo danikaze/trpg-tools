@@ -19,7 +19,7 @@ const useStyles = makeStyles(() => ({
 
 type Styles = ReturnType<typeof useStyles>;
 
-export const GameNotesTypes: FunctionComponent<Props> = ({
+export const GameNoteTypes: FunctionComponent<Props> = ({
   noteDefinitions,
   onSelect,
   className,
