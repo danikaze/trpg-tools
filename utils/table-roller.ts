@@ -1,5 +1,6 @@
-import { roll } from './dice-roller';
-import { OptionWeight, Rng } from './rng';
+import { WeightedOptions } from '@utils/rng/weighted-options';
+import { roll } from '@utils/dice-roller';
+import { Rng } from '@utils/rng';
 
 export interface TableRollerResult<T> {
   quantity: number;
@@ -18,7 +19,7 @@ export interface PickedTableRoller<T> {
 
 export interface WeightedTableRoller<T> {
   quantity?: number | string;
-  table: readonly OptionWeight<TableRollerDef<T>>[];
+  options: WeightedOptions<TableRollerDef<T>>;
 }
 
 export interface NestedTableRoller<T> {
@@ -71,13 +72,11 @@ export class TableRoller<T> {
       return res;
     }
 
-    if (isWeightedTableRoller(def)) {
+    if (isWeightedTableRoller<T>(def)) {
       const q = TableRoller.getNumber(def.quantity);
       for (let i = 0; i < q; i++) {
-        const r = TableRoller.rng.weightedPick(
-          def.table as readonly OptionWeight<TableRollerDef<T>>[]
-        )!;
-        res.push(r);
+        const r = def.options.pick(TableRoller.rng)!;
+        res.push(r as TableRollerDef<T>);
       }
       return res;
     }
@@ -153,10 +152,7 @@ export function isPickedTableRoller<T = unknown>(
 export function isWeightedTableRoller<T = unknown>(
   o: unknown
 ): o is WeightedTableRoller<T> {
-  return (
-    (o as WeightedTableRoller<T>).table &&
-    Array.isArray((o as WeightedTableRoller<T>).table)
-  );
+  return (o as WeightedTableRoller<T>).options instanceof WeightedOptions;
 }
 
 export function isNestedTableRoller<T = unknown>(

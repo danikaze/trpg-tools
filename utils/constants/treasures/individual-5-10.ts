@@ -1,8 +1,9 @@
+import { WeightedOptions } from '@utils/rng/weighted-options';
 import { TableRoller } from '@utils/table-roller';
 
 // Individual Treasure: Challenge 5-10 (DMG page 136)
 export const individual5 = new TableRoller<string>({
-  table: [
+  options: new WeightedOptions([
     {
       weight: 30,
       data: [
@@ -32,5 +33,5 @@ export const individual5 = new TableRoller<string>({
         { quantity: '3d6', data: 'pp' },
       ],
     },
-  ],
+  ]),
 });

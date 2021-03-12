@@ -18,11 +18,6 @@ export interface RngStatus {
   usedCount: number;
 }
 
-export interface OptionWeight<T> {
-  data: T;
-  weight: number;
-}
-
 export class Rng {
   /**
    * If true, integer distributions will be cached. Usefull to speed-up a bit
@@ -126,27 +121,6 @@ export class Rng {
   public pick<T>(values: readonly T[]): T | undefined {
     if (values.length === 0) return;
     return pick(this.engine, values);
-  }
-
-  /**
-   * Get one of the provided options based on their weight
-   */
-  public weightedPick<T>(values: readonly OptionWeight<T>[]): T | undefined {
-    const addedValues: OptionWeight<T>[] = [];
-    const total = values.reduce((total, option) => {
-      addedValues.push({
-        data: option.data,
-        weight: total + option.weight,
-      });
-      return total + option.weight;
-    }, 0);
-    const value = this.integer(1, total);
-
-    for (const option of addedValues) {
-      if (value <= option.weight) {
-        return option.data;
-      }
-    }
   }
 
   /**

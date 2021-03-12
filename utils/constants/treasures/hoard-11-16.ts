@@ -1,3 +1,4 @@
+import { WeightedOptions } from '@utils/rng/weighted-options';
 import { TableRoller } from '@utils/table-roller';
 import { art250gp } from './art250';
 import { art750gp } from './art750';
@@ -20,7 +21,7 @@ const coins = [
 ];
 
 export const hoard11 = new TableRoller<string>({
-  table: [
+  options: new WeightedOptions([
     { weight: 3, data: coins },
     { weight: 3, data: [...coins, { quantity: '2d4', pick: art250gp }] },
     { weight: 3, data: [...coins, { quantity: '2d4', pick: art750gp }] },
@@ -258,5 +259,5 @@ export const hoard11 = new TableRoller<string>({
         { quantity: 1, roll: magicItemTableI },
       ],
     },
-  ],
+  ]),
 });

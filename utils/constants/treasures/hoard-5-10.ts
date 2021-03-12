@@ -1,3 +1,5 @@
+import { WeightedOptions } from '@utils/rng/weighted-options';
+import { TableRoller } from '@utils/table-roller';
 import { art25gp } from './art25';
 import { art250gp } from './art250';
 import { gems50gp } from './gems50';
@@ -9,7 +11,6 @@ import { magicItemTableD } from './magic-d';
 import { magicItemTableF } from './magic-f';
 import { magicItemTableG } from './magic-g';
 import { magicItemTableH } from './magic-h';
-import { TableRoller } from '@utils/table-roller';
 
 // Treasure Hoard: Challenge 5-10 (DMG page 137)
 const coins = [
@@ -20,7 +21,7 @@ const coins = [
 ];
 
 export const hoard5 = new TableRoller<string>({
-  table: [
+  options: new WeightedOptions([
     { weight: 4, data: coins },
     { weight: 6, data: [...coins, { quantity: '2d4', pick: art25gp }] },
     { weight: 6, data: [...coins, { quantity: '3d6', pick: gems50gp }] },
@@ -218,5 +219,5 @@ export const hoard5 = new TableRoller<string>({
         { quantity: 1, roll: magicItemTableH },
       ],
     },
-  ],
+  ]),
 });

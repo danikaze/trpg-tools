@@ -1,8 +1,9 @@
+import { WeightedOptions } from '@utils/rng/weighted-options';
 import { TableRoller } from '@utils/table-roller';
 
 // DMG page 144
 export const magicItemTableB = new TableRoller<string>({
-  table: [
+  options: new WeightedOptions([
     { weight: 15, data: 'Potion of greater healing' },
     { weight: 7, data: 'Potion of fire breath' },
     { weight: 7, data: 'Potion of resistance' },
@@ -38,5 +39,5 @@ export const magicItemTableB = new TableRoller<string>({
     { weight: 1, data: 'Saddle of the cavalier' },
     { weight: 1, data: 'Wand of magic detection' },
     { weight: 1, data: 'Wand of secrets' },
-  ],
+  ]),
 });

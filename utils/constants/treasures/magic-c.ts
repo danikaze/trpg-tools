@@ -1,8 +1,9 @@
+import { WeightedOptions } from '@utils/rng/weighted-options';
 import { TableRoller } from '@utils/table-roller';
 
 // DMG page 145
 export const magicItemTableC = new TableRoller<string>({
-  table: [
+  options: new WeightedOptions([
     { weight: 15, data: 'Potion of superior healing' },
     { weight: 7, data: 'Spell scroll (4th level)' },
     { weight: 5, data: 'Ammunition, + 2' },
@@ -31,5 +32,5 @@ export const magicItemTableC = new TableRoller<string>({
     { weight: 1, data: 'Necklace of fireballs' },
     { weight: 1, data: 'Periapt of health' },
     { weight: 1, data: 'Sending stones' },
-  ],
+  ]),
 });

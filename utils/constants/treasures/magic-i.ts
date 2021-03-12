@@ -1,20 +1,19 @@
-import { TableRoller } from '@utils/table-roller';
+import { WeightedOptions } from '@utils/rng/weighted-options';
+import { TableRoller, TableRollerDef } from '@utils/table-roller';
 
 // DMG page 149
-const magicArmor = {
-  table: [
-    { weight: 2, data: 'Magic armor, +2 half plate' },
-    { weight: 2, data: 'Magic armor, +2 plate' },
-    { weight: 2, data: 'Magic armor, +3 studder leather' },
-    { weight: 2, data: 'Magic armor, +3 breastplate' },
-    { weight: 2, data: 'Magic armor, +3 splint' },
-    { weight: 1, data: 'Magic armor, +3 half plate' },
-    { weight: 1, data: 'Magic armor, +3 plate' },
-  ],
-};
+const magicArmor = new WeightedOptions([
+  { weight: 2, data: 'Magic armor, +2 half plate' },
+  { weight: 2, data: 'Magic armor, +2 plate' },
+  { weight: 2, data: 'Magic armor, +3 studder leather' },
+  { weight: 2, data: 'Magic armor, +3 breastplate' },
+  { weight: 2, data: 'Magic armor, +3 splint' },
+  { weight: 1, data: 'Magic armor, +3 half plate' },
+  { weight: 1, data: 'Magic armor, +3 plate' },
+]);
 
-export const magicItemTableI = new TableRoller<string>({
-  table: [
+export const magicItemTableI = new TableRoller<TableRollerDef<string>>({
+  options: new WeightedOptions<TableRollerDef<string>>([
     { weight: 5, data: 'Defender' },
     { weight: 5, data: 'Hammer of thunderbolts' },
     { weight: 5, data: 'Luck blade' },
@@ -43,7 +42,7 @@ export const magicItemTableI = new TableRoller<string>({
     { weight: 2, data: 'Armor, +2 splint' },
     { weight: 2, data: 'Armor, +2 studded leather' },
     { weight: 2, data: 'Well of many worlds' },
-    { weight: 1, data: magicArmor },
+    { weight: 1, data: { quantity: 1, options: magicArmor } },
     { weight: 1, data: 'Apparatus of Kwalish' },
     { weight: 1, data: 'Armor of invulnerability' },
     { weight: 1, data: 'Belt of storm giant strength' },
@@ -68,5 +67,5 @@ export const magicItemTableI = new TableRoller<string>({
     { weight: 1, data: 'Talisman of the sphere' },
     { weight: 1, data: 'Talisman of ultimate evil' },
     { weight: 1, data: 'Tome of the stilled tongue' },
-  ],
+  ]),
 });

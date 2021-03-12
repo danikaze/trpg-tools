@@ -1,8 +1,9 @@
+import { WeightedOptions } from '@utils/rng/weighted-options';
 import { TableRoller } from '@utils/table-roller';
 
 // DMG page 148
 export const magicItemTableH = new TableRoller<string>({
-  table: [
+  options: new WeightedOptions([
     { weight: 10, data: 'Weapon, +3' },
     { weight: 2, data: 'Amulet of the planes' },
     { weight: 2, data: 'Carpet of flying' },
@@ -72,5 +73,5 @@ export const magicItemTableH = new TableRoller<string>({
     { weight: 1, data: 'Tome of clear thought' },
     { weight: 1, data: 'Tome of leadership and influence' },
     { weight: 1, data: 'Tome of understanding' },
-  ],
+  ]),
 });
