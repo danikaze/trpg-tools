@@ -1,22 +1,21 @@
-import { TableRoller } from '@utils/table-roller';
+import { WeightedOptions } from '@utils/rng/weighted-options';
+import { TableRoller, TableRollerDef } from '@utils/table-roller';
 
 // DMG page 147
-const figurines = {
-  table: [
-    { weight: 1, data: 'Figurine of wondrous power (Bronze griffon)' },
-    { weight: 1, data: 'Figurine of wondrous power (Ebony fly)' },
-    { weight: 1, data: 'Figurine of wondrous power (Golden lions)' },
-    { weight: 1, data: 'Figurine of wondrous power (Ivory goats)' },
-    { weight: 1, data: 'Figurine of wondrous power (Marble elephant)' },
-    { weight: 2, data: 'Figurine of wondrous power (Onyx dog)' },
-    { weight: 1, data: 'Figurine of wondrous power (Serpentine owl)' },
-  ],
-};
+const figurines = new WeightedOptions([
+  { weight: 1, data: 'Figurine of wondrous power (Bronze griffon)' },
+  { weight: 1, data: 'Figurine of wondrous power (Ebony fly)' },
+  { weight: 1, data: 'Figurine of wondrous power (Golden lions)' },
+  { weight: 1, data: 'Figurine of wondrous power (Ivory goats)' },
+  { weight: 1, data: 'Figurine of wondrous power (Marble elephant)' },
+  { weight: 2, data: 'Figurine of wondrous power (Onyx dog)' },
+  { weight: 1, data: 'Figurine of wondrous power (Serpentine owl)' },
+]);
 
 export const magicItemTableG = new TableRoller<string>({
-  table: [
+  options: new WeightedOptions<TableRollerDef<string>>([
     { weight: 11, data: 'Weapon, +2' },
-    { weight: 3, data: figurines },
+    { weight: 3, data: { quantity: 1, options: figurines } },
     { weight: 1, data: 'Adamantine armor (breastplate)' },
     { weight: 1, data: 'Adamantine armor (splint)' },
     { weight: 1, data: 'Amulet of health' },
@@ -103,5 +102,5 @@ export const magicItemTableG = new TableRoller<string>({
     { weight: 1, data: 'Wand of the war mage, +2' },
     { weight: 1, data: 'Wand of wonder' },
     { weight: 1, data: 'Wand of flying' },
-  ],
+  ]),
 });

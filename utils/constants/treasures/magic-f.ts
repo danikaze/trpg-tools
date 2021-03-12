@@ -1,8 +1,9 @@
+import { WeightedOptions } from '@utils/rng/weighted-options';
 import { TableRoller } from '@utils/table-roller';
 
 // DMG page 146
 export const magicItemTableF = new TableRoller<string>({
-  table: [
+  options: new WeightedOptions([
     { weight: 15, data: 'Weapon, +1' },
     { weight: 3, data: 'Shield, +1' },
     { weight: 3, data: 'Sentinel shield' },
@@ -69,5 +70,5 @@ export const magicItemTableF = new TableRoller<string>({
     { weight: 1, data: 'Stone of good luck' },
     { weight: 1, data: 'Wind fan' },
     { weight: 1, data: 'Winged boots' },
-  ],
+  ]),
 });

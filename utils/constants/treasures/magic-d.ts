@@ -1,8 +1,9 @@
+import { WeightedOptions } from '@utils/rng/weighted-options';
 import { TableRoller } from '@utils/table-roller';
 
 // DMG page 145
 export const magicItemTableD = new TableRoller<string>({
-  table: [
+  options: new WeightedOptions([
     { weight: 20, data: 'Potion of supreme healing' },
     { weight: 10, data: 'Potion of invisibility' },
     { weight: 10, data: 'Potion of speed' },
@@ -19,5 +20,5 @@ export const magicItemTableD = new TableRoller<string>({
     { weight: 3, data: `Nolzur's marvelous pigments` },
     { weight: 1, data: 'Bag of devouring' },
     { weight: 1, data: 'Portable hole' },
-  ],
+  ]),
 });
