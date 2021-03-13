@@ -1,3 +1,4 @@
+import { basename } from 'path';
 import {
   createNoteDefinition,
   CreateNoteDefinitionData,
@@ -5,7 +6,6 @@ import {
   NoteDefinition,
 } from '.';
 import { SYSTEM_USER } from '../user';
-import { basename } from 'path';
 import {
   FIELD_COL_NAME_MAX_LENGTH,
   FIELD_TEXT_MAX_LENGTH,
@@ -30,52 +30,44 @@ export const initNoteDefinition: DbInitFunction = async (db) => {
 };
 
 const initNoteDefinitionTables: DbInitFunction = async (db) => {
-  await Promise.all(
-    [
-      // Definition of different types of notes (NPCs, Cities, etc.)
-      `
-      CREATE TABLE IF NOT EXISTS notes_def (
-        noteDefId ${MYSQL_TYPE_PUBLIC_ID} PRIMARY KEY,
-        userId ${MYSQL_TYPE_INTERNAL_ID} NOT NULL,
-        name VARCHAR(${NOTE_TYPE_COL_NAME_MAX_LENGTH}) NOT NULL DEFAULT '',
-        ${EDIT_TIME_COLS},
+  const sql = [
+    // Definition of different types of notes (NPCs, Cities, etc.)
+    `
+    CREATE TABLE IF NOT EXISTS notes_def (
+      noteDefId ${MYSQL_TYPE_PUBLIC_ID} PRIMARY KEY,
+      userId ${MYSQL_TYPE_INTERNAL_ID} NOT NULL,
+      name VARCHAR(${NOTE_TYPE_COL_NAME_MAX_LENGTH}) NOT NULL DEFAULT '',
+      ${EDIT_TIME_COLS},
 
-        FOREIGN KEY (userId)
-          REFERENCES users(userId)
-          ON UPDATE CASCADE
-          ON DELETE CASCADE
-      );
-      `,
-      // Definition of fields for a type of note
-      `
-      CREATE TABLE IF NOT EXISTS notes_fields_def (
-        noteFieldDefId ${MYSQL_TYPE_INTERNAL_ID} AUTO_INCREMENT PRIMARY KEY,
-        noteDefId ${MYSQL_TYPE_PUBLIC_ID},
-        position TINYINT UNSIGNED NOT NULL,
-        name VARCHAR(${FIELD_COL_NAME_MAX_LENGTH}) NOT NULL DEFAULT '',
-        type ${MYSQL_TYPE_ENUM} NOT NULL,
-        options VARCHAR(${FIELD_TEXT_MAX_LENGTH}),
+      FOREIGN KEY (userId)
+        REFERENCES users(userId)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+    );
+    `,
+    // Definition of fields for a type of note
+    `
+    CREATE TABLE IF NOT EXISTS notes_fields_def (
+      noteFieldDefId ${MYSQL_TYPE_INTERNAL_ID} AUTO_INCREMENT PRIMARY KEY,
+      noteDefId ${MYSQL_TYPE_PUBLIC_ID},
+      position TINYINT UNSIGNED NOT NULL,
+      name VARCHAR(${FIELD_COL_NAME_MAX_LENGTH}) NOT NULL DEFAULT '',
+      type ${MYSQL_TYPE_ENUM} NOT NULL,
+      options VARCHAR(${FIELD_TEXT_MAX_LENGTH}),
 
-        INDEX position_idx (position),
+      INDEX position_idx (position),
 
-        FOREIGN KEY (noteDefId)
-          REFERENCES notes_def(noteDefId)
-          ON UPDATE CASCADE
-          ON DELETE CASCADE
-      );
-      `,
-    ].map(async (sql, i) => {
-      db.logger!.debug(`Executing ${basename(__filename)}: ${i}`);
-      try {
-        await db.execute(sql);
-      } catch (e) {
-        db.logger!.error(
-          `Error while executing ${basename(__filename)}[${i}]`,
-          sql,
-          (e as Error).message
-        );
-      }
-    })
+      FOREIGN KEY (noteDefId)
+        REFERENCES notes_def(noteDefId)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+    );
+    `,
+  ];
+
+  await db.executeSyncSql(
+    sql,
+    `${basename(__dirname)}/${basename(__filename)}`
   );
 };
 

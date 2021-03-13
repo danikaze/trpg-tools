@@ -454,6 +454,25 @@ export class MySql {
     this.updateDb(dbVersion, options.updates, options.version);
   }
 
+  /**
+   * Execute a list of SQL queries in synchronous fashion
+   * If a `name` is provided, it will `log.debug` the progress if a `logger`
+   * is set in the instance.
+   */
+  public async executeSyncSql(sqlList: string[], name?: string): Promise<void> {
+    const logger = name && this.logger;
+    for (let i = 0; i < sqlList.length; i++) {
+      const sql = sqlList[i];
+      logger && logger.debug(`Executing SQL for ${name}[${i}]`);
+      try {
+        await this.execute(sql);
+      } catch (e) {
+        logger &&
+          logger.error(`Error while executing ${name}[${i}]:\n${sql}`, e);
+      }
+    }
+  }
+
   protected async getDbVersion(): Promise<number> {
     try {
       const sql = `SELECT version FROM ${MySql.CONTROL_TABLE_NAME}`;
