@@ -5,11 +5,13 @@ import { initImage } from './image/init';
 import { initGame } from './game/init';
 import { initNoteDefinition } from './note-definition/init';
 import { initNote } from './note/init';
+import { initApiKeys } from './api-key/init';
 
 import { userDevData } from './user/mock';
 import { gameDevData } from './game/mock';
 import { noteDefinitionDevData } from './note-definition/mock';
 import { noteDevData } from './note/mock';
+import { apiKeyDevData } from './api-key/mock';
 
 const init: DbInitFunction = async (db) => {
   await initUser(db);
@@ -17,6 +19,7 @@ const init: DbInitFunction = async (db) => {
   await initGame(db);
   await initNoteDefinition(db);
   await initNote(db);
+  await initApiKeys(db);
 
   if (IS_PRODUCTION) return;
 
@@ -25,6 +28,7 @@ const init: DbInitFunction = async (db) => {
   await gameDevData(db);
   await noteDefinitionDevData(db);
   await noteDevData(db);
+  await apiKeyDevData(db);
   db.logger && db.logger.debug('Dev Data done!');
 };
 
