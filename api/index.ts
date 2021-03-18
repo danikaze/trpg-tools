@@ -1,5 +1,6 @@
 import { NextApiHandler, NextApiResponse } from 'next';
 import { IncomingMessage } from 'http';
+import { Request, Response, RequestHandler } from 'express';
 import { Env } from 'next/dist/lib/load-env-config';
 import { UserAuthData } from '@model/user';
 import { NsLogger } from '@utils/logger';
@@ -122,9 +123,18 @@ export function restApiHandler<
     DELETEQ,
     DELETEB,
     DELETEU
-  >
+  >,
+  middleware?: RequestHandler
 ): NextApiHandler {
   return async (req, res) => {
+    if (middleware) {
+      await runMiddleware(
+        (req as unknown) as Request,
+        (res as unknown) as Response,
+        middleware
+      );
+    }
+
     const handler = handlers[req.method as HttpMethod] as NextApiHandler;
     if (!handler) {
       res.setHeader('Allow', Object.keys(handlers));
@@ -197,5 +207,17 @@ export function apiError<E extends Error = Error>(
   res.status(httpCode || HttpStatus.BAD_REQUEST).json({
     error: true,
     msg: String(error),
+  });
+}
+
+function runMiddleware(req: Request, res: Response, fn: RequestHandler) {
+  return new Promise<void>((resolve, reject) => {
+    fn(req, res, (result: unknown) => {
+      if (result instanceof Error) {
+        return reject(result);
+      }
+
+      return resolve();
+    });
   });
 }
