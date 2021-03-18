@@ -20,7 +20,7 @@ import {
 } from '../constants/sql';
 
 export const systemNoteTypes = {} as Record<
-  'locations' | 'npcs',
+  'locations' | 'npcs' | 'pcs',
   NoteDefinition
 >;
 
@@ -79,11 +79,11 @@ const initNoteDefinitionData: DbInitFunction = async () => {
     string,
     CreateNoteFieldDefinition
   > = {
-    fieldDescription: {
+    description: {
       name: 'Description',
       type: 'textarea',
     },
-    fieldAlignment: {
+    alignment: {
       name: 'Alignment',
       type: 'select',
       options: {
@@ -101,9 +101,106 @@ const initNoteDefinitionData: DbInitFunction = async () => {
         ],
       },
     },
-    fieldLocation: {
+    location: {
       name: 'Location',
       type: 'textfield',
+    },
+    charRace: {
+      name: 'Race',
+      type: 'select',
+      options: {
+        options: [
+          // PHB
+          { value: 'dwarf', label: 'Dwarf' },
+          { value: 'elf', label: 'Elf' },
+          { value: 'halfling', label: 'Halfling' },
+          { value: 'human', label: 'Human' },
+          { value: 'dragonborn', label: 'Dragonborn' },
+          { value: 'gnome', label: 'Gnome' },
+          { value: 'half-elf', label: 'Half-Elf' },
+          { value: 'half-orc', label: 'Half-Orc' },
+          { value: 'tiefling', label: 'Tiefling' },
+          // VOLO
+          { value: 'aasimar', label: 'Aasimar' },
+          { value: 'firbolg', label: 'Firbolg' },
+          { value: 'goliath', label: 'Goliath' },
+          { value: 'kenku', label: 'Kenku' },
+          { value: 'lizardfolk', label: 'Lizardfolk' },
+          { value: 'tabaxi', label: 'Tabaxi' },
+          { value: 'triton', label: 'Triton' },
+        ],
+      },
+    },
+    charClass: {
+      name: 'Class',
+      type: 'select',
+      options: {
+        options: [
+          // TASHA
+          { value: 'artificer', label: 'Artificer' },
+          // PHB
+          { value: 'barbarian', label: 'Barbarian' },
+          { value: 'bard', label: 'Bard' },
+          { value: 'cleric', label: 'Cleric' },
+          { value: 'druid', label: 'Druid' },
+          { value: 'fighter', label: 'Fighter' },
+          { value: 'monk', label: 'Monk' },
+          { value: 'paladin', label: 'Paladin' },
+          { value: 'ranger', label: 'Ranger' },
+          { value: 'rogue', label: 'Rogue' },
+          { value: 'sorcerer', label: 'Sorcerer' },
+          { value: 'warlock', label: 'Warlock' },
+          { value: 'wizard', label: 'Wizard' },
+        ],
+      },
+    },
+    charLevel: {
+      name: 'Level',
+      type: 'int',
+      options: {
+        min: 1,
+        max: 20,
+      },
+    },
+    charHp: {
+      name: 'Hit Points',
+      type: 'int',
+    },
+    charMaxHp: {
+      name: 'Max Hit Points',
+      type: 'int',
+    },
+    tempHp: {
+      name: 'Temporary Hit Points',
+      type: 'int',
+    },
+    strength: {
+      name: 'Strength',
+      type: 'int',
+    },
+    dexterity: {
+      name: 'Dexterity',
+      type: 'int',
+    },
+    constitution: {
+      name: 'Constitution',
+      type: 'int',
+    },
+    intelligence: {
+      name: 'Intelligence',
+      type: 'int',
+    },
+    wisdom: {
+      name: 'Wisdom',
+      type: 'int',
+    },
+    charisma: {
+      name: 'Charisma',
+      type: 'int',
+    },
+    armorClass: {
+      name: 'ArmorClass',
+      type: 'int',
     },
   };
 
@@ -117,16 +214,35 @@ const initNoteDefinitionData: DbInitFunction = async () => {
     locations: {
       name: 'Locations',
       fields: [
-        systemNoteFieldDefinitions.fieldDescription,
-        systemNoteFieldDefinitions.fieldAlignment,
+        systemNoteFieldDefinitions.description,
+        systemNoteFieldDefinitions.alignment,
       ],
     },
     npcs: {
       name: 'NPCs',
       fields: [
-        systemNoteFieldDefinitions.fieldDescription,
-        systemNoteFieldDefinitions.fieldAlignment,
-        systemNoteFieldDefinitions.fieldLocation,
+        systemNoteFieldDefinitions.description,
+        systemNoteFieldDefinitions.alignment,
+        systemNoteFieldDefinitions.location,
+      ],
+    },
+    pcs: {
+      name: 'PCs',
+      fields: [
+        systemNoteFieldDefinitions.alignment,
+        systemNoteFieldDefinitions.charRace,
+        systemNoteFieldDefinitions.charClass,
+        systemNoteFieldDefinitions.charLevel,
+        systemNoteFieldDefinitions.charHp,
+        systemNoteFieldDefinitions.charMaxHp,
+        systemNoteFieldDefinitions.tempHp,
+        systemNoteFieldDefinitions.strength,
+        systemNoteFieldDefinitions.dexterity,
+        systemNoteFieldDefinitions.constitution,
+        systemNoteFieldDefinitions.intelligence,
+        systemNoteFieldDefinitions.wisdom,
+        systemNoteFieldDefinitions.charisma,
+        systemNoteFieldDefinitions.armorClass,
       ],
     },
   };

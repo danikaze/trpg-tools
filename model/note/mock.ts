@@ -3,11 +3,15 @@ import { DbInitFunction } from '../../utils/mysql';
 import { UserAuthData } from '../user';
 import { devUsers } from '../user/mock';
 import { systemNoteTypes } from '../note-definition/init';
-import { createNote } from '.';
+import { CreatedNoteData, createNote } from '.';
 import { basename } from 'path';
 import { devGames } from '../game/mock';
 import { GamePreviewData } from '../game';
 import { noteDefinitionsDevData } from '../note-definition/mock';
+
+export const devNotes: {
+  [noteDefId: string]: (NoteDef & CreatedNoteData)[];
+} = {};
 
 interface NoteDef {
   user: UserAuthData;
@@ -169,9 +173,169 @@ export const noteDevData: DbInitFunction = async () => {
         },
       ],
     },
+    {
+      user: devUsers.user1,
+      noteDef: systemNoteTypes.pcs,
+      gameDef: getGame('Game 1'),
+      title: 'Rungret Ironfist',
+      content: [
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Alignment'),
+          value: 'LG',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Race'),
+          value: 'dwarf',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Class'),
+          value: 'cleric',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Level'),
+          value: '2',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Hit Points'),
+          value: '15',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Max Hit Points'),
+          value: '15',
+        },
+      ],
+    },
+    {
+      user: devUsers.user1,
+      noteDef: systemNoteTypes.pcs,
+      gameDef: getGame('Game 1'),
+      title: 'Ghorax Alxiac',
+      content: [
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Alignment'),
+          value: 'LG',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Race'),
+          value: 'dragonborn',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Class'),
+          value: 'monk',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Level'),
+          value: '2',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Hit Points'),
+          value: '12',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Max Hit Points'),
+          value: '12',
+        },
+      ],
+    },
+    {
+      user: devUsers.user1,
+      noteDef: systemNoteTypes.pcs,
+      gameDef: getGame('Game 1'),
+      title: 'Cornelius Woodscar',
+      content: [
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Alignment'),
+          value: 'CG',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Race'),
+          value: 'aasimar',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Class'),
+          value: 'paladin',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Level'),
+          value: '2',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Hit Points'),
+          value: '16',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Max Hit Points'),
+          value: '16',
+        },
+      ],
+    },
+    {
+      user: devUsers.user1,
+      noteDef: systemNoteTypes.pcs,
+      gameDef: getGame('Game 1'),
+      title: 'Sylna Nask',
+      content: [
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Alignment'),
+          value: 'NG',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Race'),
+          value: 'half-elf',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Class'),
+          value: 'druid',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Level'),
+          value: '2',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Hit Points'),
+          value: '15',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Max Hit Points'),
+          value: '15',
+        },
+      ],
+    },
+    {
+      user: devUsers.user1,
+      noteDef: systemNoteTypes.pcs,
+      gameDef: getGame('Game 1'),
+      title: 'Indar',
+      content: [
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Alignment'),
+          value: 'CG',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Race'),
+          value: 'half-elf',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Class'),
+          value: 'rogue',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Level'),
+          value: '2',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Hit Points'),
+          value: '19',
+        },
+        {
+          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Max Hit Points'),
+          value: '19',
+        },
+      ],
+    },
   ];
 
-  // push enough note to test pagination
+  // push enough notes to test pagination
   const N_NOTES = 55;
   for (let i = 0; i < N_NOTES; i++) {
     devNoteDefinitions.push({
@@ -188,7 +352,7 @@ export const noteDevData: DbInitFunction = async () => {
     });
   }
 
-  await Promise.all(
+  const notes = await Promise.all(
     devNoteDefinitions.map((note) => {
       return createNote(note.user, {
         noteDefId: note.noteDef.noteDefId,
@@ -201,4 +365,12 @@ export const noteDevData: DbInitFunction = async () => {
       });
     })
   );
+
+  notes.forEach(({ noteId }, i) => {
+    const fullNote = { ...devNoteDefinitions[i], noteId };
+    if (!devNotes[fullNote.noteDef.noteDefId]) {
+      devNotes[fullNote.noteDef.noteDefId] = [];
+    }
+    devNotes[fullNote.noteDef.noteDefId].push(fullNote);
+  });
 };
