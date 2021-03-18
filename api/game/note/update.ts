@@ -20,7 +20,7 @@ export const updateNoteApiHandler = userRequiredApiHandler<
 >(async (req, res) => {
   const { lastUpdate, note } = getData(req);
 
-  const data = await updateNote(req.user, lastUpdate, note);
+  const data = await updateNote(req.user, lastUpdate, false, note);
 
   res.status(HttpStatus.OK).json({ data });
 });
