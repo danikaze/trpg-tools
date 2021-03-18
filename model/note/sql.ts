@@ -73,6 +73,7 @@ export const sql = {
     db: MySql,
     params: Pick<DbNote, 'title' | 'updatedOn' | 'noteId' | 'userId'> & {
       lastUpdate: DbNote['updatedOn'];
+      ignoreLastUpdate: boolean;
     }
   ) => {
     return db.update(queries.updateNote, params);
@@ -152,8 +153,11 @@ const queries = {
       SET title = :title,
         updatedOn = :updatedOn
       WHERE noteId = :noteId
-        AND updatedOn = :lastUpdate
         AND userId = :userId
+        AND (
+          updatedOn = :lastUpdate
+          OR :ignoreLastUpdate = true
+        )
   `,
   // note that ON DUPLICATE is not safe for replication
   // https://dev.mysql.com/doc/refman/8.0/en/insert-on-duplicate.html

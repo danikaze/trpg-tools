@@ -142,6 +142,7 @@ export async function deleteNote(
 export async function updateNote(
   user: UserAuthData,
   lastUpdate: DbNote['updatedOn'],
+  ignoreLastUpdate: boolean,
   note: UpdateNoteData
 ): Promise<UpdateNoteResult> {
   const db = await getDb();
@@ -153,6 +154,7 @@ export async function updateNote(
     const noteUpdate = await sql.updateNote(db, {
       updatedOn,
       lastUpdate,
+      ignoreLastUpdate,
       noteId,
       title: note.title,
       userId: user.userId,
