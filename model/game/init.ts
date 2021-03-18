@@ -21,6 +21,11 @@ export const initGame: DbInitFunction = async (db) => {
       imageId ${MYSQL_TYPE_INTERNAL_ID},
       ${EDIT_TIME_COLS},
 
+      FOREIGN KEY (userId)
+        REFERENCES users(userId)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+
       FOREIGN KEY (imageId)
         REFERENCES images(imageId)
         ON UPDATE CASCADE
