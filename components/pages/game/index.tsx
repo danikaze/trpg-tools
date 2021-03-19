@@ -2,17 +2,19 @@ import { FunctionComponent } from 'react';
 import { Paginated } from '@utils/mysql';
 import { makeStyles } from '@utils/styles';
 import { GameDetailsData } from '@model/game';
+import { NoteData } from '@model/note';
+import { ApiKeyData } from '@model/api-key';
+import { RetrievedNoteDefinition } from '@model/note-definition';
 import { GameDetails } from '@components/game-details';
 import { LinkToMyGames } from '@components/links/link-to-my-games';
-import { RetrievedNoteDefinition } from '@model/note-definition';
 import { GameNotes } from '@components/game-notes';
-import { NoteData } from '@model/note';
 
 export interface Props {
   game: GameDetailsData | null;
   noteDefinitions: RetrievedNoteDefinition[] | null;
   selectednoteDefId: RetrievedNoteDefinition['noteDefId'] | null;
   notes: Paginated<NoteData> | null;
+  updateNotesApiKeys: ApiKeyData<'updateNote'>[];
 }
 
 const useStyles = makeStyles(() => ({
@@ -40,6 +42,7 @@ export const Game: FunctionComponent<Props> = (props) => {
         noteDefinitions={props.noteDefinitions}
         selectednoteDefId={props.selectednoteDefId}
         notes={props.notes}
+        updateNotesApiKeys={props.updateNotesApiKeys}
       />
     </div>
   );

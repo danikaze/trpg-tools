@@ -7,6 +7,7 @@ import { selectGameDetails } from '@model/game';
 import { DbGame } from '@model/game/sql';
 import { getUserNoteDefinitions } from '@model/note-definition';
 import { selectNotes } from '@model/note';
+import { selectUserKeys } from '@model/api-key';
 
 const GameDetailPage: AppPage<Props> = (props) => {
   return (
@@ -43,9 +44,10 @@ export const getServerSideProps = userRequiredServerSideProps<Props, Query>(
     } = ctx;
     const gameId = ctx.params?.gameId;
 
-    const [game, noteDefinitions] = await Promise.all([
+    const [game, noteDefinitions, updateNotesApiKeys] = await Promise.all([
       (user && gameId && selectGameDetails(user, gameId)) || null,
       (user && gameId && getUserNoteDefinitions(user)) || null,
+      (user && selectUserKeys(user, 'updateNote')) || null,
     ]);
     if (!game || !noteDefinitions) return { props: notValidProps };
 
@@ -60,6 +62,7 @@ export const getServerSideProps = userRequiredServerSideProps<Props, Query>(
       notes,
       selectednoteDefId,
       game,
+      updateNotesApiKeys,
     };
 
     return {

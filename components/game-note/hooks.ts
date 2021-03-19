@@ -1,6 +1,13 @@
 import { useState } from 'react';
+import {
+  callCreateUpdateNoteApiKey,
+  callDeleteUpdateNoteApiKey,
+} from '@api/ak/update-note/client';
 import { UpdateNoteData } from '@model/note';
 import { NoteFieldDefinition } from '@model/note-definition';
+import { ApiKeyData } from '@model/api-key';
+import { UserAuthData } from '@model/user';
+import { useUserData } from '@utils/auth';
 import { Props } from './';
 
 type State = {
@@ -8,6 +15,8 @@ type State = {
   isEditing: boolean;
   title: UpdateNoteData['title'];
   content: UpdateNoteData['content'];
+  apiKey?: ApiKeyData<'updateNote'>;
+  user: UserAuthData;
 };
 
 export function useGameNote(props: Props) {
@@ -16,6 +25,8 @@ export function useGameNote(props: Props) {
     isEditing: false,
     title: props.data.title,
     content: { ...props.data.content },
+    apiKey: props.apiKey,
+    user: useUserData()!,
   });
 
   function toggleEdit() {
@@ -67,15 +78,52 @@ export function useGameNote(props: Props) {
     props.onDelete(props.definition.noteDefId, props.data.noteId);
   }
 
+  async function createApiKey() {
+    if (!state.user || state.apiKey) return;
+
+    const apiKeyId = await callCreateUpdateNoteApiKey(
+      props.data.noteId,
+      props.definition.noteDefId
+    );
+
+    setState((state) => ({
+      ...state,
+      apiKey: {
+        apiKeyId,
+        userId: state.user.userId,
+        data: {
+          noteId: props.data.noteId,
+          noteDefId: props.definition.noteDefId,
+        },
+      },
+    }));
+  }
+
+  async function deleteApiKey() {
+    if (!state.user || !state.apiKey) return;
+    const doIt = confirm(`Delete api key ${state.apiKey.apiKeyId}?`);
+    if (!doIt) return;
+
+    await callDeleteUpdateNoteApiKey(state.apiKey.apiKeyId);
+
+    setState((state) => ({
+      ...state,
+      apiKey: undefined,
+    }));
+  }
+
   return {
     updateTitle,
     updateField,
     saveUpdate: props.onUpdate && saveUpdate,
     confirmAndDeleteNote: props.onDelete && confirmAndDeleteNote,
+    createApiKey: state.user && !state.apiKey && createApiKey,
+    deleteApiKey: state.user && state.apiKey && deleteApiKey,
     isEditing: state.isEditing,
     toggleEdit: (props.canEdit && toggleEdit) || undefined,
     contents: state.content,
     title: state.title,
     definition: props.definition,
+    apiKey: state.apiKey,
   };
 }
