@@ -59,6 +59,7 @@ export const GameNotes: FunctionComponent<Props> = ({
         canEdit={true}
         definition={noteDef}
         data={note}
+        apiKey={apiKeys[note.noteId]}
         onDelete={onDelete}
         onUpdate={onUpdateNote}
       />

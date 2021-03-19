@@ -7,6 +7,7 @@ import {
   RetrievedNoteDefinition,
 } from '@model/note-definition';
 import { NoteContentData, NoteData, UpdateNoteData } from '@model/note';
+import { ApiKeyData } from '@model/api-key';
 import {
   UserInput,
   UserInputType,
@@ -19,6 +20,7 @@ export interface Props {
   canEdit: boolean;
   definition: RetrievedNoteDefinition;
   data: NoteData;
+  apiKey?: ApiKeyData<'updateNote'> | undefined;
   className?: string;
   onDelete?: (
     noteDefId: RetrievedNoteDefinition['noteDefId'],
@@ -46,6 +48,8 @@ const useStyles = makeStyles(() => ({
   contentFieldName: {
     fontWeight: 'bold',
   },
+  apiKey: {},
+  apiKeyIcon: {},
 }));
 
 type Styles = ReturnType<typeof useStyles>;
@@ -69,6 +73,9 @@ function renderActions(
     toggleEdit,
     saveUpdate,
     confirmAndDeleteNote,
+    apiKey,
+    createApiKey,
+    deleteApiKey,
   }: ReturnType<typeof useGameNote>
 ): JSX.Element {
   const updateButton = isEditing && saveUpdate && (
@@ -83,11 +90,28 @@ function renderActions(
     <Button onClick={confirmAndDeleteNote}>Delete</Button>
   );
 
+  const apiKeyIcon = apiKey && (
+    <div className={styles.apiKeyIcon}>AK: {apiKey.apiKeyId}</div>
+  );
+
+  const createApiKeyButton = createApiKey && (
+    <Button onClick={createApiKey}>Create AK</Button>
+  );
+
+  const deleteApiKeyButton = deleteApiKey && (
+    <Button onClick={deleteApiKey}>Remove AK</Button>
+  );
+
   return (
     <div className={styles.actions}>
       {updateButton}
       {editButton}
       {deleteButton}
+      <div className={styles.apiKey}>
+        {apiKeyIcon}
+        {createApiKeyButton}
+        {deleteApiKeyButton}
+      </div>
     </div>
   );
 }
