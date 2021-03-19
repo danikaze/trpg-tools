@@ -1,11 +1,12 @@
 import clsx from 'clsx';
-import { createRef, FunctionComponent, useState } from 'react';
+import { FunctionComponent } from 'react';
 import { GAME_DESC_MAX_CHARS, GAME_NAME_MAX_CHARS } from '@utils/constants';
 import { makeStyles } from '@utils/styles';
 import { ImageDropInput } from '@components/user-input/image-drop-input';
 import { TextInput } from '@components/user-input/text-input';
 import { TextArea } from '@components/user-input/text-area';
 import { Button } from '@components/user-input/button';
+import { useGameEditor } from './hooks';
 
 export interface GameEditorData {
   name: string;
@@ -48,96 +49,6 @@ const useStyles = makeStyles(() => ({
     alignItems: 'flex-start',
   },
 }));
-
-interface State {
-  data: GameEditorData;
-  imageReset: number;
-  isWorking: boolean;
-}
-
-function useGameEditor(props: Props) {
-  const { game } = props;
-  const [state, setState] = useState<State>({
-    data: {
-      name: (game && game.name) || '',
-      description: (game && game.description) || '',
-      image: (game && game.imageUrl) || null,
-    },
-    imageReset: 0,
-    isWorking: false,
-  });
-
-  function setEditorData(data: Partial<State['data']>, working?: boolean) {
-    setState((state) => ({
-      ...state,
-      isWorking: working === undefined ? state.isWorking : working,
-      data: {
-        ...state.data,
-        ...data,
-      },
-    }));
-  }
-
-  function setWorking(working: boolean) {
-    setState((state) => ({
-      ...state,
-      isWorking: working,
-    }));
-  }
-
-  function resetEditor() {
-    setState((state) => ({
-      ...state,
-      data: {
-        name: (game && game.name) || '',
-        description: (game && game.description) || '',
-        image: (game && game.imageUrl) || null,
-      },
-      imageReset: state.imageReset + 1,
-      isWorking: false,
-    }));
-  }
-
-  const submit = async () => {
-    setWorking(true);
-    await props.onSubmit(state.data);
-    resetEditor();
-  };
-
-  const imageChangeHandler = async (image: File | null) => {
-    if (image === state.data.image) return;
-    setEditorData({ image }, true);
-    props.onImageChange && (await props.onImageChange(image));
-    setWorking(false);
-  };
-
-  const dataChangeHandler = async () => {
-    const newData = {
-      name: nameRef.current!.value,
-      description: descriptionRef.current!.value,
-    };
-    setEditorData(newData);
-    props.onDataChange && (await props.onDataChange(newData));
-    setWorking(false);
-  };
-
-  const nameRef = createRef<HTMLInputElement>();
-  const descriptionRef = createRef<HTMLTextAreaElement>();
-
-  return {
-    submit,
-    imageChangeHandler,
-    dataChangeHandler,
-    nameRef,
-    descriptionRef,
-    editorData: state.data,
-    imageReset: state.imageReset,
-    submitDisabled: state.isWorking,
-    titleText: props.mode === 'create' ? 'Create New Game' : 'Edit Game',
-    submitText: props.mode === 'create' ? 'Create' : 'Update',
-    reset: props.mode === 'create' ? undefined : resetEditor,
-  };
-}
 
 export const GameEditor: FunctionComponent<Props> = (props) => {
   const styles = useStyles();
