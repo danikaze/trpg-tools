@@ -5,11 +5,14 @@ import { getNotes } from '@api/game/client';
 import { UpdateNoteData, NoteData } from '@model/note';
 import { RetrievedNoteDefinition } from '@model/note-definition';
 import { Props } from '.';
+import { ApiKeyData } from '@model/api-key';
+import { array2map } from '@utils/array2map';
 
 interface State {
   noteDefinitions: RetrievedNoteDefinition[];
   selectednoteDefId: RetrievedNoteDefinition['noteDefId'];
   notes: Record<RetrievedNoteDefinition['noteDefId'], Paginated<NoteData>>;
+  apiKeys: Record<NoteData['noteId'], ApiKeyData<'updateNote'>>;
 }
 
 export function useGameNotes(props: Props) {
@@ -21,6 +24,7 @@ export function useGameNotes(props: Props) {
     notes: {
       [props.selectednoteDefId]: props.notes,
     },
+    apiKeys: array2map(props.updateNotesApiKeys, (item) => item.data.noteId),
   });
 
   async function onDelete(
@@ -147,5 +151,6 @@ export function useGameNotes(props: Props) {
     noteDefinitions: state.noteDefinitions,
     selectednoteDefId: state.selectednoteDefId,
     notes: state.notes[state.selectednoteDefId].data,
+    apiKeys: state.apiKeys,
   };
 }

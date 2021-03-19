@@ -5,6 +5,7 @@ import { Paginated } from '@utils/mysql';
 import { DbGame } from '@model/game/sql';
 import { RetrievedNoteDefinition } from '@model/note-definition';
 import { NoteData } from '@model/note';
+import { ApiKeyData } from '@model/api-key';
 import { Button } from '@components/user-input/button';
 import { GameNoteTypes } from '@components/game-note-types';
 import { GameNote } from '@components/game-note';
@@ -15,6 +16,7 @@ export interface Props {
   noteDefinitions: RetrievedNoteDefinition[];
   selectednoteDefId?: RetrievedNoteDefinition['noteDefId'] | null;
   notes: Paginated<NoteData>;
+  updateNotesApiKeys: ApiKeyData<'updateNote'>[];
   className?: string;
 }
 
@@ -42,6 +44,7 @@ export const GameNotes: FunctionComponent<Props> = ({
     noteDefinitions,
     selectednoteDefId,
     notes,
+    apiKeys,
   } = componentHookData;
 
   const noteDef = noteDefinitions.find(
