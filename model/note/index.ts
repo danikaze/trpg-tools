@@ -10,7 +10,7 @@ export interface CreateNoteData {
   noteDefId: DbNoteDefinition['noteDefId'];
   gameId: DbGame['gameId'];
   title: DbNote['title'];
-  content: CreateNoteContentData[];
+  content: Record<DbNoteDefinition['noteDefId'], NoteContentData['value']>;
 }
 
 export interface CreateNoteContentData {
@@ -18,7 +18,7 @@ export interface CreateNoteContentData {
   value: DbNoteContent['value'];
 }
 
-export interface CreatedNoteData {
+export interface CreatedNoteData extends TimestampTable {
   noteId: DbNote['noteDefId'];
 }
 
@@ -51,11 +51,13 @@ export async function createNote(
 ): Promise<CreatedNoteData> {
   const db = await getDb();
   const noteId = generateUniqueId();
+  const createdOn = getTimestamp();
 
   await db.transaction(async () => {
     // note
     await sql.insertNote(db, {
       noteId,
+      createdOn,
       userId: user.userId,
       noteDefId: data.noteDefId,
       gameId: data.gameId,
@@ -64,17 +66,17 @@ export async function createNote(
 
     // contents
     await Promise.all(
-      data.content.map((field) =>
+      Object.entries(data.content).map(([noteFieldDefId, value]) =>
         sql.insertNoteContent(db, {
           noteId,
-          noteFieldDefId: field.noteFieldDefId,
-          value: field.value,
+          value,
+          noteFieldDefId: Number(noteFieldDefId),
         })
       )
     );
   });
 
-  return { noteId };
+  return { noteId, createdOn, updatedOn: createdOn };
 }
 
 export async function selectNotes(

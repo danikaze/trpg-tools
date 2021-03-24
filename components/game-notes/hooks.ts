@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { Paginated } from '@utils/mysql';
-import { callDeleteNoteApi, callUpdateNoteApi } from '@api/game/note/client';
+import {
+  callCreateNoteApi,
+  callDeleteNoteApi,
+  callUpdateNoteApi,
+} from '@api/game/note/client';
 import { getNotes } from '@api/game/client';
-import { UpdateNoteData, NoteData } from '@model/note';
+import { UpdateNoteData, NoteData, CreateNoteData } from '@model/note';
 import { RetrievedNoteDefinition } from '@model/note-definition';
 import { Props } from '.';
 import { ApiKeyData } from '@model/api-key';
@@ -13,6 +17,7 @@ interface State {
   selectednoteDefId: RetrievedNoteDefinition['noteDefId'];
   notes: Record<RetrievedNoteDefinition['noteDefId'], Paginated<NoteData>>;
   apiKeys: Record<NoteData['noteId'], ApiKeyData<'updateNote'>>;
+  isEditingNewNote: boolean;
 }
 
 export function useGameNotes(props: Props) {
@@ -25,6 +30,7 @@ export function useGameNotes(props: Props) {
       [props.selectednoteDefId]: props.notes,
     },
     apiKeys: array2map(props.updateNotesApiKeys, (item) => item.data.noteId),
+    isEditingNewNote: false,
   });
 
   async function onDelete(
@@ -141,10 +147,39 @@ export function useGameNotes(props: Props) {
     }));
   }
 
+  function toggleNewNoteCreation() {
+    setState((state) => ({
+      ...state,
+      isEditingNewNote: !state.isEditingNewNote,
+    }));
+  }
+
+  async function createNewNote(note: Omit<CreateNoteData, 'gameId'>) {
+    const createdNoteData = await callCreateNoteApi(props.gameId, note);
+
+    setState((state) => {
+      const newNote = { ...note, ...createdNoteData };
+      const currentNotes = state.notes[state.selectednoteDefId];
+      return {
+        ...state,
+        isEditingNewNote: !state.isEditingNewNote,
+        notes: {
+          ...state.notes,
+          [state.selectednoteDefId]: {
+            ...currentNotes,
+            data: [newNote, ...currentNotes.data],
+          },
+        },
+      };
+    });
+  }
+
   return {
     onDelete,
     onUpdateNote,
     selectNoteDefinition,
+    toggleNewNoteCreation,
+    createNewNote,
     loadMoreNotes: state.notes[state.selectednoteDefId].moreResults
       ? loadMoreNotes
       : undefined,
@@ -152,5 +187,6 @@ export function useGameNotes(props: Props) {
     selectednoteDefId: state.selectednoteDefId,
     notes: state.notes[state.selectednoteDefId].data,
     apiKeys: state.apiKeys,
+    isEditingNewNote: state.isEditingNewNote,
   };
 }

@@ -1,5 +1,9 @@
-import { UpdateNoteData } from '@model/note';
+import { CreatedNoteData, CreateNoteData, UpdateNoteData } from '@model/note';
 import { DbGame } from '@model/game/sql';
+
+export type CreateNoteResponse = CreatedNoteData;
+export type CreateNoteQuery = {};
+export type CreateNoteBody = { note: Omit<CreateNoteData, 'gameId'> };
 
 export type DeleteNoteResponse = {};
 export type DeleteNoteQuery = {};

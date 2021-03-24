@@ -40,11 +40,14 @@ export const GameNotes: FunctionComponent<Props> = ({
     onDelete,
     onUpdateNote,
     selectNoteDefinition,
+    toggleNewNoteCreation,
+    createNewNote,
     loadMoreNotes,
     noteDefinitions,
     selectednoteDefId,
     notes,
     apiKeys,
+    isEditingNewNote,
   } = componentHookData;
 
   const noteDef = noteDefinitions.find(
@@ -56,6 +59,7 @@ export const GameNotes: FunctionComponent<Props> = ({
     notes.map((note) => (
       <GameNote
         key={note.noteId}
+        mode="edit"
         canEdit={true}
         definition={noteDef}
         data={note}
@@ -70,6 +74,19 @@ export const GameNotes: FunctionComponent<Props> = ({
     <Button onClick={loadMore}>Load more</Button>
   );
 
+  const newNoteEditor = noteDef ? (
+    isEditingNewNote ? (
+      <GameNote
+        mode="create"
+        definition={noteDef}
+        onSave={createNewNote}
+        onCancel={toggleNewNoteCreation}
+      />
+    ) : (
+      <Button onClick={toggleNewNoteCreation}>Create new</Button>
+    )
+  ) : null;
+
   return (
     <div className={clsx(styles.root, className)}>
       <GameNoteTypes
@@ -77,7 +94,10 @@ export const GameNotes: FunctionComponent<Props> = ({
         selectednoteDefId={selectednoteDefId!}
         onSelect={selectNoteDefinition}
       />
-      <h3>{noteDef && noteDef.name}</h3>
+      <div>
+        <h3>{noteDef && noteDef.name}</h3>
+        {newNoteEditor}
+      </div>
       {noteList}
       {loadMoreButton}
     </div>

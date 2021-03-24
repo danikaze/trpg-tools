@@ -58,6 +58,11 @@ export function callApi<
     const body = options.data ? JSON.stringify(options.data) : undefined;
     let url = `/api/${apiUrl}`;
 
+    if (!IS_PRODUCTION && url[url.length - 1] === '/') {
+      // tslint:disable-next-line: no-console
+      console.error(`callApi URLs shouldn't end with "/" (${apiUrl})`);
+    }
+
     if (options.params) {
       url = addUrlParams(url, options.params);
     }

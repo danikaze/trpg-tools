@@ -30,9 +30,12 @@ type SelectNoteContents = Pick<
 export const sql = {
   insertNote: (
     db: MySql,
-    params: Pick<DbNote, 'noteId' | 'userId' | 'noteDefId' | 'gameId' | 'title'>
+    params: Pick<
+      DbNote,
+      'noteId' | 'userId' | 'noteDefId' | 'gameId' | 'title' | 'createdOn'
+    >
   ) => {
-    const time = getTimestamp();
+    const time = params.createdOn;
     return db.insertOne(queries.insertNote, {
       ...params,
       time,

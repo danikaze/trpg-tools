@@ -1,15 +1,33 @@
-import { NoteData, UpdateNoteData } from '@model/note';
+import { CreateNoteData, NoteData, UpdateNoteData } from '@model/note';
 import { DbGame } from '@model/game/sql';
 import { DbNote } from '@model/note/sql';
 import { callApi } from '@utils/call-api';
 import {
+  CreateNoteBody,
   DeleteNoteQuery,
+  CreateNoteResponse,
   DeleteNoteResponse,
   DeleteNoteBody,
   UpdateNoteResponse,
   UpdateNoteQuery,
   UpdateNoteBody,
+  CreateNoteQuery,
 } from './interface';
+
+export async function callCreateNoteApi(
+  gameId: CreateNoteData['gameId'],
+  note: Omit<CreateNoteData, 'gameId'>
+): Promise<CreateNoteResponse> {
+  const res = await callApi<
+    CreateNoteResponse,
+    CreateNoteQuery,
+    CreateNoteBody
+  >(`game/${gameId}/note`, 'POST', {
+    data: note,
+  });
+
+  return res.data;
+}
 
 export async function callDeleteNoteApi(
   gameId: DbGame['gameId'],
