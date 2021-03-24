@@ -1,9 +1,9 @@
-import { NoteDefinition, RetrievedNoteDefinition } from '../note-definition';
+import { NoteDefinition } from '../note-definition';
 import { DbInitFunction } from '../../utils/mysql';
 import { UserAuthData } from '../user';
 import { devUsers } from '../user/mock';
 import { systemNoteTypes } from '../note-definition/init';
-import { CreatedNoteData, createNote } from '.';
+import { CreatedNoteData, createNote, CreateNoteData } from '.';
 import { basename } from 'path';
 import { devGames } from '../game/mock';
 import { GamePreviewData } from '../game';
@@ -19,7 +19,7 @@ interface NoteDef {
   gameDef: GamePreviewData;
   title: string;
   content: {
-    noteFieldDefId: RetrievedNoteDefinition['fields'][0]['noteFieldDefId'];
+    noteFieldName: string;
     value: string;
   }[];
 }
@@ -53,15 +53,15 @@ export const noteDevData: DbInitFunction = async () => {
       title: 'Amira Shadowhorn',
       content: [
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.npcs, 'Description'),
+          noteFieldName: 'Description',
           value: 'Tiefling woman with a pale purple skil tone.',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.npcs, 'Alignment'),
+          noteFieldName: 'Alignment',
           value: 'NN',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.npcs, 'Location'),
+          noteFieldName: 'Location',
           value: 'Eseneas',
         },
       ],
@@ -73,11 +73,11 @@ export const noteDevData: DbInitFunction = async () => {
       title: 'Kashak, Kobold Shaman',
       content: [
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.npcs, 'Alignment'),
+          noteFieldName: 'Alignment',
           value: 'CE',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.npcs, 'Location'),
+          noteFieldName: 'Location',
           value: 'Lewick/Malnia',
         },
       ],
@@ -89,7 +89,7 @@ export const noteDevData: DbInitFunction = async () => {
       title: 'Lewick',
       content: [
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.locations, 'Description'),
+          noteFieldName: 'Description',
           value: 'Farming town close to the Black Forest',
         },
       ],
@@ -101,7 +101,7 @@ export const noteDevData: DbInitFunction = async () => {
       title: 'Grog',
       content: [
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.npcs, 'Description'),
+          noteFieldName: 'Description',
           value: `Goliath Barbarian`,
         },
       ],
@@ -113,7 +113,7 @@ export const noteDevData: DbInitFunction = async () => {
       title: 'Emon',
       content: [
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.locations, 'Description'),
+          noteFieldName: 'Description',
           value: `Goliath Barbarian`,
         },
       ],
@@ -125,7 +125,7 @@ export const noteDevData: DbInitFunction = async () => {
       title: 'Placeholder NPC',
       content: [
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.npcs, 'Description'),
+          noteFieldName: 'Description',
           value: `Emon is the capital city of the kingdom of Tal'Dorei, and the largest city on the continent`,
         },
       ],
@@ -137,38 +137,23 @@ export const noteDevData: DbInitFunction = async () => {
       title: 'Custom note 1',
       content: [
         {
-          noteFieldDefId: getFieldId(
-            noteDefinitionsDevData.user1note,
-            'Text area'
-          ),
+          noteFieldName: 'Text area',
           value: 'text area value',
         },
         {
-          noteFieldDefId: getFieldId(
-            noteDefinitionsDevData.user1note,
-            'Select'
-          ),
+          noteFieldName: 'Select',
           value: '1',
         },
         {
-          noteFieldDefId: getFieldId(
-            noteDefinitionsDevData.user1note,
-            'Text field'
-          ),
+          noteFieldName: 'Text field',
           value: 'text field\ntest value',
         },
         {
-          noteFieldDefId: getFieldId(
-            noteDefinitionsDevData.user1note,
-            'Int [0-10]'
-          ),
+          noteFieldName: 'Int [0-10]',
           value: '5',
         },
         {
-          noteFieldDefId: getFieldId(
-            noteDefinitionsDevData.user1note,
-            'Checkbox'
-          ),
+          noteFieldName: 'Checkbox',
           value: 'true',
         },
       ],
@@ -180,27 +165,27 @@ export const noteDevData: DbInitFunction = async () => {
       title: 'Rungret Ironfist',
       content: [
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Alignment'),
+          noteFieldName: 'Alignment',
           value: 'LG',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Race'),
+          noteFieldName: 'Race',
           value: 'dwarf',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Class'),
+          noteFieldName: 'Class',
           value: 'cleric',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Level'),
+          noteFieldName: 'Level',
           value: '2',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Hit Points'),
+          noteFieldName: 'Hit Points',
           value: '15',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Max Hit Points'),
+          noteFieldName: 'Max Hit Points',
           value: '15',
         },
       ],
@@ -212,27 +197,27 @@ export const noteDevData: DbInitFunction = async () => {
       title: 'Ghorax Alxiac',
       content: [
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Alignment'),
+          noteFieldName: 'Alignment',
           value: 'LG',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Race'),
+          noteFieldName: 'Race',
           value: 'dragonborn',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Class'),
+          noteFieldName: 'Class',
           value: 'monk',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Level'),
+          noteFieldName: 'Level',
           value: '2',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Hit Points'),
+          noteFieldName: 'Hit Points',
           value: '12',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Max Hit Points'),
+          noteFieldName: 'Max Hit Points',
           value: '12',
         },
       ],
@@ -244,27 +229,27 @@ export const noteDevData: DbInitFunction = async () => {
       title: 'Cornelius Woodscar',
       content: [
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Alignment'),
+          noteFieldName: 'Alignment',
           value: 'CG',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Race'),
+          noteFieldName: 'Race',
           value: 'aasimar',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Class'),
+          noteFieldName: 'Class',
           value: 'paladin',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Level'),
+          noteFieldName: 'Level',
           value: '2',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Hit Points'),
+          noteFieldName: 'Hit Points',
           value: '16',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Max Hit Points'),
+          noteFieldName: 'Max Hit Points',
           value: '16',
         },
       ],
@@ -276,27 +261,27 @@ export const noteDevData: DbInitFunction = async () => {
       title: 'Sylna Nask',
       content: [
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Alignment'),
+          noteFieldName: 'Alignment',
           value: 'NG',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Race'),
+          noteFieldName: 'Race',
           value: 'half-elf',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Class'),
+          noteFieldName: 'Class',
           value: 'druid',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Level'),
+          noteFieldName: 'Level',
           value: '2',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Hit Points'),
+          noteFieldName: 'Hit Points',
           value: '15',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Max Hit Points'),
+          noteFieldName: 'Max Hit Points',
           value: '15',
         },
       ],
@@ -308,27 +293,27 @@ export const noteDevData: DbInitFunction = async () => {
       title: 'Indar',
       content: [
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Alignment'),
+          noteFieldName: 'Alignment',
           value: 'CG',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Race'),
+          noteFieldName: 'Race',
           value: 'half-elf',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Class'),
+          noteFieldName: 'Class',
           value: 'rogue',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Level'),
+          noteFieldName: 'Level',
           value: '2',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Hit Points'),
+          noteFieldName: 'Hit Points',
           value: '19',
         },
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.pcs, 'Max Hit Points'),
+          noteFieldName: 'Max Hit Points',
           value: '19',
         },
       ],
@@ -345,7 +330,7 @@ export const noteDevData: DbInitFunction = async () => {
       title: `Test Location ${i}`,
       content: [
         {
-          noteFieldDefId: getFieldId(systemNoteTypes.locations, 'Description'),
+          noteFieldName: 'Description',
           value: `Description for Test Location ${i}`,
         },
       ],
@@ -358,16 +343,17 @@ export const noteDevData: DbInitFunction = async () => {
         noteDefId: note.noteDef.noteDefId,
         gameId: note.gameDef.gameId,
         title: note.title,
-        content: note.content.map((data) => ({
-          noteFieldDefId: data.noteFieldDefId,
-          value: data.value,
-        })),
+        content: note.content.reduce((content, { noteFieldName, value }) => {
+          const noteFieldDefId = getFieldId(note.noteDef, noteFieldName);
+          content[noteFieldDefId] = value;
+          return content;
+        }, {} as CreateNoteData['content']),
       });
     })
   );
 
-  notes.forEach(({ noteId }, i) => {
-    const fullNote = { ...devNoteDefinitions[i], noteId };
+  notes.forEach((newNoteData, i) => {
+    const fullNote = { ...devNoteDefinitions[i], ...newNoteData };
     if (!devNotes[fullNote.noteDef.noteDefId]) {
       devNotes[fullNote.noteDef.noteDefId] = [];
     }

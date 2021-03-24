@@ -6,7 +6,12 @@ import {
   NoteFieldDefinition,
   RetrievedNoteDefinition,
 } from '@model/note-definition';
-import { NoteContentData, NoteData, UpdateNoteData } from '@model/note';
+import {
+  CreateNoteData,
+  NoteContentData,
+  NoteData,
+  UpdateNoteData,
+} from '@model/note';
 import { ApiKeyData } from '@model/api-key';
 import {
   UserInput,
@@ -16,18 +21,30 @@ import {
 import { TextInput } from '@components/user-input/text-input';
 import { useGameNote } from './hooks';
 
-export interface Props {
-  canEdit: boolean;
+interface BaseProps {
   definition: RetrievedNoteDefinition;
+  className?: string;
+}
+
+export interface EditProps extends BaseProps {
+  mode: 'edit';
+  canEdit: boolean;
   data: NoteData;
   apiKey?: ApiKeyData<'updateNote'> | undefined;
-  className?: string;
   onDelete?: (
     noteDefId: RetrievedNoteDefinition['noteDefId'],
     noteId: NoteData['noteId']
   ) => void;
   onUpdate?: (note: UpdateNoteData) => Promise<boolean>;
 }
+
+export interface CreateProps extends BaseProps {
+  mode: 'create';
+  onCancel?: () => void;
+  onSave?: (note: Omit<CreateNoteData, 'gameId'>) => void;
+}
+
+export type Props = EditProps | CreateProps;
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -123,7 +140,12 @@ function renderContents(
   const { isEditing, definition, contents, title, updateTitle } = hookData;
 
   const titleElem = isEditing ? (
-    <TextInput defaultValue={title} onChange={updateTitle} />
+    <TextInput
+      defaultValue={title}
+      onChange={updateTitle}
+      label="Title"
+      required={true}
+    />
   ) : (
     title
   );

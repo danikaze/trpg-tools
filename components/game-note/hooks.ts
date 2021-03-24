@@ -8,7 +8,7 @@ import { NoteFieldDefinition } from '@model/note-definition';
 import { ApiKeyData } from '@model/api-key';
 import { UserAuthData } from '@model/user';
 import { useUserData } from '@utils/auth';
-import { Props } from './';
+import { EditProps, Props } from './';
 
 type State = {
   fields: NoteFieldDefinition[];
@@ -19,13 +19,17 @@ type State = {
   user: UserAuthData;
 };
 
+function isEditingMode(props: Props): props is EditProps {
+  return props.mode === 'edit';
+}
+
 export function useGameNote(props: Props) {
   const [state, setState] = useState<State>({
     fields: props.definition.fields,
-    isEditing: false,
-    title: props.data.title,
-    content: { ...props.data.content },
-    apiKey: props.apiKey,
+    isEditing: !isEditingMode(props),
+    title: isEditingMode(props) ? props.data.title : '',
+    content: isEditingMode(props) ? { ...props.data.content } : {},
+    apiKey: isEditingMode(props) ? props.apiKey : undefined,
     user: useUserData()!,
   });
 
@@ -57,7 +61,7 @@ export function useGameNote(props: Props) {
   }
 
   async function saveUpdate() {
-    if (!props.onUpdate) return;
+    if (!isEditingMode(props) || !props.onUpdate) return;
     const success = await props.onUpdate({
       noteDefId: props.definition.noteDefId,
       noteId: props.data.noteId,
@@ -73,13 +77,22 @@ export function useGameNote(props: Props) {
     }
   }
 
+  function saveNewNote() {
+    if (isEditingMode(props) || !props.onSave) return;
+    props.onSave({
+      noteDefId: props.definition.noteDefId,
+      title: state.title,
+      content: state.content,
+    });
+  }
+
   function confirmAndDeleteNote() {
-    if (!props.onDelete) return;
+    if (!isEditingMode(props) || !props.onDelete) return;
     props.onDelete(props.definition.noteDefId, props.data.noteId);
   }
 
   async function createApiKey() {
-    if (!state.user || state.apiKey) return;
+    if (!isEditingMode(props) || !state.user || state.apiKey) return;
 
     const apiKeyId = await callCreateUpdateNoteApiKey(
       props.data.noteId,
@@ -115,12 +128,17 @@ export function useGameNote(props: Props) {
   return {
     updateTitle,
     updateField,
-    saveUpdate: props.onUpdate && saveUpdate,
-    confirmAndDeleteNote: props.onDelete && confirmAndDeleteNote,
-    createApiKey: state.user && !state.apiKey && createApiKey,
+    saveUpdate: isEditingMode(props)
+      ? props.onUpdate && saveUpdate
+      : props.onSave && saveNewNote,
+    confirmAndDeleteNote:
+      isEditingMode(props) && props.onDelete && confirmAndDeleteNote,
+    createApiKey:
+      isEditingMode(props) && state.user && !state.apiKey && createApiKey,
     deleteApiKey: state.user && state.apiKey && deleteApiKey,
     isEditing: state.isEditing,
-    toggleEdit: (props.canEdit && toggleEdit) || undefined,
+    toggleEdit:
+      (isEditingMode(props) && props.canEdit && toggleEdit) || undefined,
     contents: state.content,
     title: state.title,
     definition: props.definition,
