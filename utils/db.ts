@@ -33,14 +33,18 @@ if (MYSQL_USE_POOL) {
  * Get a connection to the database
  */
 export async function getDb(): Promise<MySql> {
-  if (MYSQL_USE_POOL) {
-    const connection = await pool.getConnection();
-    return new MySql(connection, { logger, keepAlive: 0 });
-  }
+  try {
+    if (MYSQL_USE_POOL) {
+      const connection = await pool.getConnection();
+      return new MySql(connection, { logger, keepAlive: 0 });
+    }
 
-  if (!db) {
-    const connection = await createConnection(connectionConfig);
-    db = new MySql(connection, { logger });
+    if (!db) {
+      const connection = await createConnection(connectionConfig);
+      db = new MySql(connection, { logger });
+    }
+  } catch (e) {
+    logger.error(`Can't connect to the database. ${e}`);
   }
 
   return db;
@@ -52,7 +56,7 @@ export async function getDb(): Promise<MySql> {
  */
 export async function initDb(options: InitDbOptions): Promise<void> {
   const db = await getDb();
-  await db.initDb(options);
+  db && (await db.initDb(options));
 }
 
 /**
