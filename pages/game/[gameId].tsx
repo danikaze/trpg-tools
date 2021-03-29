@@ -44,10 +44,10 @@ export const getServerSideProps = userRequiredServerSideProps<Props, Query>(
     } = ctx;
     const gameId = ctx.params?.gameId;
 
-    const [game, noteDefinitions, updateNotesApiKeys] = await Promise.all([
+    const [game, noteDefinitions, apiKeys] = await Promise.all([
       (user && gameId && selectGameDetails(user, gameId)) || null,
       (user && gameId && getUserNoteDefinitions(user)) || null,
-      (user && selectUserKeys(user, 'updateNote')) || null,
+      (user && selectUserKeys(user, ['updateNote', 'selectNote'])) || null,
     ]);
     if (!game || !noteDefinitions) return { props: notValidProps };
 
@@ -62,7 +62,7 @@ export const getServerSideProps = userRequiredServerSideProps<Props, Query>(
       notes,
       selectednoteDefId,
       game,
-      updateNotesApiKeys,
+      apiKeys,
     };
 
     return {

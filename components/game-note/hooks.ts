@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import {
+  callCreateSelectNoteApiKey,
+  callDeleteSelectNoteApiKey,
+} from '@api/ak/select-note/client';
+import {
   callCreateUpdateNoteApiKey,
   callDeleteUpdateNoteApiKey,
 } from '@api/ak/update-note/client';
@@ -15,7 +19,8 @@ type State = {
   isEditing: boolean;
   title: UpdateNoteData['title'];
   content: UpdateNoteData['content'];
-  apiKey?: ApiKeyData<'updateNote'>;
+  apiKeySelect?: ApiKeyData<'selectNote'>;
+  apiKeyUpdate?: ApiKeyData<'updateNote'>;
   user: UserAuthData;
 };
 
@@ -29,7 +34,8 @@ export function useGameNote(props: Props) {
     isEditing: !isEditingMode(props),
     title: isEditingMode(props) ? props.data.title : '',
     content: isEditingMode(props) ? { ...props.data.content } : {},
-    apiKey: isEditingMode(props) ? props.apiKey : undefined,
+    apiKeyUpdate: isEditingMode(props) ? props.apiKeyUpdate : undefined,
+    apiKeySelect: isEditingMode(props) ? props.apiKeySelect : undefined,
     user: useUserData()!,
   });
 
@@ -91,18 +97,16 @@ export function useGameNote(props: Props) {
     props.onDelete(props.definition.noteDefId, props.data.noteId);
   }
 
-  async function createApiKey() {
-    if (!isEditingMode(props) || !state.user || state.apiKey) return;
+  async function createApiKeySelect() {
+    if (!isEditingMode(props) || !state.user || state.apiKeySelect) return;
 
-    const apiKeyId = await callCreateUpdateNoteApiKey(
-      props.data.noteId,
-      props.definition.noteDefId
-    );
+    const apiKeyId = await callCreateSelectNoteApiKey(props.data.noteId);
 
     setState((state) => ({
       ...state,
-      apiKey: {
+      apiKeySelect: {
         apiKeyId,
+        type: 'selectNote',
         userId: state.user.userId,
         data: {
           noteId: props.data.noteId,
@@ -112,16 +116,55 @@ export function useGameNote(props: Props) {
     }));
   }
 
-  async function deleteApiKey() {
-    if (!state.user || !state.apiKey) return;
-    const doIt = confirm(`Delete api key ${state.apiKey.apiKeyId}?`);
+  async function deleteApiKeySelect() {
+    if (!state.user || !state.apiKeySelect) return;
+    const doIt = confirm(
+      `Delete the select API key ${state.apiKeySelect.apiKeyId}?`
+    );
     if (!doIt) return;
 
-    await callDeleteUpdateNoteApiKey(state.apiKey.apiKeyId);
+    await callDeleteSelectNoteApiKey(state.apiKeySelect.apiKeyId);
 
     setState((state) => ({
       ...state,
-      apiKey: undefined,
+      apiKeySelect: undefined,
+    }));
+  }
+
+  async function createApiKeyUpdate() {
+    if (!isEditingMode(props) || !state.user || state.apiKeyUpdate) return;
+
+    const apiKeyId = await callCreateUpdateNoteApiKey(
+      props.data.noteId,
+      props.definition.noteDefId
+    );
+
+    setState((state) => ({
+      ...state,
+      apiKeyUpdate: {
+        apiKeyId,
+        type: 'updateNote',
+        userId: state.user.userId,
+        data: {
+          noteId: props.data.noteId,
+          noteDefId: props.definition.noteDefId,
+        },
+      },
+    }));
+  }
+
+  async function deleteApiKeyUpdate() {
+    if (!state.user || !state.apiKeyUpdate) return;
+    const doIt = confirm(
+      `Delete the update API key ${state.apiKeyUpdate.apiKeyId}?`
+    );
+    if (!doIt) return;
+
+    await callDeleteUpdateNoteApiKey(state.apiKeyUpdate.apiKeyId);
+
+    setState((state) => ({
+      ...state,
+      apiKeyUpdate: undefined,
     }));
   }
 
@@ -133,15 +176,25 @@ export function useGameNote(props: Props) {
       : props.onSave && saveNewNote,
     confirmAndDeleteNote:
       isEditingMode(props) && props.onDelete && confirmAndDeleteNote,
-    createApiKey:
-      isEditingMode(props) && state.user && !state.apiKey && createApiKey,
-    deleteApiKey: state.user && state.apiKey && deleteApiKey,
+    createApiKeySelect:
+      isEditingMode(props) &&
+      state.user &&
+      !state.apiKeySelect &&
+      createApiKeySelect,
+    deleteApiKeySelect: state.user && state.apiKeySelect && deleteApiKeySelect,
+    createApiKeyUpdate:
+      isEditingMode(props) &&
+      state.user &&
+      !state.apiKeyUpdate &&
+      createApiKeyUpdate,
+    deleteApiKeyUpdate: state.user && state.apiKeyUpdate && deleteApiKeyUpdate,
     isEditing: state.isEditing,
     toggleEdit:
       (isEditingMode(props) && props.canEdit && toggleEdit) || undefined,
     contents: state.content,
     title: state.title,
     definition: props.definition,
-    apiKey: state.apiKey,
+    apiKeySelect: state.apiKeySelect,
+    apiKeyUpdate: state.apiKeyUpdate,
   };
 }

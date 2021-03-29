@@ -30,7 +30,8 @@ export interface EditProps extends BaseProps {
   mode: 'edit';
   canEdit: boolean;
   data: NoteData;
-  apiKey?: ApiKeyData<'updateNote'> | undefined;
+  apiKeySelect?: ApiKeyData<'selectNote'> | undefined;
+  apiKeyUpdate?: ApiKeyData<'updateNote'> | undefined;
   onDelete?: (
     noteDefId: RetrievedNoteDefinition['noteDefId'],
     noteId: NoteData['noteId']
@@ -90,33 +91,45 @@ function renderActions(
     toggleEdit,
     saveUpdate,
     confirmAndDeleteNote,
-    apiKey,
-    createApiKey,
-    deleteApiKey,
+    apiKeySelect,
+    createApiKeySelect,
+    deleteApiKeySelect,
+    apiKeyUpdate,
+    createApiKeyUpdate,
+    deleteApiKeyUpdate,
   }: ReturnType<typeof useGameNote>
 ): JSX.Element {
+  // Save/Edit/Delete buttons
   const updateButton = isEditing && saveUpdate && (
     <Button onClick={saveUpdate}>Save</Button>
   );
-
   const editButton = toggleEdit && (
     <Button onClick={toggleEdit}>{isEditing ? 'Cancel' : 'Edit'}</Button>
   );
-
   const deleteButton = confirmAndDeleteNote && (
     <Button onClick={confirmAndDeleteNote}>Delete</Button>
   );
 
-  const apiKeyIcon = apiKey && (
-    <div className={styles.apiKeyIcon}>AK: {apiKey.apiKeyId}</div>
+  // API Key Select
+  const apiKeySelectIcon = apiKeySelect && (
+    <div className={styles.apiKeyIcon}>Select AK: {apiKeySelect.apiKeyId}</div>
+  );
+  const createApiKeySelectButton = createApiKeySelect && (
+    <Button onClick={createApiKeySelect}>Create Select AK</Button>
+  );
+  const deleteApiKeySelectButton = deleteApiKeySelect && (
+    <Button onClick={deleteApiKeySelect}>Remove Select AK</Button>
   );
 
-  const createApiKeyButton = createApiKey && (
-    <Button onClick={createApiKey}>Create AK</Button>
+  // API Key Update
+  const apiKeyUpdateIcon = apiKeyUpdate && (
+    <div className={styles.apiKeyIcon}>Update AK: {apiKeyUpdate.apiKeyId}</div>
   );
-
-  const deleteApiKeyButton = deleteApiKey && (
-    <Button onClick={deleteApiKey}>Remove AK</Button>
+  const createApiKeyUpdateButton = createApiKeyUpdate && (
+    <Button onClick={createApiKeyUpdate}>Create Update AK</Button>
+  );
+  const deleteApiKeyUpdateButton = deleteApiKeyUpdate && (
+    <Button onClick={deleteApiKeyUpdate}>Remove Update AK</Button>
   );
 
   return (
@@ -125,9 +138,14 @@ function renderActions(
       {editButton}
       {deleteButton}
       <div className={styles.apiKey}>
-        {apiKeyIcon}
-        {createApiKeyButton}
-        {deleteApiKeyButton}
+        {apiKeySelectIcon}
+        {createApiKeySelectButton}
+        {deleteApiKeySelectButton}
+      </div>
+      <div className={styles.apiKey}>
+        {apiKeyUpdateIcon}
+        {createApiKeyUpdateButton}
+        {deleteApiKeyUpdateButton}
       </div>
     </div>
   );

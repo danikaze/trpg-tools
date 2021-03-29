@@ -12,7 +12,7 @@ export interface DbApiKey extends TimestampTable {
 }
 
 type SelectKey = Pick<DbApiKey, 'userId' | 'data'>;
-type SelectUserKeys = Pick<DbApiKey, 'apiKeyId' | 'data'>;
+type SelectUserKeys = Pick<DbApiKey, 'apiKeyId' | 'type' | 'data'>;
 
 export const sql = {
   insertApiKey: (
@@ -23,7 +23,10 @@ export const sql = {
     return db.insertOne(queries.insertApiKey, { ...params, time });
   },
 
-  deleteApiKey: (db: MySql, params: Pick<DbApiKey, 'apiKeyId' | 'userId'>) => {
+  deleteApiKey: (
+    db: MySql,
+    params: Pick<DbApiKey, 'apiKeyId' | 'type' | 'userId'>
+  ) => {
     return db.delete(queries.deleteApiKey, params);
   },
 
@@ -31,7 +34,10 @@ export const sql = {
     return db.queryOne<SelectKey>(queries.selectApiKey, params);
   },
 
-  selectUserApiKeys: (db: MySql, params: Pick<DbApiKey, 'userId' | 'type'>) => {
+  selectUserApiKeys: (
+    db: MySql,
+    params: { userId: DbApiKey['userId']; types: DbApiKey['type'][] }
+  ) => {
     return db.query<SelectUserKeys>(queries.selectUserApiKeys, params);
   },
 };
@@ -45,7 +51,9 @@ const queries = {
 
   deleteApiKey: `
     DELETE FROM api_keys
-      WHERE apiKeyId = :apiKeyId AND userId = :userId
+      WHERE apiKeyId = :apiKeyId
+        AND type = :type
+        AND userId = :userId
   `,
 
   selectApiKey: `
@@ -56,9 +64,9 @@ const queries = {
   `,
 
   selectUserApiKeys: `
-    SELECT apiKeyId, data
+    SELECT apiKeyId, type, data
       FROM api_keys
       WHERE userId = :userId
-        AND type = :type
+        AND type IN (:types)
   `,
 };

@@ -14,7 +14,7 @@ export interface Props {
   noteDefinitions: RetrievedNoteDefinition[] | null;
   selectednoteDefId: RetrievedNoteDefinition['noteDefId'] | null;
   notes: Paginated<NoteData> | null;
-  updateNotesApiKeys: ApiKeyData<'updateNote'>[];
+  apiKeys: ApiKeyData<'selectNote' | 'updateNote'>[];
 }
 
 const useStyles = makeStyles(() => ({
@@ -42,7 +42,7 @@ export const Game: FunctionComponent<Props> = (props) => {
         noteDefinitions={props.noteDefinitions}
         selectednoteDefId={props.selectednoteDefId}
         notes={props.notes}
-        updateNotesApiKeys={props.updateNotesApiKeys}
+        apiKeys={props.apiKeys}
       />
     </div>
   );

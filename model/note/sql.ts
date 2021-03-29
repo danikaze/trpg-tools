@@ -49,6 +49,13 @@ export const sql = {
     return db.insertOne(queries.insertNoteContent, params);
   },
 
+  selectNote: (
+    db: MySql,
+    params: { userId: DbUser['userId']; noteId: DbNote['noteId'] }
+  ) => {
+    return db.queryOne<DbNote>(queries.selectNote, params);
+  },
+
   paginateUserNotes: (
     db: MySql,
     page: number,
@@ -126,6 +133,12 @@ const queries = {
       :noteFieldDefId,
       :value
     )
+  `,
+  selectNote: `
+    SELECT noteId, noteDefId, title, createdOn, updatedOn
+      FROM notes
+      WHERE noteId = :noteId
+        AND userId = :userId
   `,
   selectUserNotesOfType: `
     SELECT noteId, title, createdOn, updatedOn

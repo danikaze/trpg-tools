@@ -4,9 +4,11 @@ import { DbUser } from '../user/sql';
 import { UserAuthData } from '../user';
 import { DbApiKey, sql } from './sql';
 
+export type ApiKeySelectNoteData = Pick<UpdateNoteData, 'noteId'>;
 export type ApiKeyUpdateNoteData = Pick<UpdateNoteData, 'noteId' | 'noteDefId'>;
 
 export interface ApiKeyTypeData {
+  selectNote: ApiKeySelectNoteData;
   updateNote: ApiKeyUpdateNoteData;
 }
 
@@ -14,6 +16,7 @@ export type ApiKeyType = keyof ApiKeyTypeData;
 
 export interface ApiKeyData<T extends ApiKeyType> {
   apiKeyId: DbApiKey['apiKeyId'];
+  type: ApiKeyType;
   userId: DbUser['userId'];
   data: ApiKeyTypeData[T];
 }
@@ -38,11 +41,13 @@ export async function createApiKey<T extends ApiKeyType>(
 
 export async function deleteApiKey(
   user: UserAuthData,
+  type: ApiKeyType,
   apiKeyId: DbApiKey['apiKeyId']
 ): Promise<void> {
   const db = await getDb();
   const res = await sql.deleteApiKey(db, {
     apiKeyId,
+    type,
     userId: user.userId,
   });
 
@@ -52,7 +57,7 @@ export async function deleteApiKey(
 }
 
 export async function selectApiKey<T extends ApiKeyType>(
-  type: DbApiKey['type'],
+  type: T,
   apiKeyId: DbApiKey['apiKeyId']
 ): Promise<ApiKeyData<T>> {
   const db = await getDb();
@@ -65,6 +70,7 @@ export async function selectApiKey<T extends ApiKeyType>(
   const data = JSON.parse(res.data) as ApiKeyTypeData[T];
   return {
     apiKeyId,
+    type,
     data,
     userId: res.userId,
   };
@@ -72,11 +78,11 @@ export async function selectApiKey<T extends ApiKeyType>(
 
 export async function selectUserKeys<T extends ApiKeyType>(
   user: UserAuthData,
-  type: T
+  types: T[]
 ): Promise<ApiKeyData<T>[]> {
   const db = await getDb();
   const res = await sql.selectUserApiKeys(db, {
-    type,
+    types,
     userId: user.userId,
   });
 
@@ -85,6 +91,7 @@ export async function selectUserKeys<T extends ApiKeyType>(
 
     return {
       data,
+      type: row.type,
       apiKeyId: row.apiKeyId,
       userId: user.userId,
     };

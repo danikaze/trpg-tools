@@ -79,6 +79,37 @@ export async function createNote(
   return { noteId, createdOn, updatedOn: createdOn };
 }
 
+export async function selectNote(
+  user: UserAuthData,
+  noteId: DbNote['noteId']
+): Promise<NoteData | undefined> {
+  const db = await getDb();
+
+  // note
+  const [note, contents] = await Promise.all([
+    sql.selectNote(db, {
+      noteId,
+      userId: user.userId,
+    }),
+    sql.selectNoteContents(db, {
+      userId: user.userId,
+      noteIds: [noteId],
+    }),
+  ]);
+
+  if (!note) return;
+  return {
+    noteId: note.noteId,
+    title: note.title,
+    createdOn: note.createdOn,
+    updatedOn: note.updatedOn,
+    content: contents.reduce((content, field) => {
+      content[field.noteFieldDefId] = field.value;
+      return content;
+    }, {} as NoteData['content']),
+  };
+}
+
 export async function selectNotes(
   user: UserAuthData,
   noteDefId: DbNoteDefinition['noteDefId'],

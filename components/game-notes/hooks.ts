@@ -10,13 +10,18 @@ import { UpdateNoteData, NoteData, CreateNoteData } from '@model/note';
 import { RetrievedNoteDefinition } from '@model/note-definition';
 import { Props } from '.';
 import { ApiKeyData } from '@model/api-key';
-import { array2map } from '@utils/array2map';
 
 interface State {
   noteDefinitions: RetrievedNoteDefinition[];
   selectednoteDefId: RetrievedNoteDefinition['noteDefId'];
   notes: Record<RetrievedNoteDefinition['noteDefId'], Paginated<NoteData>>;
-  apiKeys: Record<NoteData['noteId'], ApiKeyData<'updateNote'>>;
+  apiKeys: Record<
+    NoteData['noteId'],
+    {
+      selectNote?: ApiKeyData<'selectNote'>;
+      updateNote?: ApiKeyData<'updateNote'>;
+    }
+  >;
   isEditingNewNote: boolean;
 }
 
@@ -29,7 +34,16 @@ export function useGameNotes(props: Props) {
     notes: {
       [props.selectednoteDefId]: props.notes,
     },
-    apiKeys: array2map(props.updateNotesApiKeys, (item) => item.data.noteId),
+    apiKeys: props.apiKeys.reduce((acc, apiKey) => {
+      const { noteId } = apiKey.data;
+      if (!acc[noteId]) {
+        acc[noteId] = {};
+      }
+      acc[noteId][apiKey.type as 'updateNote'] = apiKey as ApiKeyData<
+        'updateNote'
+      >;
+      return acc;
+    }, {} as State['apiKeys']),
     isEditingNewNote: false,
   });
 
