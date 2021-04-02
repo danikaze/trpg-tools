@@ -5,8 +5,11 @@ import next from 'next';
 import { useAuth } from './auth';
 import { initDb } from '../utils/db';
 import { dbUpdates } from '../model/init';
+import { getLogger } from '../utils/logger';
+import { runWebSocketServer } from './ws';
 
 export function run() {
+  const logger = getLogger('server');
   const port = Number(process.env.PORT || '3000');
   const app = next({ dev: !IS_PRODUCTION });
   const handle = app.getRequestHandler();
@@ -34,11 +37,12 @@ export function run() {
 
     server.listen(port, () => {
       // tslint:disable-next-line:no-console
-      console.log(
-        `> ${
+      logger.info(
+        `${
           IS_PRODUCTION ? 'Production' : 'Development'
         } server listening on http://localhost:${port}`
       );
+      runWebSocketServer(server);
     });
   });
 }
