@@ -30,7 +30,6 @@ export interface EditProps extends BaseProps {
   mode: 'edit';
   canEdit: boolean;
   data: NoteData;
-  apiKeySelect?: ApiKeyData<'selectNote'> | undefined;
   apiKeyUpdate?: ApiKeyData<'updateNote'> | undefined;
   onDelete?: (
     noteDefId: RetrievedNoteDefinition['noteDefId'],
@@ -91,9 +90,6 @@ function renderActions(
     toggleEdit,
     saveUpdate,
     confirmAndDeleteNote,
-    apiKeySelect,
-    createApiKeySelect,
-    deleteApiKeySelect,
     apiKeyUpdate,
     createApiKeyUpdate,
     deleteApiKeyUpdate,
@@ -108,17 +104,6 @@ function renderActions(
   );
   const deleteButton = confirmAndDeleteNote && (
     <Button onClick={confirmAndDeleteNote}>Delete</Button>
-  );
-
-  // API Key Select
-  const apiKeySelectIcon = apiKeySelect && (
-    <div className={styles.apiKeyIcon}>Select AK: {apiKeySelect.apiKeyId}</div>
-  );
-  const createApiKeySelectButton = createApiKeySelect && (
-    <Button onClick={createApiKeySelect}>Create Select AK</Button>
-  );
-  const deleteApiKeySelectButton = deleteApiKeySelect && (
-    <Button onClick={deleteApiKeySelect}>Remove Select AK</Button>
   );
 
   // API Key Update
@@ -137,11 +122,6 @@ function renderActions(
       {updateButton}
       {editButton}
       {deleteButton}
-      <div className={styles.apiKey}>
-        {apiKeySelectIcon}
-        {createApiKeySelectButton}
-        {deleteApiKeySelectButton}
-      </div>
       <div className={styles.apiKey}>
         {apiKeyUpdateIcon}
         {createApiKeyUpdateButton}

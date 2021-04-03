@@ -18,7 +18,6 @@ interface State {
   apiKeys: Record<
     NoteData['noteId'],
     {
-      selectNote?: ApiKeyData<'selectNote'>;
       updateNote?: ApiKeyData<'updateNote'>;
     }
   >;

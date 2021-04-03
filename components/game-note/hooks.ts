@@ -1,9 +1,5 @@
 import { useState } from 'react';
 import {
-  callCreateSelectNoteApiKey,
-  callDeleteSelectNoteApiKey,
-} from '@api/ak/select-note/client';
-import {
   callCreateUpdateNoteApiKey,
   callDeleteUpdateNoteApiKey,
 } from '@api/ak/update-note/client';
@@ -19,7 +15,6 @@ type State = {
   isEditing: boolean;
   title: UpdateNoteData['title'];
   content: UpdateNoteData['content'];
-  apiKeySelect?: ApiKeyData<'selectNote'>;
   apiKeyUpdate?: ApiKeyData<'updateNote'>;
   user: UserAuthData;
 };
@@ -35,7 +30,6 @@ export function useGameNote(props: Props) {
     title: isEditingMode(props) ? props.data.title : '',
     content: isEditingMode(props) ? { ...props.data.content } : {},
     apiKeyUpdate: isEditingMode(props) ? props.apiKeyUpdate : undefined,
-    apiKeySelect: isEditingMode(props) ? props.apiKeySelect : undefined,
     user: useUserData()!,
   });
 
@@ -97,40 +91,6 @@ export function useGameNote(props: Props) {
     props.onDelete(props.definition.noteDefId, props.data.noteId);
   }
 
-  async function createApiKeySelect() {
-    if (!isEditingMode(props) || !state.user || state.apiKeySelect) return;
-
-    const apiKeyId = await callCreateSelectNoteApiKey(props.data.noteId);
-
-    setState((state) => ({
-      ...state,
-      apiKeySelect: {
-        apiKeyId,
-        type: 'selectNote',
-        userId: state.user.userId,
-        data: {
-          noteId: props.data.noteId,
-          noteDefId: props.definition.noteDefId,
-        },
-      },
-    }));
-  }
-
-  async function deleteApiKeySelect() {
-    if (!state.user || !state.apiKeySelect) return;
-    const doIt = confirm(
-      `Delete the select API key ${state.apiKeySelect.apiKeyId}?`
-    );
-    if (!doIt) return;
-
-    await callDeleteSelectNoteApiKey(state.apiKeySelect.apiKeyId);
-
-    setState((state) => ({
-      ...state,
-      apiKeySelect: undefined,
-    }));
-  }
-
   async function createApiKeyUpdate() {
     if (!isEditingMode(props) || !state.user || state.apiKeyUpdate) return;
 
@@ -176,12 +136,6 @@ export function useGameNote(props: Props) {
       : props.onSave && saveNewNote,
     confirmAndDeleteNote:
       isEditingMode(props) && props.onDelete && confirmAndDeleteNote,
-    createApiKeySelect:
-      isEditingMode(props) &&
-      state.user &&
-      !state.apiKeySelect &&
-      createApiKeySelect,
-    deleteApiKeySelect: state.user && state.apiKeySelect && deleteApiKeySelect,
     createApiKeyUpdate:
       isEditingMode(props) &&
       state.user &&
@@ -194,7 +148,6 @@ export function useGameNote(props: Props) {
     contents: state.content,
     title: state.title,
     definition: props.definition,
-    apiKeySelect: state.apiKeySelect,
     apiKeyUpdate: state.apiKeyUpdate,
   };
 }

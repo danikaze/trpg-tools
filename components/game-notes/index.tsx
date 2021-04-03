@@ -16,7 +16,7 @@ export interface Props {
   noteDefinitions: RetrievedNoteDefinition[];
   selectednoteDefId?: RetrievedNoteDefinition['noteDefId'] | null;
   notes: Paginated<NoteData>;
-  apiKeys: ApiKeyData<'selectNote' | 'updateNote'>[];
+  apiKeys: ApiKeyData<'updateNote'>[];
   className?: string;
 }
 
@@ -63,7 +63,6 @@ export const GameNotes: FunctionComponent<Props> = ({
         canEdit={true}
         definition={noteDef}
         data={note}
-        apiKeySelect={apiKeys[note.noteId]?.selectNote}
         apiKeyUpdate={apiKeys[note.noteId]?.updateNote}
         onDelete={onDelete}
         onUpdate={onUpdateNote}

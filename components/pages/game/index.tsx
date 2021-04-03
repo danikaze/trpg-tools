@@ -14,7 +14,7 @@ export interface Props {
   noteDefinitions: RetrievedNoteDefinition[] | null;
   selectednoteDefId: RetrievedNoteDefinition['noteDefId'] | null;
   notes: Paginated<NoteData> | null;
-  apiKeys: ApiKeyData<'selectNote' | 'updateNote'>[];
+  apiKeys: ApiKeyData<'updateNote'>[];
 }
 
 const useStyles = makeStyles(() => ({

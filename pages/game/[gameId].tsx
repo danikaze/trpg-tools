@@ -47,7 +47,7 @@ export const getServerSideProps = userRequiredServerSideProps<Props, Query>(
     const [game, noteDefinitions, apiKeys] = await Promise.all([
       (user && gameId && selectGameDetails(user, gameId)) || null,
       (user && gameId && getUserNoteDefinitions(user)) || null,
-      (user && selectUserKeys(user, ['updateNote', 'selectNote'])) || null,
+      (user && selectUserKeys(user, ['updateNote'])) || null,
     ]);
     if (!game || !noteDefinitions) return { props: notValidProps };
 
