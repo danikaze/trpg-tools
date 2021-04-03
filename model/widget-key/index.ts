@@ -1,9 +1,9 @@
 import { generateUniqueId, getDb } from '../../utils/db';
+import { getSystemNotePcFields } from '../global';
 import { selectNote } from '../note';
 import { DbUser } from '../user/sql';
 import { UserAuthData } from '../user';
 import { DbWidgetKey, sql } from './sql';
-import { pcNoteFields } from './constants';
 import {
   WidgetKeyType as WKT,
   WidgetKeyTypeData,
@@ -143,9 +143,10 @@ export async function getWidgetData<T extends WidgetKeyType>(
   data: WidgetKeyTypeData[T]
 ): Promise<WidgetProps[T]> {
   const note = await selectNote(user, data.noteId);
+  const fields = await getSystemNotePcFields();
 
   return {
     note,
-    fields: pcNoteFields,
+    fields,
   } as WidgetProps[T];
 }

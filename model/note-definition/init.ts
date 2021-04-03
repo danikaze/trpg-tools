@@ -3,7 +3,6 @@ import {
   createNoteDefinition,
   CreateNoteDefinitionData,
   CreateNoteFieldDefinition,
-  NoteDefinition,
 } from '.';
 import { SYSTEM_USER } from '../user';
 import {
@@ -19,10 +18,26 @@ import {
   MYSQL_TYPE_PUBLIC_ID,
 } from '../constants/sql';
 
-export const systemNoteTypes = {} as Record<
-  'locations' | 'npcs' | 'pcs',
-  NoteDefinition
->;
+export const NOTE_DEFINITION_NAME_PCS = 'PCs';
+export const NOTE_DEFINITION_NAME_NPCS = 'NPCs';
+export const NOTE_DEFINITION_NAME_LOCATIONS = 'Locations';
+
+export const NOTE_DEF_FIELD_NAME_DESCRIPTION = 'Description';
+export const NOTE_DEF_FIELD_NAME_ALIGNMENT = 'Alignment';
+export const NOTE_DEF_FIELD_NAME_LOCATION = 'Location';
+export const NOTE_DEF_FIELD_NAME_RACE = 'Race';
+export const NOTE_DEF_FIELD_NAME_CLASS = 'Class';
+export const NOTE_DEF_FIELD_NAME_LEVEL = 'Level';
+export const NOTE_DEF_FIELD_NAME_HP = 'Hit Points';
+export const NOTE_DEF_FIELD_NAME_HP_MAX = 'Max Hit Points';
+export const NOTE_DEF_FIELD_NAME_HP_TEMP = 'Temporary Hit Points';
+export const NOTE_DEF_FIELD_NAME_STRENGTH = 'Strength';
+export const NOTE_DEF_FIELD_NAME_DEXTERITY = 'Dexterity';
+export const NOTE_DEF_FIELD_NAME_CONSTITUTION = 'Constitution';
+export const NOTE_DEF_FIELD_NAME_INTELLIGENCE = 'Intelligence';
+export const NOTE_DEF_FIELD_NAME_WISDOM = 'Wisdom';
+export const NOTE_DEF_FIELD_NAME_CHARISMA = 'Charisma';
+export const NOTE_DEF_FIELD_NAME_AC = 'Armor Class';
 
 export const initNoteDefinition: DbInitFunction = async (db) => {
   await initNoteDefinitionTables(db);
@@ -80,11 +95,11 @@ const initNoteDefinitionData: DbInitFunction = async () => {
     CreateNoteFieldDefinition
   > = {
     description: {
-      name: 'Description',
+      name: NOTE_DEF_FIELD_NAME_DESCRIPTION,
       type: 'textarea',
     },
     alignment: {
-      name: 'Alignment',
+      name: NOTE_DEF_FIELD_NAME_ALIGNMENT,
       type: 'select',
       options: {
         required: false,
@@ -102,11 +117,11 @@ const initNoteDefinitionData: DbInitFunction = async () => {
       },
     },
     location: {
-      name: 'Location',
+      name: NOTE_DEF_FIELD_NAME_LOCATION,
       type: 'textfield',
     },
     charRace: {
-      name: 'Race',
+      name: NOTE_DEF_FIELD_NAME_RACE,
       type: 'select',
       options: {
         options: [
@@ -132,7 +147,7 @@ const initNoteDefinitionData: DbInitFunction = async () => {
       },
     },
     charClass: {
-      name: 'Class',
+      name: NOTE_DEF_FIELD_NAME_CLASS,
       type: 'select',
       options: {
         options: [
@@ -155,7 +170,7 @@ const initNoteDefinitionData: DbInitFunction = async () => {
       },
     },
     charLevel: {
-      name: 'Level',
+      name: NOTE_DEF_FIELD_NAME_LEVEL,
       type: 'int',
       options: {
         min: 1,
@@ -163,43 +178,43 @@ const initNoteDefinitionData: DbInitFunction = async () => {
       },
     },
     charHp: {
-      name: 'Hit Points',
+      name: NOTE_DEF_FIELD_NAME_HP,
       type: 'int',
     },
     charMaxHp: {
-      name: 'Max Hit Points',
+      name: NOTE_DEF_FIELD_NAME_HP_MAX,
       type: 'int',
     },
     tempHp: {
-      name: 'Temporary Hit Points',
+      name: NOTE_DEF_FIELD_NAME_HP_TEMP,
       type: 'int',
     },
     strength: {
-      name: 'Strength',
+      name: NOTE_DEF_FIELD_NAME_STRENGTH,
       type: 'int',
     },
     dexterity: {
-      name: 'Dexterity',
+      name: NOTE_DEF_FIELD_NAME_DEXTERITY,
       type: 'int',
     },
     constitution: {
-      name: 'Constitution',
+      name: NOTE_DEF_FIELD_NAME_CONSTITUTION,
       type: 'int',
     },
     intelligence: {
-      name: 'Intelligence',
+      name: NOTE_DEF_FIELD_NAME_INTELLIGENCE,
       type: 'int',
     },
     wisdom: {
-      name: 'Wisdom',
+      name: NOTE_DEF_FIELD_NAME_WISDOM,
       type: 'int',
     },
     charisma: {
-      name: 'Charisma',
+      name: NOTE_DEF_FIELD_NAME_CHARISMA,
       type: 'int',
     },
     armorClass: {
-      name: 'ArmorClass',
+      name: NOTE_DEF_FIELD_NAME_AC,
       type: 'int',
     },
   };
@@ -207,27 +222,24 @@ const initNoteDefinitionData: DbInitFunction = async () => {
   /**
    * Descriptions for the system note types
    */
-  const systemNoteTypeDefinitions: Record<
-    keyof typeof systemNoteTypes,
-    CreateNoteDefinitionData
-  > = {
-    locations: {
-      name: 'Locations',
+  const systemNoteTypeDefinitions: CreateNoteDefinitionData[] = [
+    {
+      name: NOTE_DEFINITION_NAME_LOCATIONS,
       fields: [
         systemNoteFieldDefinitions.description,
         systemNoteFieldDefinitions.alignment,
       ],
     },
-    npcs: {
-      name: 'NPCs',
+    {
+      name: NOTE_DEFINITION_NAME_NPCS,
       fields: [
         systemNoteFieldDefinitions.description,
         systemNoteFieldDefinitions.alignment,
         systemNoteFieldDefinitions.location,
       ],
     },
-    pcs: {
-      name: 'PCs',
+    {
+      name: NOTE_DEFINITION_NAME_PCS,
       fields: [
         systemNoteFieldDefinitions.alignment,
         systemNoteFieldDefinitions.charRace,
@@ -245,12 +257,11 @@ const initNoteDefinitionData: DbInitFunction = async () => {
         systemNoteFieldDefinitions.armorClass,
       ],
     },
-  };
+  ];
 
   await Promise.all(
-    Object.entries(systemNoteTypeDefinitions).map(async ([key, def]) => {
-      const note = await createNoteDefinition(SYSTEM_USER, def);
-      systemNoteTypes[key as keyof typeof systemNoteTypes] = note;
-    })
+    Object.values(systemNoteTypeDefinitions).map((def) =>
+      createNoteDefinition(SYSTEM_USER, def)
+    )
   );
 };

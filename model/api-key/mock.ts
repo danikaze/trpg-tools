@@ -1,10 +1,12 @@
 import { DbInitFunction } from '../../utils/mysql';
-import { systemNoteTypes } from '../note-definition/init';
 import { devUsers } from '../user/mock';
 import { createApiKey } from '.';
 import { devNotes } from '../note/mock';
+import { getSystemNoteDefinitions } from '../global';
 
 export const apiKeyDevData: DbInitFunction = async (db) => {
+  const systemNoteTypes = await getSystemNoteDefinitions();
+
   const pcRungretNote = devNotes[systemNoteTypes.pcs.noteDefId].find(
     (note) => note.title === 'Rungret Ironfist'
   );
