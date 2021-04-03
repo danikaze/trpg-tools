@@ -26,6 +26,8 @@ export interface DbGameShareLinks {
   permission: GamePermission;
 }
 
+export type DbGameName = Pick<DbGame, 'gameId' | 'name'>;
+
 type SelectGame = Pick<
   DbGame,
   'gameId' | 'name' | 'description' | 'createdOn' | 'updatedOn'
@@ -98,6 +100,13 @@ export const sql = {
       countSql: queries.countUserGames,
       countParams: params,
     });
+  },
+
+  selectGameNames: (
+    db: MySql,
+    params: { userId: DbGame['userId']; gameIds: DbGame['gameId'][] }
+  ) => {
+    return db.query<DbGameName>(queries.selectGameNames, params);
   },
 
   insertGameShareLink: (
@@ -213,6 +222,12 @@ const queries = {
     ORDER BY g.updatedOn DESC
     LIMIT :rpp
     OFFSET :offset
+  `,
+  selectGameNames: `
+    SELECT gameId, name
+      FROM games
+      WHERE userId = :userId
+        AND gameId IN (:gameIds)
   `,
   countUserGames: `
     SELECT COUNT(*) AS total

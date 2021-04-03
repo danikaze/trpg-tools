@@ -17,6 +17,8 @@ export interface DbNoteDefinition extends TimestampTable {
   name: string;
 }
 
+export type DbNoteDefinitionName = Pick<DbNoteDefinition, 'noteDefId' | 'name'>;
+
 export interface DbNoteFieldDefinition {
   noteFieldDefId: number;
   noteDefId: DbNoteDefinition['noteDefId'];
@@ -67,6 +69,22 @@ export const sql = {
     );
   },
 
+  selectUserNoteDefinitionNames: (
+    db: MySql,
+    params: {
+      userId: DbNoteDefinition['userId'];
+      noteDefIds: DbNoteDefinition['noteDefId'][];
+    }
+  ) => {
+    return db.query<DbNoteDefinitionName>(
+      queries.selectUserNoteDefinitionNames,
+      {
+        ...params,
+        systemUserId: SYSTEM_USER.userId,
+      }
+    );
+  },
+
   selectNoteFieldsDefinitions: (
     db: MySql,
     params: { noteDefIds: DbNoteDefinition['noteDefId'][] }
@@ -110,6 +128,15 @@ const queries = {
       WHERE userId = :systemUserId
         OR userId = :userId
       ORDER BY updatedOn DESC
+  `,
+  selectUserNoteDefinitionNames: `
+    SELECT noteDefId, name
+      FROM notes_def
+      WHERE noteDefId IN (:noteDefIds)
+        AND (
+          userId = :systemUserId
+          OR userId = :userId
+        )
   `,
   countUserNoteDefinitions: `
     SELECT COUNT(*) AS total

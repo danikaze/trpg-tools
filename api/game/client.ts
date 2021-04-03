@@ -1,5 +1,5 @@
 import { GameUpdateData } from '@model/game';
-import { RetrievedNoteDefinition } from '@model/note-definition';
+import { NoteDefinition } from '@model/note-definition';
 import { DbGame } from '@model/game/sql';
 import { callApi } from '@utils/call-api';
 import {
@@ -63,7 +63,7 @@ export async function deleteGame(
 
 export async function getNotes(
   gameId: DbGame['gameId'],
-  noteDefId: RetrievedNoteDefinition['noteDefId'],
+  noteDefId: NoteDefinition['noteDefId'],
   page: number
 ): Promise<GetNotesResponse> {
   const res = await callApi<GetNotesResponse, GetNotesQuery, GetNotesBody>(

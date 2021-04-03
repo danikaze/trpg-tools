@@ -3,7 +3,7 @@ import { FunctionComponent } from 'react';
 import { makeStyles } from '@utils/styles';
 import { Paginated } from '@utils/mysql';
 import { DbGame } from '@model/game/sql';
-import { RetrievedNoteDefinition } from '@model/note-definition';
+import { NoteDefinition } from '@model/note-definition';
 import { NoteData } from '@model/note';
 import { ApiKeyData } from '@model/api-key';
 import { Button } from '@components/user-input/button';
@@ -13,8 +13,8 @@ import { useGameNotes } from './hooks';
 
 export interface Props {
   gameId: DbGame['gameId'];
-  noteDefinitions: RetrievedNoteDefinition[];
-  selectednoteDefId?: RetrievedNoteDefinition['noteDefId'] | null;
+  noteDefinitions: NoteDefinition[];
+  selectednoteDefId?: NoteDefinition['noteDefId'] | null;
   notes: Paginated<NoteData>;
   apiKeys: ApiKeyData<'updateNote'>[];
   className?: string;

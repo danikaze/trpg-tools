@@ -22,6 +22,7 @@ export interface GamePreviewData extends TimestampTable {
   permission: GamePermission;
 }
 
+export type GameNamesMapping = Record<string, DbGame['name']>;
 export interface GameDetailsData extends TimestampTable {
   gameId: DbGame['gameId'];
   userId: DbUser['userId'];
@@ -182,6 +183,22 @@ export async function selectUserGames(
       updatedOn: game.updatedOn,
     })),
   };
+}
+
+export async function selectGameNames(
+  user: UserAuthData,
+  gameIds: DbGame['gameId'][]
+): Promise<GameNamesMapping> {
+  const db = await getDb();
+  const res = await sql.selectGameNames(db, {
+    gameIds,
+    userId: user.userId,
+  });
+
+  return res.reduce((res, row) => {
+    res[row.gameId] = row.name;
+    return res;
+  }, {} as GameNamesMapping);
 }
 
 export async function shareGame(

@@ -1,6 +1,6 @@
 import { DbNoteDefinition, DbNoteFieldDefinition, FieldType, sql } from './sql';
-import { SYSTEM_USER, UserAuthData } from '../user';
-import { generateUniqueId, getDb, getTimestamp } from '../../utils/db';
+import { UserAuthData } from '../user';
+import { generateUniqueId, getDb } from '../../utils/db';
 
 interface NoteFieldDefinitionBase {
   noteFieldDefId: DbNoteFieldDefinition['noteFieldDefId'];
@@ -78,11 +78,7 @@ export interface NoteDefinition {
   fields: NoteFieldDefinition[];
 }
 
-export interface RetrievedNoteDefinition {
-  noteDefId: DbNoteDefinition['noteDefId'];
-  name: string;
-  fields: NoteFieldDefinition[];
-}
+export type NoteDefinitionNames = Record<string, DbNoteDefinition['name']>;
 
 export async function createNoteDefinition(
   user: UserAuthData,
@@ -150,7 +146,7 @@ export async function editNoteDefinition(): Promise<void> {}
 
 export async function getUserNoteDefinitions(
   user: UserAuthData
-): Promise<RetrievedNoteDefinition[]> {
+): Promise<NoteDefinition[]> {
   const db = await getDb();
 
   // get the note definitions
@@ -187,8 +183,24 @@ export async function getUserNoteDefinitions(
       noteDefId: note.noteDefId,
       name: note.name,
       fields: noteFields[note.noteDefId],
-    } as RetrievedNoteDefinition;
+    } as NoteDefinition;
   });
 
   return noteDefinitions;
+}
+
+export async function getNoteDefinitionNames(
+  user: UserAuthData,
+  noteDefIds: DbNoteDefinition['noteDefId'][]
+): Promise<NoteDefinitionNames> {
+  const db = await getDb();
+  const notes = await sql.selectUserNoteDefinitionNames(db, {
+    noteDefIds,
+    userId: user.userId,
+  });
+
+  return notes.reduce((res, note) => {
+    res[note.noteDefId] = note.name;
+    return res;
+  }, {} as NoteDefinitionNames);
 }

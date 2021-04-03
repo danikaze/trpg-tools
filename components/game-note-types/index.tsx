@@ -1,14 +1,14 @@
 import clsx from 'clsx';
 import { FunctionComponent } from 'react';
 import { makeStyles } from '@utils/styles';
-import { RetrievedNoteDefinition } from '@model/note-definition';
+import { NoteDefinition } from '@model/note-definition';
 import { Button } from '@components/user-input/button';
 
 export interface Props {
-  noteDefinitions: RetrievedNoteDefinition[];
-  selectednoteDefId?: RetrievedNoteDefinition['noteDefId'];
+  noteDefinitions: NoteDefinition[];
+  selectednoteDefId?: NoteDefinition['noteDefId'];
   className?: string;
-  onSelect?: (noteId: RetrievedNoteDefinition['noteDefId']) => void;
+  onSelect?: (noteId: NoteDefinition['noteDefId']) => void;
 }
 
 const useStyles = makeStyles(() => ({

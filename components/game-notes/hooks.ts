@@ -7,14 +7,14 @@ import {
 } from '@api/game/note/client';
 import { getNotes } from '@api/game/client';
 import { UpdateNoteData, NoteData, CreateNoteData } from '@model/note';
-import { RetrievedNoteDefinition } from '@model/note-definition';
+import { NoteDefinition } from '@model/note-definition';
 import { Props } from '.';
 import { ApiKeyData } from '@model/api-key';
 
 interface State {
-  noteDefinitions: RetrievedNoteDefinition[];
-  selectednoteDefId: RetrievedNoteDefinition['noteDefId'];
-  notes: Record<RetrievedNoteDefinition['noteDefId'], Paginated<NoteData>>;
+  noteDefinitions: NoteDefinition[];
+  selectednoteDefId: NoteDefinition['noteDefId'];
+  notes: Record<NoteDefinition['noteDefId'], Paginated<NoteData>>;
   apiKeys: Record<
     NoteData['noteId'],
     {
@@ -47,7 +47,7 @@ export function useGameNotes(props: Props) {
   });
 
   async function onDelete(
-    noteDefId: RetrievedNoteDefinition['noteDefId'],
+    noteDefId: NoteDefinition['noteDefId'],
     noteId: NoteData['noteId']
   ): Promise<void> {
     const noteList = state.notes[noteDefId].data;
@@ -117,7 +117,7 @@ export function useGameNotes(props: Props) {
   }
 
   async function selectNoteDefinition(
-    noteDefId: RetrievedNoteDefinition['noteDefId']
+    noteDefId: NoteDefinition['noteDefId']
   ): Promise<void> {
     let notes = state.notes;
     let selectedNotes = state.notes[noteDefId];
@@ -137,7 +137,7 @@ export function useGameNotes(props: Props) {
   }
 
   async function loadMoreNotes(
-    noteDefId: RetrievedNoteDefinition['noteDefId']
+    noteDefId: NoteDefinition['noteDefId']
   ): Promise<void> {
     const selectedNotes = state.notes[noteDefId];
     if (!selectedNotes.moreResults) return;

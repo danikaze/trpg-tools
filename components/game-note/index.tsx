@@ -2,10 +2,7 @@ import clsx from 'clsx';
 import { FunctionComponent, ReactNode } from 'react';
 import { makeStyles } from '@utils/styles';
 import { Button } from '@components/user-input/button';
-import {
-  NoteFieldDefinition,
-  RetrievedNoteDefinition,
-} from '@model/note-definition';
+import { NoteFieldDefinition, NoteDefinition } from '@model/note-definition';
 import {
   CreateNoteData,
   NoteContentData,
@@ -22,7 +19,7 @@ import { TextInput } from '@components/user-input/text-input';
 import { useGameNote } from './hooks';
 
 interface BaseProps {
-  definition: RetrievedNoteDefinition;
+  definition: NoteDefinition;
   className?: string;
 }
 
@@ -32,7 +29,7 @@ export interface EditProps extends BaseProps {
   data: NoteData;
   apiKeyUpdate?: ApiKeyData<'updateNote'> | undefined;
   onDelete?: (
-    noteDefId: RetrievedNoteDefinition['noteDefId'],
+    noteDefId: NoteDefinition['noteDefId'],
     noteId: NoteData['noteId']
   ) => void;
   onUpdate?: (note: UpdateNoteData) => Promise<boolean>;
