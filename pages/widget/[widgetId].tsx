@@ -2,9 +2,8 @@ import { AppPage, GetServerSideProps } from '../_app';
 import { PRODUCT_NAME } from '@utils/constants';
 import { EmptyPage } from '@components/page-empty';
 import { Widget, Props } from '@components/pages/widget';
-import { selectApiKey } from '@model/api-key';
-import { selectNote } from '@model/note';
 import { UserAuthData } from '@model/user';
+import { getWidgetData, selectWidgetKey } from '@model/widget-key';
 
 const WidgetPage: AppPage<Props> = (props) => {
   return (
@@ -21,25 +20,6 @@ WidgetPage.defaultProps = {
   namespacesRequired: [],
 };
 
-// tslint:disable:no-magic-numbers
-const fields = {
-  alignment: 6,
-  race: 7,
-  class: 8,
-  level: 9,
-  hp: 10,
-  hpMax: 11,
-  hpTemp: 12,
-  str: 13,
-  dex: 14,
-  con: 15,
-  int: 16,
-  wis: 17,
-  cha: 18,
-  ac: 19,
-};
-// tslint:enable:no-magic-numbers
-
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
   const props: Props = await getParams(ctx);
 
@@ -53,17 +33,19 @@ async function getParams(ctx: Parameters<typeof getServerSideProps>[0]) {
     const widgetId = ctx.query.widgetId as string;
     if (!widgetId) return {};
 
-    const apiKey = await selectApiKey('selectNote', widgetId);
-    if (!apiKey) return {};
+    const widget = await selectWidgetKey(widgetId);
+    if (!widget) return {};
 
-    const user = { userId: apiKey.userId } as UserAuthData;
-    const initialData = await selectNote(user, apiKey.data.noteId);
+    const user = { userId: widget.userId } as UserAuthData;
+    const { type } = widget;
+
+    const initialData = await getWidgetData(user, type, widget.data);
     if (!initialData) return {};
 
     return {
       widgetId,
+      type,
       initialData,
-      fields,
     };
   } catch (e) {
     return {};

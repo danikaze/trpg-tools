@@ -1,15 +1,13 @@
 import { FunctionComponent } from 'react';
 import { makeStyles } from '@utils/styles';
 import { LinkToIndex } from '@components/links/link-to-index';
-import { NoteData } from '@model/note';
-import { CharacterSheet } from '@components/widgets/character-sheet';
-import { NoteFieldDefinition } from '@model/note-definition';
 import { useWidget } from './hooks';
+import { createWidget, WidgetProps, WidgetType } from '@components/widgets';
 
-export interface Props {
+export interface Props<T extends WidgetType = WidgetType> {
   widgetId?: string;
-  initialData?: NoteData;
-  fields?: Record<string, NoteFieldDefinition['noteFieldDefId']>;
+  type?: T;
+  initialData?: WidgetProps[T];
 }
 
 const useStyles = makeStyles(() => ({
@@ -23,17 +21,13 @@ type Styles = ReturnType<typeof useStyles>;
 
 export const Widget: FunctionComponent<Props> = (props) => {
   const styles = useStyles();
-  const { note, fields } = useWidget(props);
+  const { type, data } = useWidget(props);
 
-  if (!note || !fields) {
+  if (!type || !data) {
     return renderNotFound();
   }
 
-  return (
-    <div className={styles.root}>
-      <CharacterSheet note={note} fields={fields} />
-    </div>
-  );
+  return <div className={styles.root}>{createWidget(type, data)}</div>;
 };
 
 function renderNotFound(): JSX.Element {

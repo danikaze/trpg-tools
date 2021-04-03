@@ -55,3 +55,4 @@ export const TREASURE_CR_QUANTITY_MAX = 99;
  * Widgets
  */
 export const WIDGET_UPDATE_INTERVAL = 2000;
+export const WIDGET_NAME_MAX_LENGTH = 255;

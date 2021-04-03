@@ -1,34 +1,45 @@
 import { useEffect, useState } from 'react';
-import { callGetNoteOpenApi } from '@api/v1/note/client';
-import { NoteData } from '@model/note';
-import { WIDGET_UPDATE_INTERVAL } from '@utils/constants';
 import { Props } from '.';
+import { WidgetType } from '@components/widgets';
+import { NoteData } from '@model/note';
 
-interface State {
-  note?: NoteData;
+interface State<T extends WidgetType = WidgetType> {
+  data?: Props<T>['initialData'];
 }
 
-export function useWidget(props: Props) {
+export function useWidget<T extends WidgetType = WidgetType>(props: Props<T>) {
   useEffect(() => {
     if (!props.widgetId) return;
 
-    const handler = setInterval(async () => {
-      const res = await callGetNoteOpenApi(props.widgetId!);
-      setState((state) => ({
-        ...state,
-        note: res.note,
-      }));
-    }, WIDGET_UPDATE_INTERVAL);
+    const wsUrl = `ws://${location.hostname}:${WEB_SOCKET_PORT}/ws`;
+    const ws = new WebSocket(wsUrl);
+
+    ws.onopen = () => {
+      ws.send(JSON.stringify({ widgetId: props.widgetId }));
+    };
+
+    ws.onmessage = (msg) => {
+      try {
+        const note = JSON.parse(msg.data) as NoteData;
+        setState((state) => ({
+          ...state,
+          data: {
+            ...state.data!,
+            note,
+          },
+        }));
+      } catch (e) {}
+    };
 
     return () => {
-      clearInterval(handler);
+      ws.close();
     };
-  }, []);
+  }, [props.type, props.widgetId]);
 
-  const [state, setState] = useState<State>({ note: props.initialData });
+  const [state, setState] = useState<State>({ data: props.initialData });
 
   return {
-    note: state.note,
-    fields: props.fields,
+    type: props.type,
+    data: state.data,
   };
 }

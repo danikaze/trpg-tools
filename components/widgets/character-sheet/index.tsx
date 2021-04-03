@@ -1,13 +1,10 @@
 import clsx from 'clsx';
 import { FunctionComponent } from 'react';
 import { makeStyles } from '@utils/styles';
-import { NoteData } from '@model/note';
-import { NoteFieldDefinition } from '@model/note-definition';
+import { CharacterSheetProps } from '@model/widget-key/interface';
 import acImage from '@assets/images/ac.png';
 
-export interface Props {
-  note: NoteData;
-  fields: Record<string, NoteFieldDefinition['noteFieldDefId']>;
+export interface Props extends CharacterSheetProps {
   className?: string;
 }
 
