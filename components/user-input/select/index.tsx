@@ -4,11 +4,16 @@ import { makeStyles } from '@utils/styles';
 import { Label } from '@components/user-input/label';
 import { getTextValidator } from '@components/user-input/get-validator';
 
+export interface SelectOption {
+  label: string;
+  value: string;
+}
+
 export interface Props {
   inputRef?: RefObject<HTMLSelectElement>;
   defaultValue?: string;
   label?: string;
-  options: { label: string; value: string }[];
+  options: SelectOption[];
   required?: boolean;
   onChange?: (value: string) => void;
   className?: string;
