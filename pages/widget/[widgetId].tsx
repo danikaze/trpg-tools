@@ -37,7 +37,7 @@ async function getParams(ctx: Parameters<typeof getServerSideProps>[0]) {
     if (!widget) return {};
 
     const user = { userId: widget.userId } as UserAuthData;
-    const { type } = widget;
+    const type = widget.type;
 
     const initialData = await getWidgetData(user, type, widget.data);
     if (!initialData) return {};
