@@ -41,6 +41,7 @@ const sizes: { [imageType in ImageType]: ResizeDef[] } = {
     { type: 'gameBanner', width: 600, height: 400 },
     { type: 'gameThumb', width: 150, height: 150 },
   ],
+  note: [{ type: 'noteThumb', width: 200, height: 200 }],
 };
 
 export async function createThumbnails(

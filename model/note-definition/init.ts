@@ -22,6 +22,7 @@ export const NOTE_DEFINITION_NAME_PCS = 'PCs';
 export const NOTE_DEFINITION_NAME_NPCS = 'NPCs';
 export const NOTE_DEFINITION_NAME_LOCATIONS = 'Locations';
 
+export const NOTE_DEF_FIELD_NAME_IMAGE = 'Image';
 export const NOTE_DEF_FIELD_NAME_DESCRIPTION = 'Description';
 export const NOTE_DEF_FIELD_NAME_ALIGNMENT = 'Alignment';
 export const NOTE_DEF_FIELD_NAME_LOCATION = 'Location';
@@ -94,6 +95,10 @@ const initNoteDefinitionData: DbInitFunction = async () => {
     string,
     CreateNoteFieldDefinition
   > = {
+    image: {
+      name: NOTE_DEF_FIELD_NAME_IMAGE,
+      type: 'image',
+    },
     description: {
       name: NOTE_DEF_FIELD_NAME_DESCRIPTION,
       type: 'textarea',
@@ -233,6 +238,7 @@ const initNoteDefinitionData: DbInitFunction = async () => {
     {
       name: NOTE_DEFINITION_NAME_NPCS,
       fields: [
+        systemNoteFieldDefinitions.image,
         systemNoteFieldDefinitions.description,
         systemNoteFieldDefinitions.alignment,
         systemNoteFieldDefinitions.location,
@@ -241,6 +247,8 @@ const initNoteDefinitionData: DbInitFunction = async () => {
     {
       name: NOTE_DEFINITION_NAME_PCS,
       fields: [
+        systemNoteFieldDefinitions.image,
+        systemNoteFieldDefinitions.description,
         systemNoteFieldDefinitions.alignment,
         systemNoteFieldDefinitions.charRace,
         systemNoteFieldDefinitions.charClass,

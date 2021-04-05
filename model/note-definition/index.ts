@@ -56,12 +56,21 @@ interface NoteFieldDefinitionSelect extends NoteFieldDefinitionBase {
   };
 }
 
+interface NoteFieldDefinitionImage extends NoteFieldDefinitionBase {
+  type: 'image';
+  options: {
+    defaultValue?: string;
+    required?: boolean;
+  };
+}
+
 export type NoteFieldDefinition =
   | NoteFieldDefinitionInt
   | NoteFieldDefinitionTextfield
   | NoteFieldDefinitionTextarea
   | NoteFieldDefinitionCheckbox
-  | NoteFieldDefinitionSelect;
+  | NoteFieldDefinitionSelect
+  | NoteFieldDefinitionImage;
 
 export type CreateNoteFieldDefinition = Omit<
   NoteFieldDefinition,
@@ -203,4 +212,14 @@ export async function getNoteDefinitionNames(
     res[note.noteDefId] = note.name;
     return res;
   }, {} as NoteDefinitionNames);
+}
+
+export async function getImageFields(
+  noteDefIds: DbNoteDefinition['noteDefId'][]
+): Promise<number[]> {
+  const db = await getDb();
+  return (await sql.selectImageFields(db, { noteDefIds })).reduce(
+    (res, row) => [...res, row.noteFieldDefId],
+    [] as number[]
+  );
 }

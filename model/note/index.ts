@@ -6,7 +6,8 @@ import { DbGame } from '../game/sql';
 import { DbNoteDefinition } from '../note-definition/sql';
 import { UserAuthData } from '../user';
 import { selectGameNames } from '../game';
-import { getNoteDefinitionNames } from '../note-definition';
+import { getImageFields, getNoteDefinitionNames } from '../note-definition';
+import { getThumbnails } from '../image';
 
 export interface CreateNoteData {
   noteDefId: DbNoteDefinition['noteDefId'];
@@ -103,7 +104,6 @@ export async function selectNote(
 ): Promise<NoteData | undefined> {
   const db = await getDb();
 
-  // note
   const [note, contents] = await Promise.all([
     sql.selectNote(db, {
       noteId,
@@ -116,13 +116,30 @@ export async function selectNote(
   ]);
 
   if (!note) return;
+
+  // get the list of image fields
+  const imageFieldIds = await getImageFields([note.noteDefId]);
+  const imageIds = contents.reduce((list, content) => {
+    if (imageFieldIds.includes(content.noteFieldDefId) && content.value) {
+      list.push(Number(content.value));
+    }
+    return list;
+  }, [] as number[]);
+
+  // get image data (urls)
+  const images = await getThumbnails(['noteThumb'], imageIds);
+
   return {
     noteId: note.noteId,
     title: note.title,
     createdOn: note.createdOn,
     updatedOn: note.updatedOn,
     content: contents.reduce((content, field) => {
-      content[field.noteFieldDefId] = field.value;
+      const image =
+        imageFieldIds.includes(field.noteFieldDefId) && images[field.value];
+      // if the field was an image use the url,
+      // if not, use the original value
+      content[field.noteFieldDefId] = image ? image['noteThumb']! : field.value;
       return content;
     }, {} as NoteData['content']),
   };
@@ -149,10 +166,27 @@ export async function selectNotes(
     noteIds: paginatedNotes.data.map((note) => note.noteId),
   });
 
+  // get the list of image fields
+  const imageFieldIds = await getImageFields([noteDefId]);
+  const imageIds = contents.reduce((list, content) => {
+    if (imageFieldIds.includes(content.noteFieldDefId) && content.value) {
+      list.push(Number(content.value));
+    }
+    return list;
+  }, [] as number[]);
+  // get image data (urls)
+  const images = await getThumbnails(['noteThumb'], imageIds);
+
   // create output
   const contentsByNoteId = contents.reduce(
     (res, content) => {
-      res[content.noteId][content.noteFieldDefId] = content.value;
+      const image =
+        imageFieldIds.includes(content.noteFieldDefId) && images[content.value];
+      // if the field was an image use the url,
+      // if not, use the original value
+      res[content.noteId][content.noteFieldDefId] = image
+        ? image['noteThumb']!
+        : content.value;
       return res;
     },
     paginatedNotes.data.reduce((res, note) => {

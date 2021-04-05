@@ -9,7 +9,8 @@ export type FieldType =
   | 'textfield'
   | 'textarea'
   | 'checkbox'
-  | 'select';
+  | 'select'
+  | 'image';
 
 export interface DbNoteDefinition extends TimestampTable {
   noteDefId: string;

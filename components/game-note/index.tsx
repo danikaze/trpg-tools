@@ -148,7 +148,13 @@ function renderContents(
   const fields = definition.fields.map((field) => {
     const value = contents[field.noteFieldDefId];
     const fieldContent = isEditing
-      ? renderEditingField(styles, field, value, hookData.updateField)
+      ? renderEditingField(
+          styles,
+          field,
+          value,
+          hookData.updateField,
+          hookData.updateImage
+        )
       : renderField(styles, field, value);
 
     return (
@@ -186,23 +192,33 @@ function renderEditingField(
   updateField: (
     noteDefId: NoteFieldDefinition['noteFieldDefId'],
     value: string
+  ) => void,
+  updateImage: (
+    noteContentId: NoteFieldDefinition['noteFieldDefId'],
+    image: File | null
   ) => void
 ): ReactNode {
+  const valueChangeHandler = (value: string | boolean) => {
+    updateField(field.noteFieldDefId, value as string);
+  };
+
+  const imageChangeHandler = (image: File | null) => {
+    updateImage(field.noteFieldDefId, image);
+  };
+
   const props = {
     ...field.options,
     defaultValue: data,
     type: field.type,
+    maxBytes: NOTE_IMAGE_MAX_SIZE_B,
+    onChange: valueChangeHandler,
+    onImageChange: imageChangeHandler,
   } as UserInputTypeProps[UserInputType];
-
-  const changeHandler = (value: string | boolean) => {
-    updateField(field.noteFieldDefId, value as string);
-  };
 
   return (
     <UserInput
       key={field.noteFieldDefId}
       className={styles.contentField}
-      onChange={changeHandler}
       label={field.name}
       {...props}
     />

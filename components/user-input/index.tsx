@@ -3,6 +3,7 @@ import { Checkbox } from './checkbox';
 import { Select } from './select';
 import { TextInput } from './text-input';
 import { TextArea } from './text-area';
+import { ImageDropInput } from './image-drop-input';
 
 export interface UserInputTypeProps {
   int: IntProps;
@@ -10,6 +11,7 @@ export interface UserInputTypeProps {
   textarea: TextareaProps;
   checkbox: CheckboxProps;
   select: SelectProps;
+  image: ImageProps;
 }
 export type UserInputType = keyof UserInputTypeProps;
 
@@ -56,6 +58,14 @@ interface SelectProps {
   options: { label: string; value: string }[];
   onChange?: (value: string) => void;
   inputRef?: RefObject<HTMLSelectElement>;
+}
+
+interface ImageProps {
+  type: 'image';
+  defaultValue?: string;
+  required?: boolean;
+  maxBytes?: number;
+  onImageChange?: (image: File | null) => void | Promise<void>;
 }
 
 export type Props<T extends UserInputType> = {
@@ -142,6 +152,19 @@ export function UserInput<T extends UserInputType>(
     );
   }
 
+  if (isImageProps(props)) {
+    const { defaultValue, onImageChange, maxBytes } = props;
+
+    return (
+      <ImageDropInput
+        maxBytes={maxBytes}
+        allowedTypes={['image/png', 'image/jpeg', 'image/webp']}
+        onChange={onImageChange}
+        defaultImage={defaultValue}
+      />
+    );
+  }
+
   throw new Error(`Unknown type of UserInput (${props.type})`);
 }
 
@@ -163,4 +186,8 @@ function isCheckboxProps(props: unknown): props is CheckboxProps {
 
 function isSelectProps(props: unknown): props is SelectProps {
   return (props as SelectProps).type === 'select';
+}
+
+function isImageProps(props: unknown): props is ImageProps {
+  return (props as ImageProps).type === 'image';
 }

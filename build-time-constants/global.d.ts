@@ -12,6 +12,11 @@ declare const GAME_IMAGE_MAX_SIZE_B: number;
 declare const BODY_MAX_SIZE_B: number;
 
 /**
+ * Maximum size for Note.images in bytes
+ */
+declare const NOTE_IMAGE_MAX_SIZE_B: number;
+
+/**
  * - `true`: SSR is optimized delivering only the needed i18n namespaces
  * - `false`: SSG is enabled
  *

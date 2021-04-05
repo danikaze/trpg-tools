@@ -9,6 +9,7 @@ import { ApiKeyData } from '@model/api-key';
 import { UserAuthData } from '@model/user';
 import { useUserData } from '@utils/auth';
 import { EditProps, Props } from './';
+import { uploadImage } from '@api/image/client';
 
 type State = {
   fields: NoteFieldDefinition[];
@@ -58,6 +59,34 @@ export function useGameNote(props: Props) {
         [noteContentId]: value,
       },
     }));
+  }
+
+  async function updateImage(
+    noteContentId: NoteFieldDefinition['noteFieldDefId'],
+    image: File | null
+  ) {
+    if (!image) {
+      setState((state) => ({
+        ...state,
+        content: {
+          ...state.content,
+          [noteContentId]: undefined,
+        },
+      }));
+      return;
+    }
+
+    const uploadedImage = await uploadImage(['note'], image);
+    const imageUrl = uploadedImage.thumbnails.find(
+      (img) => img.type === 'noteThumb'
+    )!.path;
+    setState({
+      ...state,
+      content: {
+        ...state.content,
+        [noteContentId]: uploadedImage.imageId,
+      },
+    });
   }
 
   async function saveUpdate() {
@@ -131,6 +160,7 @@ export function useGameNote(props: Props) {
   return {
     updateTitle,
     updateField,
+    updateImage,
     saveUpdate: isEditingMode(props)
       ? props.onUpdate && saveUpdate
       : props.onSave && saveNewNote,
