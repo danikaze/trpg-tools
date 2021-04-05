@@ -9,6 +9,7 @@ import { initApiKeys } from './api-key/init';
 import { initWidgetKeys } from './widget-key/init';
 
 import { userDevData } from './user/mock';
+import { imageDevData } from './image/mock';
 import { gameDevData } from './game/mock';
 import { noteDefinitionDevData } from './note-definition/mock';
 import { noteDevData } from './note/mock';
@@ -28,6 +29,7 @@ const init: DbInitFunction = async (db) => {
 
   db.logger && db.logger.debug('Inserting Dev Data into the database...');
   await userDevData(db);
+  await imageDevData(db);
   await gameDevData(db);
   await noteDefinitionDevData(db);
   await noteDevData(db);

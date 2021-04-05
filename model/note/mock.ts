@@ -24,7 +24,9 @@ import {
   NOTE_DEF_FIELD_NAME_WISDOM,
   NOTE_DEF_FIELD_NAME_CHARISMA,
   NOTE_DEF_FIELD_NAME_AC,
+  NOTE_DEF_FIELD_NAME_IMAGE,
 } from '../note-definition/init';
+import { devImages } from '../image/mock';
 
 export const devNotes: {
   [noteDefId: string]: (NoteDef & CreatedNoteData)[];
@@ -181,6 +183,10 @@ export const noteDevData: DbInitFunction = async () => {
       gameDef: getGame('Game 1'),
       title: 'Rungret Ironfist',
       content: [
+        {
+          noteFieldName: NOTE_DEF_FIELD_NAME_IMAGE,
+          value: String(devImages['rungret'].imageId),
+        },
         {
           noteFieldName: NOTE_DEF_FIELD_NAME_ALIGNMENT,
           value: 'LG',

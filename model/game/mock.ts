@@ -1,7 +1,8 @@
 import { DbInitFunction } from '../../utils/mysql';
-import { createGame, CreateGameData, GamePreviewData } from '.';
+import { devImages } from '../image/mock';
 import { devUsers } from '../user/mock';
-import { UserAuthData } from '@model/user';
+import { UserAuthData } from '../user';
+import { createGame, CreateGameData, GamePreviewData } from '.';
 
 export const devGames: Record<GamePreviewData['gameId'], GamePreviewData> = {};
 
@@ -17,7 +18,7 @@ export const gameDevData: DbInitFunction = async (db) => {
       game: {
         name: 'Game 1',
         description: `User1's game 1.`,
-        imageId: null,
+        imageId: devImages['game1'].imageId,
       },
     },
     {

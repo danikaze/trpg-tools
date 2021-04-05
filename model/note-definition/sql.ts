@@ -1,5 +1,5 @@
 import { getTimestamp } from '../../utils/db';
-import { MySql, SqlLimits } from '../../utils/mysql';
+import { MySql } from '../../utils/mysql';
 import { TimestampTable } from '../interfaces';
 import { DbUser } from '../user/sql';
 import { SYSTEM_USER } from '../user';
@@ -111,6 +111,16 @@ export const sql = {
   ) => {
     return db.delete(queries.deleteNoteFieldDefinition, params);
   },
+
+  selectImageFields: (
+    db: MySql,
+    params: { noteDefIds: DbNoteFieldDefinition['noteDefId'][] }
+  ) => {
+    return db.query<Pick<DbNoteFieldDefinition, 'noteFieldDefId'>>(
+      queries.selectImageFields,
+      params
+    );
+  },
 };
 
 const queries = {
@@ -162,8 +172,10 @@ const queries = {
       WHERE noteFieldDefId = :noteFieldDefId
         AND userId = :userId
   `,
-};
-
-const limits: SqlLimits<typeof queries> = {
-  selectUserNoteDefinitions: { default: 50, max: 50, min: 50 },
+  selectImageFields: `
+    SELECT noteFieldDefId
+      FROM notes_fields_def
+      WHERE noteDefId IN (:noteDefIds)
+        AND type = 'image'
+  `,
 };

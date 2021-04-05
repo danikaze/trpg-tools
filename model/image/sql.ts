@@ -3,8 +3,8 @@ import { MySql } from '../../utils/mysql';
 import { DbUser } from '../user/sql';
 import { TimestampTable } from '../interfaces';
 
-export type ImageType = 'game';
-export type ImageThumbnail = 'gameBanner' | 'gameThumb';
+export type ImageType = 'game' | 'note';
+export type ImageThumbnail = 'gameBanner' | 'gameThumb' | 'noteThumb';
 
 export interface DbImage extends TimestampTable {
   imageId: number;
@@ -23,6 +23,8 @@ export interface DbImageThumbnail {
   height: number;
   bytes: number;
 }
+
+type DbImageThumb = Pick<DbImageThumbnail, 'imageId' | 'type' | 'path'>;
 
 export const sql = {
   insertImage: (
@@ -49,6 +51,13 @@ export const sql = {
   ) => {
     return db.insertOne(queries.insertThumbnail, params);
   },
+
+  selectThumbnails: (
+    db: MySql,
+    params: { types: ImageThumbnail[]; imageIds: DbImage['imageId'][] }
+  ) => {
+    return db.query<DbImageThumb>(queries.selectThumbnails, params);
+  },
 };
 
 const queries = {
@@ -65,5 +74,11 @@ const queries = {
     INSERT INTO
       images_thumbnails (imageId, type, path, width, height, bytes)
       VALUES (:imageId, :type, :path, :width, :height, :bytes)
+  `,
+  selectThumbnails: `
+    SELECT imageId, type, path
+      FROM images_thumbnails
+      WHERE type IN (:types)
+        AND imageId IN (:imageIds)
   `,
 };
