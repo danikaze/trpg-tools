@@ -19,6 +19,7 @@ export function run() {
   server.use(compress());
   server.use(cookieParser());
   server.use(express.urlencoded({ extended: false }));
+  server.use(express.static(`${PROJECT_ROOT}/.next/static`));
 
   if (AUTH_ENABLED) {
     useAuth(server);
