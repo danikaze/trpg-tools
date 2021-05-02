@@ -8,6 +8,8 @@ import { SelectNotesWsHandler } from './select-notes';
 const webSocketHandlers = {
   charSheet: SelectNotesWsHandler,
   charStatus: SelectNotesWsHandler,
+  charStatusBorders: SelectNotesWsHandler,
+  charHp: SelectNotesWsHandler,
 };
 
 const handlers: Partial<{ [type: string]: WsHandler<{}> }> = {};

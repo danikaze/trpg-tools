@@ -81,6 +81,8 @@ export function useWidgetKeyEditor(props: Props) {
   const widgetOptions = [
     { label: 'Character Sheet', value: 'charSheet' },
     { label: 'Character Status', value: 'charStatus' },
+    { label: 'Character Status Borders', value: 'charStatusBorders' },
+    { label: 'Character HP', value: 'charHp' },
   ];
   const createDisabled = !state.selectedType || !state.selectedNote;
 

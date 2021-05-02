@@ -1,5 +1,5 @@
+import { DbNoteFieldDefinition } from '@model/note-definition/sql';
 import { NoteData, UpdateNoteData } from '../note';
-import { NoteFieldDefinition } from '../note-definition';
 
 export type WidgetKeyType = keyof WidgetKeyTypeData;
 
@@ -8,17 +8,23 @@ export type WidgetKeyType = keyof WidgetKeyTypeData;
  */
 export interface WidgetProps {
   charSheet: CharacterSheetProps;
-  charStatus: CharacterSheetProps;
+  charStatus: CharacterStatusProps;
+  charStatusBorders: CharacterStatusBordersProps;
 }
 
 export interface CharacterSheetProps {
   note: NoteData;
-  fields: Record<string, NoteFieldDefinition['noteFieldDefId']>;
+  fields: Record<string, DbNoteFieldDefinition['noteFieldDefId']>;
 }
 
 export interface CharacterStatusProps {
   note: NoteData;
-  fields: Record<string, NoteFieldDefinition['noteFieldDefId']>;
+  fields: Record<string, DbNoteFieldDefinition['noteFieldDefId']>;
+}
+
+export interface CharacterStatusBordersProps {
+  note: NoteData;
+  fields: Record<string, DbNoteFieldDefinition['noteFieldDefId']>;
 }
 
 /*
