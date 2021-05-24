@@ -1,10 +1,11 @@
 import clsx from 'clsx';
 import { FunctionComponent } from 'react';
 import { makeStyles } from '@utils/styles';
-import { WidgetKeyData, WidgetKeyType } from '@model/widget-key';
+import { WidgetKeyData } from '@model/widget-key';
 import { DbWidgetKey } from '@model/widget-key/sql';
 import { Button } from '@components/user-input/button';
 import { LinkToWidget } from '@components/links/link-to-widget';
+import { WidgetKeyType } from '@model/widget-def/interface';
 
 export interface Props {
   widgetKey: Omit<WidgetKeyData<WidgetKeyType>, 'userId'>;

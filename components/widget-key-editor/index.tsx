@@ -2,12 +2,15 @@ import clsx from 'clsx';
 import { FunctionComponent } from 'react';
 import { makeStyles } from '@utils/styles';
 import { NotesByGameData } from '@model/note';
-import { WidgetKeyData, WidgetKeyType } from '@model/widget-key';
+import { WidgetKeyType } from '@model/widget-def/interface';
+import { SelectAllWidgetDefData } from '@model/widget-def';
+import { WidgetKeyData } from '@model/widget-key';
 import { Button } from '@components/user-input/button';
 import { Select } from '@components/user-input/select';
 import { useWidgetKeyEditor } from './hooks';
 
 export interface Props {
+  widgetDefs: SelectAllWidgetDefData[];
   notesByGame: NotesByGameData;
   onCreate: (widgetKey: Omit<WidgetKeyData<WidgetKeyType>, 'userId'>) => void;
   onCancel?: () => void;

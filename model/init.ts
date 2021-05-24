@@ -14,6 +14,7 @@ import { gameDevData } from './game/mock';
 import { noteDefinitionDevData } from './note-definition/mock';
 import { noteDevData } from './note/mock';
 import { apiKeyDevData } from './api-key/mock';
+import { initWidgetDefs } from './widget-def/init';
 import { widgetKeyDevData } from './widget-key/mock';
 
 const init: DbInitFunction = async (db) => {
@@ -22,6 +23,7 @@ const init: DbInitFunction = async (db) => {
   await initGame(db);
   await initNoteDefinition(db);
   await initNote(db);
+  await initWidgetDefs(db);
   await initApiKeys(db);
   await initWidgetKeys(db);
 

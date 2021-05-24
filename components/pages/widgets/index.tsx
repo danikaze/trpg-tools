@@ -1,7 +1,9 @@
 import clsx from 'clsx';
 import { FunctionComponent } from 'react';
 import { makeStyles } from '@utils/styles';
-import { WidgetKeyData, WidgetKeyType } from '@model/widget-key';
+import { SelectAllWidgetDefData } from '@model/widget-def';
+import { WidgetKeyType } from '@model/widget-def/interface';
+import { WidgetKeyData } from '@model/widget-key';
 import { useWidgets } from './hooks';
 import { WidgetKeyInfo } from '@components/widget-key-info';
 import { WidgetKeyEditor } from '@components/widget-key-editor';
@@ -9,6 +11,8 @@ import { Button } from '@components/user-input/button';
 import { NotesByGameData } from '@model/note';
 
 export interface Props {
+  widgetDefId?: SelectAllWidgetDefData['widgetDefId'];
+  widgetDefs: SelectAllWidgetDefData[];
   widgetApiKeys: Omit<WidgetKeyData<WidgetKeyType>, 'userId'>[] | null;
   notesByGame: NotesByGameData | null;
 }
@@ -59,6 +63,7 @@ export const Widgets: FunctionComponent<Props> = (props) => {
 
   const editorElem = props.notesByGame ? (
     <WidgetKeyEditor
+      widgetDefs={props.widgetDefs}
       notesByGame={props.notesByGame}
       onCancel={toggleCreator}
       onCreate={createWidgetKey}

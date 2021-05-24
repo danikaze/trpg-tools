@@ -1,5 +1,6 @@
 import * as WebSocket from 'ws';
-import { WidgetKeyData, WidgetKeyType } from '../../model/widget-key';
+import { WidgetKeyType } from '../../model/widget-def/interface';
+import { WidgetKeyData } from '../../model/widget-key';
 import { getLogger, NsLogger } from '../logger';
 
 export abstract class WsHandler<M extends {}> {

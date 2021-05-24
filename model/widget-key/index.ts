@@ -5,24 +5,31 @@ import { DbUser } from '../user/sql';
 import { UserAuthData } from '../user';
 import { DbWidgetKey, sql } from './sql';
 import {
-  WidgetKeyType as WKT,
+  WidgetKeyType,
   WidgetKeyTypeData,
   WidgetProps,
-} from './interface';
-
-export type WidgetKeyType = WKT;
+} from '../widget-def/interface';
+import { DbWidgetDef } from '@model/widget-def/sql';
 
 export interface WidgetKeyData<T extends WidgetKeyType> {
   widgetKeyId: DbWidgetKey['widgetKeyId'];
-  type: WidgetKeyType;
+  widgetDefId: DbWidgetDef['widgetDefId'];
   name: string;
   userId: DbUser['userId'];
   data: WidgetKeyTypeData[T];
 }
 
+export interface WidgetKeyAndTypeData<T extends WidgetKeyType>
+  extends WidgetKeyData<T> {
+  type: T;
+  html: string;
+  js: string;
+  css: string;
+}
+
 export async function createWidgetKey<T extends WidgetKeyType>(
   user: UserAuthData,
-  type: T,
+  widgetDefId: DbWidgetDef['widgetDefId'],
   name: string,
   data: WidgetKeyTypeData[T]
 ): Promise<DbWidgetKey['widgetKeyId']> {
@@ -30,7 +37,7 @@ export async function createWidgetKey<T extends WidgetKeyType>(
   const widgetKeyId = generateUniqueId();
   const params = {
     widgetKeyId,
-    type,
+    widgetDefId,
     name,
     userId: user.userId,
     data: JSON.stringify(data),
@@ -57,7 +64,7 @@ export async function deleteWidgetKey(
 
 export async function selectWidgetKey<T extends WidgetKeyType>(
   widgetKeyId: DbWidgetKey['widgetKeyId']
-): Promise<WidgetKeyData<T>> {
+): Promise<WidgetKeyAndTypeData<T>> {
   const db = await getDb();
   const res = await sql.selectWidgetKey(db, { widgetKeyId });
 
@@ -69,9 +76,13 @@ export async function selectWidgetKey<T extends WidgetKeyType>(
   return {
     widgetKeyId,
     data,
+    type: res.type as T,
+    widgetDefId: res.widgetDefId,
     name: res.name,
-    type: res.type,
     userId: res.userId,
+    html: res.html,
+    js: res.js,
+    css: res.css,
   };
 }
 
@@ -88,7 +99,7 @@ export async function selectAllUserWidgetKeys<T extends WidgetKeyType>(
 
     return {
       data,
-      type: row.type,
+      widgetDefId: row.widgetDefId,
       name: row.name,
       widgetKeyId: row.widgetKeyId,
       userId: user.userId,
@@ -111,7 +122,7 @@ export async function selectUserWidgetKeys<T extends WidgetKeyType>(
 
     return {
       data,
-      type: row.type,
+      widgetDefId: row.widgetDefId,
       name: row.name,
       widgetKeyId: row.widgetKeyId,
       userId: user.userId,

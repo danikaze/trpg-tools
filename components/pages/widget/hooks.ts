@@ -1,13 +1,15 @@
-import { useEffect, useState } from 'react';
-import { Props } from '.';
-import { WidgetType } from '@components/widgets';
+import { useEffect } from 'react';
 import { NoteData } from '@model/note';
+import { WidgetKeyType } from '@model/widget-def/interface';
+import { Props } from '.';
 
-interface State<T extends WidgetType = WidgetType> {
+interface State<T extends WidgetKeyType = WidgetKeyType> {
   data?: Props<T>['initialData'];
 }
 
-export function useWidget<T extends WidgetType = WidgetType>(props: Props<T>) {
+export function useWidget<T extends WidgetKeyType = WidgetKeyType>(
+  props: Props<T>
+) {
   useEffect(() => {
     if (!props.widgetId) return;
 

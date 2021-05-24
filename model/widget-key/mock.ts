@@ -1,8 +1,9 @@
 import { DbInitFunction } from '../../utils/mysql';
+import { devWidgetDef } from '../widget-def/mock';
 import { devUsers } from '../user/mock';
-import { createWidgetKey } from '.';
 import { devNotes } from '../note/mock';
 import { getSystemNoteDefinitions } from '../global';
+import { createWidgetKey } from '.';
 
 export const widgetKeyDevData: DbInitFunction = async (db) => {
   const systemNoteTypes = await getSystemNoteDefinitions();
@@ -21,11 +22,21 @@ export const widgetKeyDevData: DbInitFunction = async (db) => {
     throw new Error('Required mock data (pcSylnaNote) not found');
   }
 
-  createWidgetKey(devUsers['user1'], 'charSheet', 'Rungret Sheet', {
-    noteId: pcRungretNote.noteId,
-  });
+  createWidgetKey(
+    devUsers['user1'],
+    devWidgetDef.pjSheet.widgetDefId,
+    'Rungret Sheet',
+    {
+      noteId: pcRungretNote.noteId,
+    }
+  );
 
-  createWidgetKey(devUsers['user1'], 'charStatus', 'Sylna Status', {
-    noteId: pcSylnaNote.noteId,
-  });
+  createWidgetKey(
+    devUsers['user1'],
+    devWidgetDef.pjHp.widgetDefId,
+    'Sylna HP',
+    {
+      noteId: pcSylnaNote.noteId,
+    }
+  );
 };

@@ -1,21 +1,25 @@
-import { WidgetKeyType } from '.';
-import { DbUser } from '../user/sql';
-import { TimestampTable } from '../interfaces';
 import { MySql } from '../../utils/mysql';
 import { getTimestamp } from '../../utils/db';
+import { DbUser } from '../user/sql';
+import { TimestampTable } from '../interfaces';
+import { DbWidgetDef } from '@model/widget-def/sql';
 
 export interface DbWidgetKey extends TimestampTable {
   widgetKeyId: string;
+  widgetDefId: DbWidgetDef['widgetDefId'];
   userId: DbUser['userId'];
-  type: WidgetKeyType;
   name: string;
   data: string;
 }
 
-type SelectWidgetKey = Pick<DbWidgetKey, 'userId' | 'type' | 'name' | 'data'>;
+type SelectWidgetKey = Pick<
+  DbWidgetKey,
+  'userId' | 'widgetDefId' | 'name' | 'data'
+> &
+  Pick<DbWidgetDef, 'type' | 'html' | 'js' | 'css'>;
 type SelectUserWidgetKeys = Pick<
   DbWidgetKey,
-  'widgetKeyId' | 'type' | 'name' | 'data'
+  'widgetKeyId' | 'widgetDefId' | 'name' | 'data'
 >;
 
 export const sql = {
@@ -23,7 +27,7 @@ export const sql = {
     db: MySql,
     params: Pick<
       DbWidgetKey,
-      'widgetKeyId' | 'userId' | 'type' | 'name' | 'data'
+      'widgetKeyId' | 'userId' | 'widgetDefId' | 'name' | 'data'
     >
   ) => {
     const time = getTimestamp();
@@ -53,7 +57,10 @@ export const sql = {
 
   selectUserWidgetKeys: (
     db: MySql,
-    params: { userId: DbWidgetKey['userId']; types: DbWidgetKey['type'][] }
+    params: {
+      userId: DbWidgetKey['userId'];
+      types: DbWidgetKey['widgetDefId'][];
+    }
   ) => {
     return db.query<SelectUserWidgetKeys>(queries.selectUserWidgetKeys, params);
   },
@@ -69,8 +76,8 @@ export const sql = {
 const queries = {
   insertWidgetKey: `
     INSERT INTO
-    widget_keys (widgetKeyId, userId, type, name, data, createdOn, updatedOn)
-      VALUES (:widgetKeyId, :userId, :type, :name, :data, :time, :time)
+    widget_keys (widgetKeyId, widgetDefId, userId, name, data, createdOn, updatedOn)
+      VALUES (:widgetKeyId, :widgetDefId, :userId, :name, :data, :time, :time)
     `,
 
   deleteWidgetKey: `
@@ -80,23 +87,24 @@ const queries = {
   `,
 
   selectWidgetKey: `
-    SELECT userId, type, name, data
-      FROM widget_keys
+    SELECT k.userId, k.widgetDefId, k.name, k.data, d.type, d.html, d.js, d.css
+      FROM widget_keys k
+      JOIN widget_defs d ON k.widgetDefId = d.widgetDefId
       WHERE widgetKeyId = :widgetKeyId
   `,
 
   selectAllUserWidgetKeys: `
-    SELECT widgetKeyId, type, name, data
+    SELECT widgetKeyId, widgetDefId, name, data
       FROM widget_keys
       WHERE userId = :userId
       ORDER BY updatedOn
   `,
 
   selectUserWidgetKeys: `
-    SELECT widgetKeyId, type, name, data
+    SELECT widgetKeyId, widgetDefId, name, data
       FROM widget_keys
       WHERE userId = :userId
-        AND type IN (:types)
+        AND widgetDefId IN (:widgetDefId)
       ORDER BY updatedOn
   `,
 

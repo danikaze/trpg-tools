@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { callCreateWidgetKey } from '@api/widget-key/client';
 import { DbGame } from '@model/game/sql';
 import { DbNote } from '@model/note/sql';
-import { WidgetKeyType } from '@model/widget-key/interface';
+import { WidgetKeyType } from '@model/widget-def/interface';
 import { map2array } from '@utils/map2array';
 import { SelectOption } from '@components/user-input/select';
 import { Props } from '.';
@@ -12,6 +12,8 @@ interface State {
   selectedNote?: DbNote['noteId'] | undefined;
   selectedType?: WidgetKeyType | undefined;
 }
+
+type NoteSelectOption = SelectOption<DbNote['noteId']>;
 
 export function useWidgetKeyEditor(props: Props) {
   const [state, setState] = useState<State>({});
@@ -31,7 +33,7 @@ export function useWidgetKeyEditor(props: Props) {
     props.onCreate({
       widgetKeyId,
       name,
-      type: state.selectedType,
+      widgetDefId: state.selectedType,
       data: {
         noteId: state.selectedNote,
       },
@@ -74,16 +76,14 @@ export function useWidgetKeyEditor(props: Props) {
             }))
           );
           return notes;
-        }, [] as SelectOption[])
+        }, [] as NoteSelectOption[])
         .sort(selectOptionComparer)
     : [];
 
-  const widgetOptions = [
-    { label: 'Character Sheet', value: 'charSheet' },
-    { label: 'Character Status', value: 'charStatus' },
-    { label: 'Character Status Borders', value: 'charStatusBorders' },
-    { label: 'Character HP', value: 'charHp' },
-  ];
+  const widgetOptions = props.widgetDefs.map((def) => ({
+    label: def.name,
+    value: def.widgetDefId,
+  }));
   const createDisabled = !state.selectedType || !state.selectedNote;
 
   return {
@@ -101,6 +101,9 @@ export function useWidgetKeyEditor(props: Props) {
   };
 }
 
-function selectOptionComparer(a: SelectOption, b: SelectOption): number {
+function selectOptionComparer(
+  a: NoteSelectOption,
+  b: NoteSelectOption
+): number {
   return a.label.localeCompare(b.label);
 }
