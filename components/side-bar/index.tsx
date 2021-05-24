@@ -6,6 +6,7 @@ import { LinkToCharacterNameGenerator } from '@components/links/link-to-characte
 import { LinkToTreasureGenerator } from '@components/links/link-to-treasure-generator';
 import { LinkToMyGames } from '@components/links/link-to-my-games';
 import { LinkToMyWidgets } from '@components/links/link-to-my-widgets';
+import { LinkToMyWidgetDefs } from '@components/links/link-to-my-widget-defs';
 
 export interface Props {
   className?: string;
@@ -51,6 +52,9 @@ export const SideBar: FunctionComponent<Props> = ({ className }) => {
         </li>
         <li>
           <LinkToMyWidgets />
+        </li>
+        <li>
+          <LinkToMyWidgetDefs />
         </li>
       </ul>
     </nav>

@@ -7,6 +7,7 @@ import { Page } from '@components/page';
 import { Props, Widgets } from '@components/pages/widgets';
 import { selectAllUserNotesByType } from '@model/note';
 import { getSystemNoteDefinitions } from '@model/global';
+import { selectAllUserWidgetDefs } from '@model/widget-def';
 
 const WidgetsPage: AppPage<Props> = (props) => {
   return (
@@ -36,9 +37,11 @@ export const getServerSideProps = userRequiredServerSideProps<Props, Query>(
     const systemNoteDefs = await getSystemNoteDefinitions();
     const noteDefIds = [systemNoteDefs.pcs.noteDefId];
     const notesByGame = await selectAllUserNotesByType(user, noteDefIds);
+    const widgetDefs = await selectAllUserWidgetDefs(user);
     const widgetApiKeys = await selectAllUserWidgetKeys(user);
 
     const props: Props = {
+      widgetDefs,
       widgetApiKeys,
       notesByGame,
     };
