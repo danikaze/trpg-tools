@@ -4,7 +4,7 @@ import { DbWidgetKey } from '@model/widget-key/sql';
 export type CreateWidgetKeyResponse = DbWidgetKey['widgetKeyId'];
 export type CreateWidgetKeyQuery = {};
 export type CreateWidgetKeyBody = {
-  type: DbWidgetKey['type'];
+  widgetDefId: DbWidgetKey['widgetDefId'];
   name: DbWidgetKey['name'];
   noteId: DbNote['noteId'];
 };

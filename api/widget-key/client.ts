@@ -14,7 +14,7 @@ import {
 } from './interface';
 
 export async function callCreateWidgetKey(
-  type: DbWidgetKey['type'],
+  widgetDefId: DbWidgetKey['widgetDefId'],
   name: string,
   noteId: DbNote['noteId']
 ): Promise<CreateWidgetKeyResponse> {
@@ -24,7 +24,7 @@ export async function callCreateWidgetKey(
     CreateWidgetKeyBody
   >(`widget-key`, 'POST', {
     data: {
-      type,
+      widgetDefId,
       name,
       noteId,
     },
@@ -38,9 +38,9 @@ export async function callUpdateWidgetKeyApi(
   name: DbWidgetKey['name']
 ): Promise<UpdateWidgetKeyResponse> {
   const res = await callApi<
-    UpdateWidgetKeyBody,
+    UpdateWidgetKeyResponse,
     UpdateWidgetKeyQuery,
-    UpdateWidgetKeyResponse
+    UpdateWidgetKeyBody
   >(`widget-key/${widgetKeyId}`, 'PUT', { data: { name } });
 
   return res.data;
@@ -50,9 +50,9 @@ export async function callDeleteWidgetKeyApi(
   widgetKeyId: DbWidgetKey['widgetKeyId']
 ): Promise<DeleteWidgetKeyResponse> {
   const res = await callApi<
-    DeleteWidgetKeyBody,
+    DeleteWidgetKeyResponse,
     DeleteWidgetKeyQuery,
-    DeleteWidgetKeyResponse
+    DeleteWidgetKeyBody
   >(`widget-key/${widgetKeyId}`, 'DELETE');
 
   return res.data;

@@ -12,9 +12,9 @@ export const createWidgetKeyApiHandler = userRequiredApiHandler<
   CreateWidgetKeyQuery,
   CreateWidgetKeyBody
 >(async (req, res) => {
-  const { user, type, name, noteId } = getData(req);
+  const { user, widgetDefId, name, noteId } = getData(req);
 
-  const data = await createWidgetKey(user, type, name, {
+  const data = await createWidgetKey(user, widgetDefId, name, {
     noteId,
   });
 
@@ -31,11 +31,11 @@ type Request = Parameters<
 
 function getData(req: Request) {
   const { user } = req;
-  const { type, name, noteId } = req.body;
+  const { widgetDefId, name, noteId } = req.body;
 
   return {
     user,
-    type,
+    widgetDefId,
     name,
     noteId,
   };
