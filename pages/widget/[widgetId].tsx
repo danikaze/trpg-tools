@@ -46,6 +46,10 @@ async function getParams(ctx: Parameters<typeof getServerSideProps>[0]) {
       widgetId,
       type,
       initialData,
+      html: widget.html || '',
+      js: widget.js || '',
+      css: widget.css || '',
+      images: widget.images,
     };
   } catch (e) {
     return {};

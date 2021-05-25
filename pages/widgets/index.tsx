@@ -21,6 +21,10 @@ const WidgetsPage: AppPage<Props> = (props) => {
   );
 };
 
+WidgetsPage.defaultProps = {
+  namespacesRequired: [],
+};
+
 interface Query {
   widgetId: DbWidgetKey['widgetKeyId'];
 }

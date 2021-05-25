@@ -7,10 +7,7 @@ import { WsHandler } from '../utils/ws/base-handler';
 import { SelectNotesWsHandler } from './select-notes';
 
 const webSocketHandlers = {
-  charSheet: SelectNotesWsHandler,
-  charStatus: SelectNotesWsHandler,
-  charStatusBorders: SelectNotesWsHandler,
-  charHp: SelectNotesWsHandler,
+  charNote: SelectNotesWsHandler,
 };
 
 const handlers: Partial<{ [type: string]: WsHandler<{}> }> = {};
@@ -29,7 +26,7 @@ export type WebSocketHandlerType = keyof typeof webSocketHandlers;
 export function createWebSocketHandler(
   ws: WebSocket,
   widgetKeyId: DbWidgetKey['widgetKeyId'],
-  widget: WidgetKeyData<WidgetKeyType>
+  widget: WidgetKeyAndTypeData<WidgetKeyType>
 ): WsHandler<{}> {
   const { type } = widget;
   const Handler = webSocketHandlers[type];
