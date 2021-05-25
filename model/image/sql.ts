@@ -3,8 +3,12 @@ import { MySql } from '../../utils/mysql';
 import { DbUser } from '../user/sql';
 import { TimestampTable } from '../interfaces';
 
-export type ImageType = 'game' | 'note';
-export type ImageThumbnail = 'gameBanner' | 'gameThumb' | 'noteThumb';
+export type ImageType = 'game' | 'note' | 'widgetDef';
+export type ImageThumbnail =
+  | 'gameBanner'
+  | 'gameThumb'
+  | 'noteThumb'
+  | 'widgetRaw';
 
 export interface DbImage extends TimestampTable {
   imageId: number;

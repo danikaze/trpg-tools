@@ -1,6 +1,9 @@
 import { basename } from 'path';
 import { DbInitFunction } from '../../utils/mysql';
-import { WIDGET_DEF_NAME_MAX_LENGTH } from '../../utils/constants';
+import {
+  WIDGET_DEF_IMAGE_NAME_MAX_LENGTH,
+  WIDGET_DEF_NAME_MAX_LENGTH,
+} from '../../utils/constants';
 import {
   EDIT_TIME_COLS,
   MYSQL_TYPE_ENUM,
@@ -31,6 +34,25 @@ export const initWidgetDefs: DbInitFunction = async (db) => {
 
       FOREIGN KEY (userId)
         REFERENCES users(userId)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+    )
+    `,
+    `
+    CREATE TABLE IF NOT EXISTS widget_def_images (
+      widgetDefId ${MYSQL_TYPE_PUBLIC_ID} NOT NULL,
+      imageId ${MYSQL_TYPE_INTERNAL_ID} NOT NULL,
+      name VARCHAR(${WIDGET_DEF_IMAGE_NAME_MAX_LENGTH}) NOT NULL,
+
+      INDEX imageId_type_idx (widgetDefId, name),
+
+      FOREIGN KEY (widgetDefId)
+        REFERENCES widget_defs(widgetDefId)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+
+        FOREIGN KEY (imageId)
+        REFERENCES images(imageId)
         ON UPDATE CASCADE
         ON DELETE CASCADE
     )

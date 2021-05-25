@@ -4,12 +4,13 @@ import { selectNote } from '../note';
 import { DbUser } from '../user/sql';
 import { UserAuthData } from '../user';
 import { DbWidgetKey, sql } from './sql';
+import { DbWidgetDef, sql as widgetDefSql } from '../widget-def/sql';
 import {
   WidgetKeyType,
   WidgetKeyTypeData,
   WidgetProps,
 } from '../widget-def/interface';
-import { DbWidgetDef } from '@model/widget-def/sql';
+import { SelectWidgetDefData } from '../widget-def';
 
 export interface WidgetKeyData<T extends WidgetKeyType> {
   widgetKeyId: DbWidgetKey['widgetKeyId'];
@@ -25,6 +26,7 @@ export interface WidgetKeyAndTypeData<T extends WidgetKeyType>
   html: string;
   js: string;
   css: string;
+  images: SelectWidgetDefData['images'];
 }
 
 export async function createWidgetKey<T extends WidgetKeyType>(
@@ -72,6 +74,10 @@ export async function selectWidgetKey<T extends WidgetKeyType>(
     throw new Error('No key found with the provided ID');
   }
 
+  const images = await widgetDefSql.selectWidgetDefImages(db, {
+    widgetDefId: res.widgetDefId,
+  });
+
   const data = JSON.parse(res.data) as WidgetKeyTypeData[T];
   return {
     widgetKeyId,
@@ -83,6 +89,11 @@ export async function selectWidgetKey<T extends WidgetKeyType>(
     html: res.html,
     js: res.js,
     css: res.css,
+    images: images.map((img) => ({
+      name: img.name,
+      imageId: img.imageId,
+      path: img.path,
+    })),
   };
 }
 

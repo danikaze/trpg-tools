@@ -1,9 +1,10 @@
 import { MySql } from '../../utils/mysql';
-import { getTimestamp } from '../../utils/db';
 import { DbUser } from '../user/sql';
 import { SYSTEM_USER } from '../user';
 import { WidgetKeyType } from './interface';
 import { TimestampTable } from '../interfaces';
+import { DbImage } from '@model/image/sql';
+import { SelectWidgetDefImageData } from '.';
 
 export interface DbWidgetDef extends TimestampTable {
   widgetDefId: string;
@@ -13,6 +14,12 @@ export interface DbWidgetDef extends TimestampTable {
   html: string;
   js: string;
   css: string;
+}
+
+export interface DbWidgetDefImage {
+  widgetDefId: DbWidgetDef['widgetDefId'];
+  imageId: DbImage['imageId'];
+  name: string;
 }
 
 type SelectWidgetDef = Pick<
@@ -82,12 +89,29 @@ export const sql = {
   ) => {
     return db.update(queries.renameWidgetDef, params);
   },
+
+  insertWidgetDefImage: (
+    db: MySql,
+    params: Pick<DbWidgetDefImage, 'widgetDefId' | 'imageId' | 'name'>
+  ) => {
+    return db.insertOne(queries.insertWidgetDefImage, params);
+  },
+
+  selectWidgetDefImages: (
+    db: MySql,
+    params: Pick<DbWidgetDef, 'widgetDefId'>
+  ) => {
+    return db.query<SelectWidgetDefImageData>(
+      queries.selectWidgetDefImages,
+      params
+    );
+  },
 };
 
 const queries = {
   insertWidgetDef: `
     INSERT INTO
-    widget_defs (widgetDefId, userId, type, name, html, js, css, createdOn, updatedOn)
+      widget_defs (widgetDefId, userId, type, name, html, js, css, createdOn, updatedOn)
       VALUES(:widgetDefId, :userId, :type, :name, :html, :js, :css, :time, :time)
   `,
 
@@ -133,5 +157,20 @@ const queries = {
       SET name = :name
       WHERE widgetDefId = :widgetDefId
         AND userId = :userId
+  `,
+
+  insertWidgetDefImage: `
+    INSERT INTO
+      widget_def_images (widgetDefId, imageId, name)
+      VALUES (:widgetDefId, :imageId, :name)
+  `,
+
+  selectWidgetDefImages: `
+    SELECT w.name, t.imageId, t.path
+      FROM images_thumbnails t
+      JOIN images i ON t.imageId = i.imageId
+      JOIN widget_def_images w ON w.imageId = i.imageId
+      WHERE t.type = 'widgetRaw'
+        AND w.widgetDefId = :widgetDefId
   `,
 };

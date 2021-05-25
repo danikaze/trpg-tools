@@ -58,6 +58,7 @@ export const WIDGET_DEF_NAME_MAX_LENGTH = 255;
 export const WIDGET_DEF_HTML_MAX_LENGTH = 10000;
 export const WIDGET_DEF_JS_MAX_LENGTH = 10000;
 export const WIDGET_DEF_CSS_MAX_LENGTH = 10000;
+export const WIDGET_DEF_IMAGE_NAME_MAX_LENGTH = 255;
 
 /*
  * Widgets

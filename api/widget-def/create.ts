@@ -29,10 +29,10 @@ type Request = Parameters<
 
 function getData(req: Request) {
   const { user } = req;
-  const { type, name, html, js, css } = req.body;
+  const { type, name, html, js, css, images } = req.body;
 
   return {
     user,
-    widgetDef: { type, name, html, js, css },
+    widgetDef: { type, name, html, js, css, images },
   };
 }

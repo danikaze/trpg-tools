@@ -2,8 +2,9 @@ import { generateUniqueId, getDb, getTimestamp } from '../../utils/db';
 import { getSystemNotePcFields } from '../global';
 import { selectNote } from '../note';
 import { UserAuthData } from '../user';
-import { DbWidgetDef, sql } from './sql';
+import { DbWidgetDef, DbWidgetDefImage, sql } from './sql';
 import { WidgetKeyType, WidgetKeyTypeData, WidgetProps } from './interface';
+import { DbImage, DbImageThumbnail } from '@model/image/sql';
 
 export interface CreateWidgetDefData {
   type: WidgetKeyType;
@@ -11,6 +12,7 @@ export interface CreateWidgetDefData {
   html: DbWidgetDef['html'];
   js: DbWidgetDef['js'];
   css: DbWidgetDef['css'];
+  images: Pick<DbWidgetDefImage, 'imageId' | 'name'>[];
 }
 
 export interface UpdateWidgetDefData extends CreateWidgetDefData {
@@ -28,6 +30,13 @@ export interface SelectWidgetDefData {
   js: DbWidgetDef['js'];
   css: DbWidgetDef['css'];
   updatedOn: DbWidgetDef['updatedOn'];
+  images: SelectWidgetDefImageData[];
+}
+
+export interface SelectWidgetDefImageData {
+  name: DbWidgetDefImage['name'];
+  imageId: DbImage['imageId'];
+  path: DbImageThumbnail['path'];
 }
 
 export type SelectAllWidgetDefData = Pick<
@@ -54,7 +63,16 @@ export async function createWidgetDef(
     time,
     ...widgetDef,
   };
-  await sql.insertWidgetDef(db, params);
+
+  db.transaction(async () => {
+    await sql.insertWidgetDef(db, params);
+    widgetDef.images.forEach((img) => {
+      sql.insertWidgetDefImage(db, {
+        ...img,
+        widgetDefId,
+      });
+    });
+  });
 
   return {
     widgetDefId: params.widgetDefId,
@@ -117,6 +135,8 @@ export async function selectWidgetDef(
     throw new Error('No widget def found with the provided ID');
   }
 
+  const images = await sql.selectWidgetDefImages(db, { widgetDefId });
+
   return {
     widgetDefId,
     name: res.name,
@@ -126,6 +146,11 @@ export async function selectWidgetDef(
     js: res.js,
     css: res.css,
     updatedOn: res.updatedOn,
+    images: images.map((img) => ({
+      name: img.name,
+      imageId: img.imageId,
+      path: img.path,
+    })),
   };
 }
 

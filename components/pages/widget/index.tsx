@@ -1,10 +1,11 @@
 import { FunctionComponent } from 'react';
+import { WidgetKeyType, WidgetProps } from '@model/widget-def/interface';
 import { makeStyles } from '@utils/styles';
 import { LinkToIndex } from '@components/links/link-to-index';
 import { useWidget } from './hooks';
-import { createWidget, WidgetProps, WidgetType } from '@components/widgets';
+import { createWidget } from '@components/widgets';
 
-export interface Props<T extends WidgetType = WidgetType> {
+export interface Props<T extends WidgetKeyType = WidgetKeyType> {
   widgetId?: string;
   type?: T;
   initialData?: WidgetProps[T];

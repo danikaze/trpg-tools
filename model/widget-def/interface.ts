@@ -7,7 +7,7 @@ export type WidgetKeyType = keyof WidgetKeyTypeData;
  * Props required by each kind of widget
  */
 export interface WidgetProps {
-  charSheet: CharacterSheetProps;
+  charNote: CharacterSheetProps;
 }
 
 export interface CharacterSheetProps {
@@ -21,5 +21,5 @@ export interface CharacterSheetProps {
 export type WidgetKeyCharSheetData = { noteId: UpdateNoteData['noteId'] };
 
 export interface WidgetKeyTypeData {
-  charSheet: WidgetKeyCharSheetData;
+  charNote: WidgetKeyCharSheetData;
 }
