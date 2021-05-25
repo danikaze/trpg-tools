@@ -1,21 +1,22 @@
 import clsx from 'clsx';
-import { createRef, FunctionComponent, RefObject, useState } from 'react';
+import { createRef, RefObject, useState } from 'react';
 import { makeStyles } from '@utils/styles';
 import { Label } from '@components/user-input/label';
 import { getTextValidator } from '@components/user-input/get-validator';
 
-export interface SelectOption {
+export interface SelectOption<T> {
   label: string;
-  value: string;
+  value: T;
 }
 
-export interface Props {
+export interface Props<T> {
   inputRef?: RefObject<HTMLSelectElement>;
-  defaultValue?: string;
+  defaultValue?: T;
+  value?: T;
   label?: string;
-  options: SelectOption[];
+  options: SelectOption<T>[];
   required?: boolean;
-  onChange?: (value: string) => void;
+  onChange?: (value: T) => void;
   className?: string;
 }
 
@@ -28,15 +29,16 @@ const useStyles = makeStyles(() => ({
 
 type Styles = ReturnType<typeof useStyles>;
 
-export const Select: FunctionComponent<Props> = ({
+export function Select<T extends string>({
   className,
   inputRef,
   defaultValue,
+  value,
   label,
   options,
   required,
   onChange,
-}) => {
+}: Props<T>) {
   const styles = useStyles();
   const [isValid, setValid] = useState<boolean>(true);
   const ref = inputRef || createRef<HTMLSelectElement>();
@@ -45,7 +47,7 @@ export const Select: FunctionComponent<Props> = ({
     (validate || onChange) &&
     (() => {
       validate && validate();
-      onChange && onChange(ref.current!.value);
+      onChange && onChange(ref.current!.value as T);
     });
   const optionsList = options.map(({ label, value }) => (
     <option key={value} value={value}>
@@ -62,10 +64,11 @@ export const Select: FunctionComponent<Props> = ({
         ref={ref}
         className={clsx(styles.root, className, !isValid && styles.error)}
         defaultValue={defaultValue}
+        value={value}
         onChange={changeHandler}
       >
         {optionsList}
       </select>
     </div>
   );
-};
+}
