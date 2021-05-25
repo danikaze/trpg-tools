@@ -14,7 +14,7 @@ export const imageDevData: DbInitFunction = async (db) => {
   );
   devImages['rungret'] = await storeImageInDb(
     devUsers['user1'],
-    join(__dirname, 'rungret-face.png'),
+    join(__dirname, 'rungret.png'),
     ['note']
   );
 };
