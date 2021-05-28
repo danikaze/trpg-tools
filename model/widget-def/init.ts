@@ -80,6 +80,13 @@ export const initWidgetDefs: DbInitFunction = async (db) => {
   );
 
   // Store images into the database
+  const imageBaseFolder = join(
+    PROJECT_ROOT,
+    'model',
+    'widget-def',
+    'system',
+    'images'
+  );
   const imageNames = [
     'ac-bg.png',
     'broken-glass.png',
@@ -90,9 +97,7 @@ export const initWidgetDefs: DbInitFunction = async (db) => {
   const imageIds = (
     await Promise.all(
       imageNames.map((img) =>
-        storeImageInDb(SYSTEM_USER, join(__dirname, 'system', 'images', img), [
-          'widgetDef',
-        ])
+        storeImageInDb(SYSTEM_USER, join(imageBaseFolder, img), ['widgetDef'])
       )
     )
   ).reduce((all, image, i) => {
