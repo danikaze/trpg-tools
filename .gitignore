@@ -5,7 +5,7 @@ public/static/thumbs
 uploads
 
 # from nextjs-boilerplate config
-/build-time-constants/*secret*
+/build-time-constants/**/*secret.js
 /logs
 
 # dependencies
