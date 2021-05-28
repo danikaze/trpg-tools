@@ -99,22 +99,37 @@ function stringify(data) {
 
 function getFiles(type) {
   const files = ['global', 'global-secret', type, `${type}-secret`];
+  const folders = (process.env.CONSTANTS_SUBFOLDERS || 'data')
+    .split(',')
+    .map((f) => join(CONSTANTS_PATH, f.trim()));
 
-  return files
-    .map((file) => join(CONSTANTS_PATH, `${file}.js`))
-    .filter((file) => existsSync(file));
+  return folders.reduce(
+    (allFiles, folder) =>
+      allFiles.concat(
+        files
+          .map((file) => join(folder, `${file}.js`))
+          .filter((file) => existsSync(file))
+      ),
+    []
+  );
 }
 
 function printConstants(type) {
-  console.log(`Build-time constants for the ${type}:`);
-  const printableTable = { ...allConstants[type] };
-  Object.entries(printableTable).forEach(([key, value]) => {
-    if (Array.isArray(value)) {
-      printableTable[key] = `[${value.join(',')}]`;
-    } else if (typeof value === 'object') {
-      printableTable[key] = JSON.stringify(value);
-    }
-  });
+  console.log(`Build-time constants for the ${type}`);
+  const table = { ...allConstants[type] };
+  const printableTable = {};
+  Object.keys(table)
+    .sort()
+    .forEach((key) => {
+      const value = table[key];
+      if (Array.isArray(value)) {
+        printableTable[key] = `[${value.join(',')}]`;
+      } else if (typeof value === 'object') {
+        printableTable[key] = JSON.stringify(value);
+      } else {
+        printableTable[key] = value;
+      }
+    });
   console.table(printableTable);
 }
 
