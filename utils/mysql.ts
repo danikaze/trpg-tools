@@ -2,7 +2,7 @@ import { Connection, ResultSetHeader } from 'mysql2/promise';
 import { NsLogger } from './logger';
 
 export type SqlParams = {
-  [key: string]: string | number | null | string[] | number[];
+  [key: string]: string | number | null | string[] | number[] | boolean;
 };
 
 export interface MySqlOptions {

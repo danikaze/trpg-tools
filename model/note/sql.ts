@@ -1,5 +1,4 @@
 import { MySql, SqlLimits } from '../../utils/mysql';
-import { getTimestamp } from '../../utils/db';
 import {
   DbNoteDefinition,
   DbNoteFieldDefinition,
@@ -15,6 +14,11 @@ export interface DbNote extends TimestampTable {
   gameId: DbGame['gameId'];
   title: string;
 }
+
+export type DbNoteBasic = Pick<
+  DbNote,
+  'noteId' | 'noteDefId' | 'gameId' | 'title'
+>;
 
 export interface DbNoteContent {
   noteId: DbNote['noteId'];
@@ -49,6 +53,13 @@ export const sql = {
     return db.insertOne(queries.insertNoteContent, params);
   },
 
+  selectNote: (
+    db: MySql,
+    params: { userId: DbUser['userId']; noteId: DbNote['noteId'] }
+  ) => {
+    return db.queryOne<DbNote>(queries.selectNote, params);
+  },
+
   paginateUserNotes: (
     db: MySql,
     page: number,
@@ -63,6 +74,13 @@ export const sql = {
       countSql: queries.countUserNotesOfType,
       countParams: params,
     });
+  },
+
+  selectUserNotesOfTypeByGame: (
+    db: MySql,
+    params: { userId: DbNote['userId']; noteDefIds: DbNote['noteDefId'][] }
+  ) => {
+    return db.query<DbNoteBasic>(queries.selectUserNotesOfTypeByGame, params);
   },
 
   selectNoteContents: (
@@ -127,6 +145,12 @@ const queries = {
       :value
     )
   `,
+  selectNote: `
+    SELECT noteId, noteDefId, title, createdOn, updatedOn
+      FROM notes
+      WHERE noteId = :noteId
+        AND userId = :userId
+  `,
   selectUserNotesOfType: `
     SELECT noteId, title, createdOn, updatedOn
       FROM notes
@@ -136,6 +160,13 @@ const queries = {
       ORDER BY updatedOn DESC
       LIMIT :rpp
       OFFSET :offset
+  `,
+  selectUserNotesOfTypeByGame: `
+    SELECT noteId, noteDefId, gameId, title
+      FROM notes
+      WHERE noteDefId IN (:noteDefIds)
+        AND userId = :userId
+      ORDER BY updatedOn DESC
   `,
   countUserNotesOfType: `
     SELECT COUNT(*) AS total

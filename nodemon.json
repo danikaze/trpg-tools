@@ -1,12 +1,14 @@
 {
   "watch": [
+    "nodemon.json",
     "server",
     "build-time-constants",
     "build-tools",
     "logger.config.js",
     "tsconfig.json",
     "public/static/locales",
-    "next.config.js"
+    "next.config.js",
+    "web-socket"
   ],
   "ignore": ["build-time-constants/build.d.ts"],
   "exec": "ts-node --project server/tsconfig.json --files server/index.ts",

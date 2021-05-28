@@ -12,6 +12,11 @@ declare const GAME_IMAGE_MAX_SIZE_B: number;
 declare const BODY_MAX_SIZE_B: number;
 
 /**
+ * Maximum size for Note.images in bytes
+ */
+declare const NOTE_IMAGE_MAX_SIZE_B: number;
+
+/**
  * - `true`: SSR is optimized delivering only the needed i18n namespaces
  * - `false`: SSG is enabled
  *
@@ -91,8 +96,21 @@ declare const AUTH_LOCAL_DO_LOGIN_URL: string;
 /** Route to authenticate via Twitter (will redirect to Twitter) */
 declare const AUTH_TWITTER_LOGIN_PAGE: string;
 
+/**
+ * Route where the web socket server is located
+ */
+declare const WEB_SOCKET_PATH: string;
+
+/**
+ * Default port to use for the Web Socket Server if `NODE_ENV.WSS_PORT` is
+ * not provided
+ */
+declare const WEB_SOCKET_PORT: number;
+
 /*
  * Data from global-secret.js
  */
-/** Example of a secret value available in the whole application */
+/**
+ * Example of a secret value available in the whole application
+ */
 declare const GLOBAL_SECRET_EXAMPLE: string;

@@ -50,3 +50,18 @@ export const FIELD_TEXT_MAX_LENGTH = Math.max(
  */
 export const TREASURE_CR_QUANTITY_MIN = 1;
 export const TREASURE_CR_QUANTITY_MAX = 99;
+
+/*
+ * Widget Def
+ */
+export const WIDGET_DEF_NAME_MAX_LENGTH = 255;
+export const WIDGET_DEF_HTML_MAX_LENGTH = 10000;
+export const WIDGET_DEF_JS_MAX_LENGTH = 10000;
+export const WIDGET_DEF_CSS_MAX_LENGTH = 10000;
+export const WIDGET_DEF_IMAGE_NAME_MAX_LENGTH = 255;
+
+/*
+ * Widgets
+ */
+export const WIDGET_UPDATE_INTERVAL = 2000;
+export const WIDGET_NAME_MAX_LENGTH = 255;

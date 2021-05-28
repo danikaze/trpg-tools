@@ -9,13 +9,14 @@ import { ApiKeyData } from '@model/api-key';
 import { UserAuthData } from '@model/user';
 import { useUserData } from '@utils/auth';
 import { EditProps, Props } from './';
+import { uploadImage } from '@api/image/client';
 
 type State = {
   fields: NoteFieldDefinition[];
   isEditing: boolean;
   title: UpdateNoteData['title'];
   content: UpdateNoteData['content'];
-  apiKey?: ApiKeyData<'updateNote'>;
+  apiKeyUpdate?: ApiKeyData<'updateNote'>;
   user: UserAuthData;
 };
 
@@ -29,7 +30,7 @@ export function useGameNote(props: Props) {
     isEditing: !isEditingMode(props),
     title: isEditingMode(props) ? props.data.title : '',
     content: isEditingMode(props) ? { ...props.data.content } : {},
-    apiKey: isEditingMode(props) ? props.apiKey : undefined,
+    apiKeyUpdate: isEditingMode(props) ? props.apiKeyUpdate : undefined,
     user: useUserData()!,
   });
 
@@ -58,6 +59,34 @@ export function useGameNote(props: Props) {
         [noteContentId]: value,
       },
     }));
+  }
+
+  async function updateImage(
+    noteContentId: NoteFieldDefinition['noteFieldDefId'],
+    image: File | null
+  ) {
+    if (!image) {
+      setState((state) => ({
+        ...state,
+        content: {
+          ...state.content,
+          [noteContentId]: undefined,
+        },
+      }));
+      return;
+    }
+
+    const uploadedImage = await uploadImage(['note'], image);
+    const imageUrl = uploadedImage.thumbnails.find(
+      (img) => img.type === 'noteThumb'
+    )!.path;
+    setState({
+      ...state,
+      content: {
+        ...state.content,
+        [noteContentId]: uploadedImage.imageId,
+      },
+    });
   }
 
   async function saveUpdate() {
@@ -91,8 +120,8 @@ export function useGameNote(props: Props) {
     props.onDelete(props.definition.noteDefId, props.data.noteId);
   }
 
-  async function createApiKey() {
-    if (!isEditingMode(props) || !state.user || state.apiKey) return;
+  async function createApiKeyUpdate() {
+    if (!isEditingMode(props) || !state.user || state.apiKeyUpdate) return;
 
     const apiKeyId = await callCreateUpdateNoteApiKey(
       props.data.noteId,
@@ -101,8 +130,9 @@ export function useGameNote(props: Props) {
 
     setState((state) => ({
       ...state,
-      apiKey: {
+      apiKeyUpdate: {
         apiKeyId,
+        type: 'updateNote',
         userId: state.user.userId,
         data: {
           noteId: props.data.noteId,
@@ -112,36 +142,42 @@ export function useGameNote(props: Props) {
     }));
   }
 
-  async function deleteApiKey() {
-    if (!state.user || !state.apiKey) return;
-    const doIt = confirm(`Delete api key ${state.apiKey.apiKeyId}?`);
+  async function deleteApiKeyUpdate() {
+    if (!state.user || !state.apiKeyUpdate) return;
+    const doIt = confirm(
+      `Delete the update API key ${state.apiKeyUpdate.apiKeyId}?`
+    );
     if (!doIt) return;
 
-    await callDeleteUpdateNoteApiKey(state.apiKey.apiKeyId);
+    await callDeleteUpdateNoteApiKey(state.apiKeyUpdate.apiKeyId);
 
     setState((state) => ({
       ...state,
-      apiKey: undefined,
+      apiKeyUpdate: undefined,
     }));
   }
 
   return {
     updateTitle,
     updateField,
+    updateImage,
     saveUpdate: isEditingMode(props)
       ? props.onUpdate && saveUpdate
       : props.onSave && saveNewNote,
     confirmAndDeleteNote:
       isEditingMode(props) && props.onDelete && confirmAndDeleteNote,
-    createApiKey:
-      isEditingMode(props) && state.user && !state.apiKey && createApiKey,
-    deleteApiKey: state.user && state.apiKey && deleteApiKey,
+    createApiKeyUpdate:
+      isEditingMode(props) &&
+      state.user &&
+      !state.apiKeyUpdate &&
+      createApiKeyUpdate,
+    deleteApiKeyUpdate: state.user && state.apiKeyUpdate && deleteApiKeyUpdate,
     isEditing: state.isEditing,
     toggleEdit:
       (isEditingMode(props) && props.canEdit && toggleEdit) || undefined,
     contents: state.content,
     title: state.title,
     definition: props.definition,
-    apiKey: state.apiKey,
+    apiKeyUpdate: state.apiKeyUpdate,
   };
 }

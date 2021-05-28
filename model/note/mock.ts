@@ -2,12 +2,31 @@ import { NoteDefinition } from '../note-definition';
 import { DbInitFunction } from '../../utils/mysql';
 import { UserAuthData } from '../user';
 import { devUsers } from '../user/mock';
-import { systemNoteTypes } from '../note-definition/init';
 import { CreatedNoteData, createNote, CreateNoteData } from '.';
 import { basename } from 'path';
 import { devGames } from '../game/mock';
 import { GamePreviewData } from '../game';
+import { getSystemNoteDefinitions } from '../global';
 import { noteDefinitionsDevData } from '../note-definition/mock';
+import {
+  NOTE_DEF_FIELD_NAME_DESCRIPTION,
+  NOTE_DEF_FIELD_NAME_ALIGNMENT,
+  NOTE_DEF_FIELD_NAME_LOCATION,
+  NOTE_DEF_FIELD_NAME_RACE,
+  NOTE_DEF_FIELD_NAME_CLASS,
+  NOTE_DEF_FIELD_NAME_LEVEL,
+  NOTE_DEF_FIELD_NAME_HP,
+  NOTE_DEF_FIELD_NAME_HP_MAX,
+  NOTE_DEF_FIELD_NAME_STRENGTH,
+  NOTE_DEF_FIELD_NAME_DEXTERITY,
+  NOTE_DEF_FIELD_NAME_CONSTITUTION,
+  NOTE_DEF_FIELD_NAME_INTELLIGENCE,
+  NOTE_DEF_FIELD_NAME_WISDOM,
+  NOTE_DEF_FIELD_NAME_CHARISMA,
+  NOTE_DEF_FIELD_NAME_AC,
+  NOTE_DEF_FIELD_NAME_IMAGE,
+} from '../note-definition/init';
+import { devImages } from '../image/mock';
 
 export const devNotes: {
   [noteDefId: string]: (NoteDef & CreatedNoteData)[];
@@ -28,10 +47,9 @@ export const noteDevData: DbInitFunction = async () => {
   function getFieldId(noteDef: NoteDefinition, fieldName: string) {
     const id = noteDef.fields.find((f) => f.name === fieldName)?.noteFieldDefId;
     if (!id) {
+      const file = `${basename(__dirname)}/${basename(__filename)}`;
       throw new Error(
-        `Field ${noteDef.name}.${fieldName} not found in ${basename(
-          __filename
-        )}`
+        `Field ${noteDef.name}.${fieldName} not found in ${file}`
       );
     }
     return id;
@@ -45,87 +63,88 @@ export const noteDevData: DbInitFunction = async () => {
     return game;
   }
 
+  const systemNoteDefinitions = await getSystemNoteDefinitions();
   const devNoteDefinitions: NoteDef[] = [
     {
       user: devUsers.user1,
-      noteDef: systemNoteTypes.npcs,
+      noteDef: systemNoteDefinitions.npcs,
       gameDef: getGame('Game 1'),
       title: 'Amira Shadowhorn',
       content: [
         {
-          noteFieldName: 'Description',
+          noteFieldName: NOTE_DEF_FIELD_NAME_DESCRIPTION,
           value: 'Tiefling woman with a pale purple skil tone.',
         },
         {
-          noteFieldName: 'Alignment',
+          noteFieldName: NOTE_DEF_FIELD_NAME_ALIGNMENT,
           value: 'NN',
         },
         {
-          noteFieldName: 'Location',
+          noteFieldName: NOTE_DEF_FIELD_NAME_LOCATION,
           value: 'Eseneas',
         },
       ],
     },
     {
       user: devUsers.user1,
-      noteDef: systemNoteTypes.npcs,
+      noteDef: systemNoteDefinitions.npcs,
       gameDef: getGame('Game 1'),
       title: 'Kashak, Kobold Shaman',
       content: [
         {
-          noteFieldName: 'Alignment',
+          noteFieldName: NOTE_DEF_FIELD_NAME_ALIGNMENT,
           value: 'CE',
         },
         {
-          noteFieldName: 'Location',
+          noteFieldName: NOTE_DEF_FIELD_NAME_LOCATION,
           value: 'Lewick/Malnia',
         },
       ],
     },
     {
       user: devUsers.user1,
-      noteDef: systemNoteTypes.locations,
+      noteDef: systemNoteDefinitions.locations,
       gameDef: getGame('Game 1'),
       title: 'Lewick',
       content: [
         {
-          noteFieldName: 'Description',
+          noteFieldName: NOTE_DEF_FIELD_NAME_DESCRIPTION,
           value: 'Farming town close to the Black Forest',
         },
       ],
     },
     {
       user: devUsers.user1,
-      noteDef: systemNoteTypes.npcs,
+      noteDef: systemNoteDefinitions.npcs,
       gameDef: getGame('Game 2'),
       title: 'Grog',
       content: [
         {
-          noteFieldName: 'Description',
+          noteFieldName: NOTE_DEF_FIELD_NAME_DESCRIPTION,
           value: `Goliath Barbarian`,
         },
       ],
     },
     {
       user: devUsers.user1,
-      noteDef: systemNoteTypes.locations,
+      noteDef: systemNoteDefinitions.locations,
       gameDef: getGame('Game 2'),
       title: 'Emon',
       content: [
         {
-          noteFieldName: 'Description',
+          noteFieldName: NOTE_DEF_FIELD_NAME_DESCRIPTION,
           value: `Goliath Barbarian`,
         },
       ],
     },
     {
       user: devUsers.user2,
-      noteDef: systemNoteTypes.npcs,
+      noteDef: systemNoteDefinitions.npcs,
       gameDef: getGame('Game 3'),
       title: 'Placeholder NPC',
       content: [
         {
-          noteFieldName: 'Description',
+          noteFieldName: NOTE_DEF_FIELD_NAME_DESCRIPTION,
           value: `Emon is the capital city of the kingdom of Tal'Dorei, and the largest city on the continent`,
         },
       ],
@@ -160,160 +179,208 @@ export const noteDevData: DbInitFunction = async () => {
     },
     {
       user: devUsers.user1,
-      noteDef: systemNoteTypes.pcs,
+      noteDef: systemNoteDefinitions.pcs,
       gameDef: getGame('Game 1'),
       title: 'Rungret Ironfist',
       content: [
         {
-          noteFieldName: 'Alignment',
+          noteFieldName: NOTE_DEF_FIELD_NAME_IMAGE,
+          value: String(devImages['rungret'].imageId),
+        },
+        {
+          noteFieldName: NOTE_DEF_FIELD_NAME_ALIGNMENT,
           value: 'LG',
         },
         {
-          noteFieldName: 'Race',
+          noteFieldName: NOTE_DEF_FIELD_NAME_RACE,
           value: 'dwarf',
         },
         {
-          noteFieldName: 'Class',
+          noteFieldName: NOTE_DEF_FIELD_NAME_CLASS,
           value: 'cleric',
         },
         {
-          noteFieldName: 'Level',
+          noteFieldName: NOTE_DEF_FIELD_NAME_LEVEL,
           value: '2',
         },
         {
-          noteFieldName: 'Hit Points',
+          noteFieldName: NOTE_DEF_FIELD_NAME_HP,
           value: '15',
         },
         {
-          noteFieldName: 'Max Hit Points',
+          noteFieldName: NOTE_DEF_FIELD_NAME_HP_MAX,
           value: '15',
+        },
+        {
+          noteFieldName: NOTE_DEF_FIELD_NAME_STRENGTH,
+          value: '12',
+        },
+        {
+          noteFieldName: NOTE_DEF_FIELD_NAME_DEXTERITY,
+          value: '8',
+        },
+        {
+          noteFieldName: NOTE_DEF_FIELD_NAME_CONSTITUTION,
+          value: '13',
+        },
+        {
+          noteFieldName: NOTE_DEF_FIELD_NAME_INTELLIGENCE,
+          value: '10',
+        },
+        {
+          noteFieldName: NOTE_DEF_FIELD_NAME_WISDOM,
+          value: '18',
+        },
+        {
+          noteFieldName: NOTE_DEF_FIELD_NAME_CHARISMA,
+          value: '14',
+        },
+        {
+          noteFieldName: NOTE_DEF_FIELD_NAME_AC,
+          value: '18',
         },
       ],
     },
     {
       user: devUsers.user1,
-      noteDef: systemNoteTypes.pcs,
+      noteDef: systemNoteDefinitions.pcs,
       gameDef: getGame('Game 1'),
       title: 'Ghorax Alxiac',
       content: [
         {
-          noteFieldName: 'Alignment',
+          noteFieldName: NOTE_DEF_FIELD_NAME_IMAGE,
+          value: String(devImages['ghorax'].imageId),
+        },
+        {
+          noteFieldName: NOTE_DEF_FIELD_NAME_ALIGNMENT,
           value: 'LG',
         },
         {
-          noteFieldName: 'Race',
+          noteFieldName: NOTE_DEF_FIELD_NAME_RACE,
           value: 'dragonborn',
         },
         {
-          noteFieldName: 'Class',
+          noteFieldName: NOTE_DEF_FIELD_NAME_CLASS,
           value: 'monk',
         },
         {
-          noteFieldName: 'Level',
+          noteFieldName: NOTE_DEF_FIELD_NAME_LEVEL,
           value: '2',
         },
         {
-          noteFieldName: 'Hit Points',
+          noteFieldName: NOTE_DEF_FIELD_NAME_HP,
           value: '12',
         },
         {
-          noteFieldName: 'Max Hit Points',
+          noteFieldName: NOTE_DEF_FIELD_NAME_HP_MAX,
           value: '12',
         },
       ],
     },
     {
       user: devUsers.user1,
-      noteDef: systemNoteTypes.pcs,
+      noteDef: systemNoteDefinitions.pcs,
       gameDef: getGame('Game 1'),
       title: 'Cornelius Woodscar',
       content: [
         {
-          noteFieldName: 'Alignment',
+          noteFieldName: NOTE_DEF_FIELD_NAME_IMAGE,
+          value: String(devImages['cornelius'].imageId),
+        },
+        {
+          noteFieldName: NOTE_DEF_FIELD_NAME_ALIGNMENT,
           value: 'CG',
         },
         {
-          noteFieldName: 'Race',
+          noteFieldName: NOTE_DEF_FIELD_NAME_RACE,
           value: 'aasimar',
         },
         {
-          noteFieldName: 'Class',
+          noteFieldName: NOTE_DEF_FIELD_NAME_CLASS,
           value: 'paladin',
         },
         {
-          noteFieldName: 'Level',
+          noteFieldName: NOTE_DEF_FIELD_NAME_LEVEL,
           value: '2',
         },
         {
-          noteFieldName: 'Hit Points',
+          noteFieldName: NOTE_DEF_FIELD_NAME_HP,
           value: '16',
         },
         {
-          noteFieldName: 'Max Hit Points',
+          noteFieldName: NOTE_DEF_FIELD_NAME_HP_MAX,
           value: '16',
         },
       ],
     },
     {
       user: devUsers.user1,
-      noteDef: systemNoteTypes.pcs,
+      noteDef: systemNoteDefinitions.pcs,
       gameDef: getGame('Game 1'),
       title: 'Sylna Nask',
       content: [
         {
-          noteFieldName: 'Alignment',
+          noteFieldName: NOTE_DEF_FIELD_NAME_IMAGE,
+          value: String(devImages['sylna'].imageId),
+        },
+        {
+          noteFieldName: NOTE_DEF_FIELD_NAME_ALIGNMENT,
           value: 'NG',
         },
         {
-          noteFieldName: 'Race',
+          noteFieldName: NOTE_DEF_FIELD_NAME_RACE,
           value: 'half-elf',
         },
         {
-          noteFieldName: 'Class',
+          noteFieldName: NOTE_DEF_FIELD_NAME_CLASS,
           value: 'druid',
         },
         {
-          noteFieldName: 'Level',
+          noteFieldName: NOTE_DEF_FIELD_NAME_LEVEL,
           value: '2',
         },
         {
-          noteFieldName: 'Hit Points',
+          noteFieldName: NOTE_DEF_FIELD_NAME_HP,
           value: '15',
         },
         {
-          noteFieldName: 'Max Hit Points',
+          noteFieldName: NOTE_DEF_FIELD_NAME_HP_MAX,
           value: '15',
         },
       ],
     },
     {
       user: devUsers.user1,
-      noteDef: systemNoteTypes.pcs,
+      noteDef: systemNoteDefinitions.pcs,
       gameDef: getGame('Game 1'),
       title: 'Indar',
       content: [
         {
-          noteFieldName: 'Alignment',
+          noteFieldName: NOTE_DEF_FIELD_NAME_IMAGE,
+          value: String(devImages['indar'].imageId),
+        },
+        {
+          noteFieldName: NOTE_DEF_FIELD_NAME_ALIGNMENT,
           value: 'CG',
         },
         {
-          noteFieldName: 'Race',
+          noteFieldName: NOTE_DEF_FIELD_NAME_RACE,
           value: 'half-elf',
         },
         {
-          noteFieldName: 'Class',
+          noteFieldName: NOTE_DEF_FIELD_NAME_CLASS,
           value: 'rogue',
         },
         {
-          noteFieldName: 'Level',
+          noteFieldName: NOTE_DEF_FIELD_NAME_LEVEL,
           value: '2',
         },
         {
-          noteFieldName: 'Hit Points',
+          noteFieldName: NOTE_DEF_FIELD_NAME_HP,
           value: '19',
         },
         {
-          noteFieldName: 'Max Hit Points',
+          noteFieldName: NOTE_DEF_FIELD_NAME_HP_MAX,
           value: '19',
         },
       ],
@@ -325,12 +392,12 @@ export const noteDevData: DbInitFunction = async () => {
   for (let i = 0; i < N_NOTES; i++) {
     devNoteDefinitions.push({
       user: devUsers.user1,
-      noteDef: systemNoteTypes.locations,
+      noteDef: systemNoteDefinitions.locations,
       gameDef: getGame('Game 2'),
       title: `Test Location ${i}`,
       content: [
         {
-          noteFieldName: 'Description',
+          noteFieldName: NOTE_DEF_FIELD_NAME_DESCRIPTION,
           value: `Description for Test Location ${i}`,
         },
       ],

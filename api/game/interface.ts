@@ -1,6 +1,6 @@
 import { GamePreviewData, GameUpdateData } from '@model/game';
 import { NoteData } from '@model/note';
-import { RetrievedNoteDefinition } from '@model/note-definition';
+import { NoteDefinition } from '@model/note-definition';
 import { DbGame } from '@model/game/sql';
 import { Paginated } from '@utils/mysql';
 
@@ -28,7 +28,7 @@ export type DeleteGameBody = {};
 
 export type GetNotesResponse = Paginated<NoteData>;
 export type GetNotesQuery = {
-  noteDefId: RetrievedNoteDefinition['noteDefId'];
+  noteDefId: NoteDefinition['noteDefId'];
   page: number;
 };
 export type GetNotesBody = {};

@@ -38,8 +38,14 @@ interface ResizeDef extends ResizeOptions {
 
 const sizes: { [imageType in ImageType]: ResizeDef[] } = {
   game: [
-    { type: 'gameBanner', width: 600, height: 400 },
-    { type: 'gameThumb', width: 150, height: 150 },
+    { type: 'gameBanner', width: 600, height: 400, withoutEnlargement: true },
+    { type: 'gameThumb', width: 150, height: 150, withoutEnlargement: true },
+  ],
+  note: [
+    { type: 'noteThumb', width: 200, height: 200, withoutEnlargement: true },
+  ],
+  widgetDef: [
+    { type: 'widgetRaw', width: 4000, height: 4000, withoutEnlargement: true },
   ],
 };
 

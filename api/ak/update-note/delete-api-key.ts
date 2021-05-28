@@ -16,7 +16,7 @@ export const deleteUpdateNoteApiKey = userRequiredApiHandler<
 >(async (req, res) => {
   const { apiKeyId } = req.query;
 
-  await deleteApiKey(req.user, apiKeyId);
+  await deleteApiKey(req.user, 'updateNote', apiKeyId);
 
   res.status(HttpStatus.OK).json({ data: {} });
 });

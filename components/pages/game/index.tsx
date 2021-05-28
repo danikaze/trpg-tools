@@ -4,17 +4,17 @@ import { makeStyles } from '@utils/styles';
 import { GameDetailsData } from '@model/game';
 import { NoteData } from '@model/note';
 import { ApiKeyData } from '@model/api-key';
-import { RetrievedNoteDefinition } from '@model/note-definition';
+import { NoteDefinition } from '@model/note-definition';
 import { GameDetails } from '@components/game-details';
 import { LinkToMyGames } from '@components/links/link-to-my-games';
 import { GameNotes } from '@components/game-notes';
 
 export interface Props {
   game: GameDetailsData | null;
-  noteDefinitions: RetrievedNoteDefinition[] | null;
-  selectednoteDefId: RetrievedNoteDefinition['noteDefId'] | null;
+  noteDefinitions: NoteDefinition[] | null;
+  selectednoteDefId: NoteDefinition['noteDefId'] | null;
   notes: Paginated<NoteData> | null;
-  updateNotesApiKeys: ApiKeyData<'updateNote'>[];
+  apiKeys: ApiKeyData<'updateNote'>[];
 }
 
 const useStyles = makeStyles(() => ({
@@ -42,7 +42,7 @@ export const Game: FunctionComponent<Props> = (props) => {
         noteDefinitions={props.noteDefinitions}
         selectednoteDefId={props.selectednoteDefId}
         notes={props.notes}
-        updateNotesApiKeys={props.updateNotesApiKeys}
+        apiKeys={props.apiKeys}
       />
     </div>
   );

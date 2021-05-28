@@ -1,5 +1,5 @@
 import { getTimestamp } from '../../utils/db';
-import { MySql, SqlLimits } from '../../utils/mysql';
+import { MySql } from '../../utils/mysql';
 import { TimestampTable } from '../interfaces';
 import { DbUser } from '../user/sql';
 import { SYSTEM_USER } from '../user';
@@ -9,13 +9,16 @@ export type FieldType =
   | 'textfield'
   | 'textarea'
   | 'checkbox'
-  | 'select';
+  | 'select'
+  | 'image';
 
 export interface DbNoteDefinition extends TimestampTable {
   noteDefId: string;
   userId: DbUser['userId'];
   name: string;
 }
+
+export type DbNoteDefinitionName = Pick<DbNoteDefinition, 'noteDefId' | 'name'>;
 
 export interface DbNoteFieldDefinition {
   noteFieldDefId: number;
@@ -67,6 +70,22 @@ export const sql = {
     );
   },
 
+  selectUserNoteDefinitionNames: (
+    db: MySql,
+    params: {
+      userId: DbNoteDefinition['userId'];
+      noteDefIds: DbNoteDefinition['noteDefId'][];
+    }
+  ) => {
+    return db.query<DbNoteDefinitionName>(
+      queries.selectUserNoteDefinitionNames,
+      {
+        ...params,
+        systemUserId: SYSTEM_USER.userId,
+      }
+    );
+  },
+
   selectNoteFieldsDefinitions: (
     db: MySql,
     params: { noteDefIds: DbNoteDefinition['noteDefId'][] }
@@ -93,6 +112,16 @@ export const sql = {
   ) => {
     return db.delete(queries.deleteNoteFieldDefinition, params);
   },
+
+  selectImageFields: (
+    db: MySql,
+    params: { noteDefIds: DbNoteFieldDefinition['noteDefId'][] }
+  ) => {
+    return db.query<Pick<DbNoteFieldDefinition, 'noteFieldDefId'>>(
+      queries.selectImageFields,
+      params
+    );
+  },
 };
 
 const queries = {
@@ -110,6 +139,15 @@ const queries = {
       WHERE userId = :systemUserId
         OR userId = :userId
       ORDER BY updatedOn DESC
+  `,
+  selectUserNoteDefinitionNames: `
+    SELECT noteDefId, name
+      FROM notes_def
+      WHERE noteDefId IN (:noteDefIds)
+        AND (
+          userId = :systemUserId
+          OR userId = :userId
+        )
   `,
   countUserNoteDefinitions: `
     SELECT COUNT(*) AS total
@@ -135,8 +173,10 @@ const queries = {
       WHERE noteFieldDefId = :noteFieldDefId
         AND userId = :userId
   `,
-};
-
-const limits: SqlLimits<typeof queries> = {
-  selectUserNoteDefinitions: { default: 50, max: 50, min: 50 },
+  selectImageFields: `
+    SELECT noteFieldDefId
+      FROM notes_fields_def
+      WHERE noteDefId IN (:noteDefIds)
+        AND type = 'image'
+  `,
 };

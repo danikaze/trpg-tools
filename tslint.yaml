@@ -428,3 +428,4 @@ rules:
       - '@test'
       - '@themes'
       - '@utils'
+      - '@web-socket'

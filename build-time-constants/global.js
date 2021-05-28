@@ -2,10 +2,12 @@
 const FILE_HEADER_SIZE_B = 64;
 
 const GAME_IMAGE_MAX_SIZE_B = 1e6; // 1mb
+const NOTE_IMAGE_MAX_SIZE_B = 1e6; // 1mb
 const BODY_MAX_SIZE_B = FILE_HEADER_SIZE_B + Math.max(GAME_IMAGE_MAX_SIZE_B);
 
 module.exports = {
   GAME_IMAGE_MAX_SIZE_B,
+  NOTE_IMAGE_MAX_SIZE_B,
   BODY_MAX_SIZE_B,
   I18N_OPTIMIZED_NAMESPACES_ENABLED: true,
   AUTH_ENABLED: true,
@@ -18,4 +20,6 @@ module.exports = {
   AUTH_FORBIDDEN_PAGE: '/forbidden',
   AUTH_LOCAL_DO_LOGIN_URL: '/auth/local/login',
   AUTH_TWITTER_LOGIN_PAGE: '/auth/twitter',
+  WEB_SOCKET_PATH: '/ws',
+  WEB_SOCKET_PORT: 8089,
 };

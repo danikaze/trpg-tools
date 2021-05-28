@@ -23,7 +23,7 @@ export async function callCreateNoteApi(
     CreateNoteQuery,
     CreateNoteBody
   >(`game/${gameId}/note`, 'POST', {
-    data: note,
+    data: { note },
   });
 
   return res.data;

@@ -2,10 +2,7 @@ import clsx from 'clsx';
 import { FunctionComponent, ReactNode } from 'react';
 import { makeStyles } from '@utils/styles';
 import { Button } from '@components/user-input/button';
-import {
-  NoteFieldDefinition,
-  RetrievedNoteDefinition,
-} from '@model/note-definition';
+import { NoteFieldDefinition, NoteDefinition } from '@model/note-definition';
 import {
   CreateNoteData,
   NoteContentData,
@@ -22,7 +19,7 @@ import { TextInput } from '@components/user-input/text-input';
 import { useGameNote } from './hooks';
 
 interface BaseProps {
-  definition: RetrievedNoteDefinition;
+  definition: NoteDefinition;
   className?: string;
 }
 
@@ -30,9 +27,9 @@ export interface EditProps extends BaseProps {
   mode: 'edit';
   canEdit: boolean;
   data: NoteData;
-  apiKey?: ApiKeyData<'updateNote'> | undefined;
+  apiKeyUpdate?: ApiKeyData<'updateNote'> | undefined;
   onDelete?: (
-    noteDefId: RetrievedNoteDefinition['noteDefId'],
+    noteDefId: NoteDefinition['noteDefId'],
     noteId: NoteData['noteId']
   ) => void;
   onUpdate?: (note: UpdateNoteData) => Promise<boolean>;
@@ -90,33 +87,31 @@ function renderActions(
     toggleEdit,
     saveUpdate,
     confirmAndDeleteNote,
-    apiKey,
-    createApiKey,
-    deleteApiKey,
+    apiKeyUpdate,
+    createApiKeyUpdate,
+    deleteApiKeyUpdate,
   }: ReturnType<typeof useGameNote>
 ): JSX.Element {
+  // Save/Edit/Delete buttons
   const updateButton = isEditing && saveUpdate && (
     <Button onClick={saveUpdate}>Save</Button>
   );
-
   const editButton = toggleEdit && (
     <Button onClick={toggleEdit}>{isEditing ? 'Cancel' : 'Edit'}</Button>
   );
-
   const deleteButton = confirmAndDeleteNote && (
     <Button onClick={confirmAndDeleteNote}>Delete</Button>
   );
 
-  const apiKeyIcon = apiKey && (
-    <div className={styles.apiKeyIcon}>AK: {apiKey.apiKeyId}</div>
+  // API Key Update
+  const apiKeyUpdateIcon = apiKeyUpdate && (
+    <div className={styles.apiKeyIcon}>Update AK: {apiKeyUpdate.apiKeyId}</div>
   );
-
-  const createApiKeyButton = createApiKey && (
-    <Button onClick={createApiKey}>Create AK</Button>
+  const createApiKeyUpdateButton = createApiKeyUpdate && (
+    <Button onClick={createApiKeyUpdate}>Create Update AK</Button>
   );
-
-  const deleteApiKeyButton = deleteApiKey && (
-    <Button onClick={deleteApiKey}>Remove AK</Button>
+  const deleteApiKeyUpdateButton = deleteApiKeyUpdate && (
+    <Button onClick={deleteApiKeyUpdate}>Remove Update AK</Button>
   );
 
   return (
@@ -125,9 +120,9 @@ function renderActions(
       {editButton}
       {deleteButton}
       <div className={styles.apiKey}>
-        {apiKeyIcon}
-        {createApiKeyButton}
-        {deleteApiKeyButton}
+        {apiKeyUpdateIcon}
+        {createApiKeyUpdateButton}
+        {deleteApiKeyUpdateButton}
       </div>
     </div>
   );
@@ -153,7 +148,13 @@ function renderContents(
   const fields = definition.fields.map((field) => {
     const value = contents[field.noteFieldDefId];
     const fieldContent = isEditing
-      ? renderEditingField(styles, field, value, hookData.updateField)
+      ? renderEditingField(
+          styles,
+          field,
+          value,
+          hookData.updateField,
+          hookData.updateImage
+        )
       : renderField(styles, field, value);
 
     return (
@@ -191,23 +192,33 @@ function renderEditingField(
   updateField: (
     noteDefId: NoteFieldDefinition['noteFieldDefId'],
     value: string
+  ) => void,
+  updateImage: (
+    noteContentId: NoteFieldDefinition['noteFieldDefId'],
+    image: File | null
   ) => void
 ): ReactNode {
+  const valueChangeHandler = (value: string | boolean) => {
+    updateField(field.noteFieldDefId, value as string);
+  };
+
+  const imageChangeHandler = (image: File | null) => {
+    updateImage(field.noteFieldDefId, image);
+  };
+
   const props = {
     ...field.options,
     defaultValue: data,
     type: field.type,
+    maxBytes: NOTE_IMAGE_MAX_SIZE_B,
+    onChange: valueChangeHandler,
+    onImageChange: imageChangeHandler,
   } as UserInputTypeProps[UserInputType];
-
-  const changeHandler = (value: string | boolean) => {
-    updateField(field.noteFieldDefId, value as string);
-  };
 
   return (
     <UserInput
       key={field.noteFieldDefId}
       className={styles.contentField}
-      onChange={changeHandler}
       label={field.name}
       {...props}
     />
