@@ -248,6 +248,10 @@ export const noteDevData: DbInitFunction = async () => {
       title: 'Ghorax Alxiac',
       content: [
         {
+          noteFieldName: NOTE_DEF_FIELD_NAME_IMAGE,
+          value: String(devImages['ghorax'].imageId),
+        },
+        {
           noteFieldName: NOTE_DEF_FIELD_NAME_ALIGNMENT,
           value: 'LG',
         },
@@ -279,6 +283,10 @@ export const noteDevData: DbInitFunction = async () => {
       gameDef: getGame('Game 1'),
       title: 'Cornelius Woodscar',
       content: [
+        {
+          noteFieldName: NOTE_DEF_FIELD_NAME_IMAGE,
+          value: String(devImages['cornelius'].imageId),
+        },
         {
           noteFieldName: NOTE_DEF_FIELD_NAME_ALIGNMENT,
           value: 'CG',
@@ -312,6 +320,10 @@ export const noteDevData: DbInitFunction = async () => {
       title: 'Sylna Nask',
       content: [
         {
+          noteFieldName: NOTE_DEF_FIELD_NAME_IMAGE,
+          value: String(devImages['sylna'].imageId),
+        },
+        {
           noteFieldName: NOTE_DEF_FIELD_NAME_ALIGNMENT,
           value: 'NG',
         },
@@ -343,6 +355,10 @@ export const noteDevData: DbInitFunction = async () => {
       gameDef: getGame('Game 1'),
       title: 'Indar',
       content: [
+        {
+          noteFieldName: NOTE_DEF_FIELD_NAME_IMAGE,
+          value: String(devImages['indar'].imageId),
+        },
         {
           noteFieldName: NOTE_DEF_FIELD_NAME_ALIGNMENT,
           value: 'CG',
