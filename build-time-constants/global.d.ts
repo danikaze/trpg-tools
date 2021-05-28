@@ -101,12 +101,6 @@ declare const AUTH_TWITTER_LOGIN_PAGE: string;
  */
 declare const WEB_SOCKET_PATH: string;
 
-/**
- * Default port to use for the Web Socket Server if `NODE_ENV.WSS_PORT` is
- * not provided
- */
-declare const WEB_SOCKET_PORT: number;
-
 /*
  * Data from global-secret.js
  */

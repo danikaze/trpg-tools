@@ -1,3 +1,3 @@
 module.exports = {
-  CLIENT_EXAMPLE: 'CLIENT_EXAMPLE',
+  WEB_SOCKET_PORT: 9021,
 };

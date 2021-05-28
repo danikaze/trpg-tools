@@ -24,7 +24,9 @@ export function useWidget<T extends WidgetKeyType = WidgetKeyType>(
     const dataLoadListeners: Function[] = [];
     const dataUpdateListeners: Function[] = [];
 
-    const wsUrl = `ws://${location.hostname}:${WEB_SOCKET_PORT}/ws`;
+    const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsPort = WEB_SOCKET_PORT ? `:${WEB_SOCKET_PORT}` : '';
+    const wsUrl = `${wsProtocol}//${location.hostname}${wsPort}/ws`;
     const ws = new WebSocket(wsUrl);
     const images = (props.images || []).reduce((res, img) => {
       res[img.name] = img.path;
