@@ -21,5 +21,4 @@ module.exports = {
   AUTH_LOCAL_DO_LOGIN_URL: '/auth/local/login',
   AUTH_TWITTER_LOGIN_PAGE: '/auth/twitter',
   WEB_SOCKET_PATH: '/ws',
-  WEB_SOCKET_PORT: 8089,
 };

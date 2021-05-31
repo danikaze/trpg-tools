@@ -16,6 +16,11 @@ declare const LOCALES_PATH: string;
  * Default port to run NextJs server on if not specified by process.env.PORT
  */
 declare const SERVER_DEFAULT_PORT: number;
+/**
+ * Default port where the WebSocket Server is going to listen
+ * if `NODE_ENV.WSS_PORT` is not provided
+ */
+declare const WEB_SOCKET_PORT: number;
 
 /** Callback for twitter authentication strategy */
 declare const AUTH_TWITTER_CALLBACK_ABS_URL: string;

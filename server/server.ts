@@ -10,7 +10,7 @@ import { runWebSocketServer } from './ws';
 
 export function run() {
   const logger = getLogger('server');
-  const port = Number(process.env.PORT || '3000');
+  const port = Number(process.env.PORT || SERVER_DEFAULT_PORT);
   const app = next({ dev: !IS_PRODUCTION });
   const handle = app.getRequestHandler();
 

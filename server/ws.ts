@@ -39,6 +39,6 @@ export function runWebSocketServer(express: Express) {
   });
 
   server.listen(port, () => {
-    logger.info(`Server listening on port ${port}`);
+    logger.info(`Server listening on ws://localhost:${port}${WEB_SOCKET_PATH}`);
   });
 }

@@ -1,11 +1,7 @@
 /*
  * Data from client.js
  */
-/** Example of a value available for the client-side code */
-declare const CLIENT_EXAMPLE: string;
-
-/*
- * Data from client-secret.js
+/**
+ * Port used to connect to the WebSocket Server from the client
  */
-/** Example of a secret value available for the client-side code */
-declare const CLIENT_SECRET_EXAMPLE: string;
+declare const WEB_SOCKET_PORT: number | '';
