@@ -1,4 +1,4 @@
-import { AppPage } from '../_app';
+import { AppPage } from '@_app';
 import { DbWidgetKey } from '@model/widget-key/sql';
 import { selectWidgetDef } from '@model/widget-def';
 import { DbWidgetDef } from '@model/widget-def/sql';

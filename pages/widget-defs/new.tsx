@@ -1,4 +1,4 @@
-import { AppPage } from '../_app';
+import { AppPage } from '@_app';
 import { userRequiredServerSideProps } from '@utils/auth';
 import { PRODUCT_NAME } from '@utils/constants';
 import { DbWidgetKey } from '@model/widget-key/sql';

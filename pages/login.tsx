@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { LoginForm } from '@components/login-form';
-import { AppPage } from './_app';
+import { AppPage } from '@_app';
 
 export interface Props {
   redirect?: string;

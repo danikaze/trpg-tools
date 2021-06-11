@@ -1,4 +1,4 @@
-import { AppPage } from './_app';
+import { AppPage } from '@_app';
 import { PRODUCT_NAME } from '@utils/constants';
 import { Page } from '@components/page';
 import { Index, Props } from '@components/pages/index';

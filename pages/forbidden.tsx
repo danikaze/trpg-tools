@@ -1,6 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
-import { AppPage } from './_app';
+import { AppPage } from '@_app';
 
 const ForbiddenPage: AppPage = () => {
   const statusCode = 401;

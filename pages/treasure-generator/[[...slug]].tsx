@@ -1,4 +1,4 @@
-import { AppPage } from '../_app';
+import { AppPage } from '@_app';
 import { Page } from '@components/page';
 import { TreasureGenerator, Props } from '@components/pages/treasure-generator';
 

@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { logoutRequiredServerSideProps } from '@utils/auth';
-import { AppPage } from './_app';
+import { AppPage } from '@_app';
 
 const Logout: AppPage = () => {
   return (
