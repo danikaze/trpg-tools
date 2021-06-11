@@ -1,8 +1,8 @@
 import { UserAuthData } from '@model/user';
 import { readFileSync } from 'fs';
 import { extname } from 'path';
-import { StoredImage, storeImage } from '../model/image';
-import { ImageType } from '../model/image/sql';
+import { StoredImage, storeImage } from '@model/image';
+import { ImageType } from '@model/image/sql';
 import { decodeBase64Image, DecodedImage } from './decode-base64-image';
 
 export async function storeImageInDb(

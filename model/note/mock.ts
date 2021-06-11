@@ -1,13 +1,12 @@
-import { NoteDefinition } from '../note-definition';
-import { DbInitFunction } from '../../utils/mysql';
-import { UserAuthData } from '../user';
-import { devUsers } from '../user/mock';
-import { CreatedNoteData, createNote, CreateNoteData } from '.';
 import { basename } from 'path';
-import { devGames } from '../game/mock';
-import { GamePreviewData } from '../game';
-import { getSystemNoteDefinitions } from '../global';
-import { noteDefinitionsDevData } from '../note-definition/mock';
+import { DbInitFunction } from '@utils/mysql';
+import { NoteDefinition } from '@model/note-definition';
+import { UserAuthData } from '@model/user';
+import { devUsers } from '@model/user/mock';
+import { devGames } from '@model/game/mock';
+import { GamePreviewData } from '@model/game';
+import { getSystemNoteDefinitions } from '@model/global';
+import { noteDefinitionsDevData } from '@model/note-definition/mock';
 import {
   NOTE_DEF_FIELD_NAME_DESCRIPTION,
   NOTE_DEF_FIELD_NAME_ALIGNMENT,
@@ -25,8 +24,9 @@ import {
   NOTE_DEF_FIELD_NAME_CHARISMA,
   NOTE_DEF_FIELD_NAME_AC,
   NOTE_DEF_FIELD_NAME_IMAGE,
-} from '../note-definition/init';
-import { devImages } from '../image/mock';
+} from '@model/note-definition/init';
+import { devImages } from '@model/image/mock';
+import { CreatedNoteData, createNote, CreateNoteData } from '.';
 
 export const devNotes: {
   [noteDefId: string]: (NoteDef & CreatedNoteData)[];

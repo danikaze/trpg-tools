@@ -1,13 +1,13 @@
 import mkdirp from 'mkdirp';
 import { writeFile } from 'fs';
 import { join } from 'path';
-import { getDb } from '../../utils/db';
-import { PUBLIC_URL_FOLDER, UPLOADS_IMG_FOLDER } from '../../utils/constants';
-import { DecodedImage } from '../../utils/decode-base64-image';
-import { getFileHash } from '../../utils/get-file-hash';
-import { createThumbnails, ThumbnailInfo } from '../../utils/create-thumbnails';
-import { getUrlFromPath } from '../../utils/get-url-from-path';
-import { UserAuthData } from '../user';
+import { getDb } from '@utils/db';
+import { PUBLIC_URL_FOLDER, UPLOADS_IMG_FOLDER } from '@utils/constants';
+import { DecodedImage } from '@utils/decode-base64-image';
+import { getFileHash } from '@utils/get-file-hash';
+import { createThumbnails, ThumbnailInfo } from '@utils/create-thumbnails';
+import { getUrlFromPath } from '@utils/get-url-from-path';
+import { UserAuthData } from '@model/user';
 import {
   DbImage,
   DbImageThumbnail,

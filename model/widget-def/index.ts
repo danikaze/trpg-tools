@@ -1,10 +1,10 @@
-import { generateUniqueId, getDb, getTimestamp } from '../../utils/db';
-import { getSystemNotePcFields } from '../global';
-import { selectNote } from '../note';
-import { UserAuthData } from '../user';
+import { generateUniqueId, getDb, getTimestamp } from '@utils/db';
+import { getSystemNotePcFields } from '@model/global';
+import { selectNote } from '@model/note';
+import { UserAuthData } from '@model/user';
+import { DbImage, DbImageThumbnail } from '@model/image/sql';
 import { DbWidgetDef, DbWidgetDefImage, sql } from './sql';
 import { WidgetKeyType, WidgetKeyTypeData, WidgetProps } from './interface';
-import { DbImage, DbImageThumbnail } from '@model/image/sql';
 
 export interface CreateWidgetDefData {
   type: WidgetKeyType;

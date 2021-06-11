@@ -2,13 +2,13 @@ import { basename } from 'path';
 import {
   FIELD_TEXT_MAX_LENGTH,
   NOTE_COL_NAME_MAX_LENGTH as NOTE_COL_TITLE_MAX_LENGTH,
-} from '../../utils/constants';
-import { DbInitFunction } from '../../utils/mysql';
+} from '@utils/constants';
+import { DbInitFunction } from '@utils/mysql';
 import {
   EDIT_TIME_COLS,
   MYSQL_TYPE_INTERNAL_ID,
   MYSQL_TYPE_PUBLIC_ID,
-} from '../constants/sql';
+} from '@model/constants/sql';
 
 export const initNote: DbInitFunction = async (db) => {
   const sql = [

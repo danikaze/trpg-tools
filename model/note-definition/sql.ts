@@ -1,8 +1,8 @@
-import { getTimestamp } from '../../utils/db';
-import { MySql } from '../../utils/mysql';
-import { TimestampTable } from '../interfaces';
-import { DbUser } from '../user/sql';
-import { SYSTEM_USER } from '../user';
+import { getTimestamp } from '@utils/db';
+import { MySql } from '@utils/mysql';
+import { TimestampTable } from '@model/interfaces';
+import { DbUser } from '@model/user/sql';
+import { SYSTEM_USER } from '@model/user';
 
 export type FieldType =
   | 'int'

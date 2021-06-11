@@ -1,6 +1,6 @@
+import { UserAuthData } from '@model/user';
+import { generateUniqueId, getDb } from '@utils/db';
 import { DbNoteDefinition, DbNoteFieldDefinition, FieldType, sql } from './sql';
-import { UserAuthData } from '../user';
-import { generateUniqueId, getDb } from '../../utils/db';
 
 interface NoteFieldDefinitionBase {
   noteFieldDefId: DbNoteFieldDefinition['noteFieldDefId'];

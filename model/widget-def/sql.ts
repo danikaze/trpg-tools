@@ -1,9 +1,9 @@
-import { MySql } from '../../utils/mysql';
-import { DbUser } from '../user/sql';
-import { SYSTEM_USER } from '../user';
-import { WidgetKeyType } from './interface';
-import { TimestampTable } from '../interfaces';
+import { MySql } from '@utils/mysql';
+import { DbUser } from '@model/user/sql';
+import { SYSTEM_USER } from '@model/user';
+import { TimestampTable } from '@model/interfaces';
 import { DbImage } from '@model/image/sql';
+import { WidgetKeyType } from './interface';
 import { SelectWidgetDefImageData } from '.';
 
 export interface DbWidgetDef extends TimestampTable {

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import passport from 'passport';
 import { Strategy } from 'passport-twitter';
-import { authTwitterUser } from '../../../model/auth';
+import { authTwitterUser } from '@model/auth';
 
 export const twitterEnabled = (() => {
   try {

@@ -1,5 +1,5 @@
-import { MySql, SqlLimits } from '../../utils/mysql';
-import { getTimestamp } from '../../utils/db';
+import { MySql, SqlLimits } from '@utils/mysql';
+import { getTimestamp } from '@utils/db';
 import { DbUser } from '../user/sql';
 import { DbImageThumbnail } from '../image/sql';
 import { Nullable, TimestampTable } from '../interfaces';

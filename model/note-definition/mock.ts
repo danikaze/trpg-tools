@@ -1,11 +1,11 @@
-import { DbInitFunction } from '../../utils/mysql';
+import { DbInitFunction } from '@utils/mysql';
+import { devUsers } from '@model/user/mock';
 import {
   createNoteDefinition,
   CreateNoteDefinitionData,
   CreateNoteFieldDefinition,
   NoteDefinition,
 } from '.';
-import { devUsers } from '../user/mock';
 
 export const noteDefinitionsDevData = {} as Record<'user1note', NoteDefinition>;
 

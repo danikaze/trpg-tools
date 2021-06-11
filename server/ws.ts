@@ -1,13 +1,13 @@
 import { createServer } from 'http';
 import { Express } from 'express';
 import { Server } from 'ws';
-import { getLogger } from '../utils/logger';
-import { selectWidgetKey } from '../model/widget-key';
+import { getLogger } from '@utils/logger';
+import { selectWidgetKey } from '@model/widget-key';
 import {
   CloseEventCode,
   createWebSocketHandler,
   isValidGreetingMsg,
-} from '../web-socket';
+} from '@web-socket';
 
 export function runWebSocketServer(express: Express) {
   const logger = getLogger('wss');

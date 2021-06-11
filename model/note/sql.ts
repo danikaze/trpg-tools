@@ -1,11 +1,11 @@
-import { MySql, SqlLimits } from '../../utils/mysql';
+import { MySql, SqlLimits } from '@utils/mysql';
 import {
   DbNoteDefinition,
   DbNoteFieldDefinition,
-} from '../note-definition/sql';
-import { DbGame } from '../game/sql';
-import { DbUser } from '../user/sql';
-import { TimestampTable } from '../interfaces';
+} from '@model/note-definition/sql';
+import { DbGame } from '@model/game/sql';
+import { DbUser } from '@model/user/sql';
+import { TimestampTable } from '@model/interfaces';
 
 export interface DbNote extends TimestampTable {
   noteId: string;

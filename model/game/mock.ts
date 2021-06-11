@@ -1,4 +1,4 @@
-import { DbInitFunction } from '../../utils/mysql';
+import { DbInitFunction } from '@utils/mysql';
 import { devImages } from '../image/mock';
 import { devUsers } from '../user/mock';
 import { UserAuthData } from '../user';

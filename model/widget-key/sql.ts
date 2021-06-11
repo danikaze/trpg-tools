@@ -1,8 +1,8 @@
-import { MySql } from '../../utils/mysql';
-import { getTimestamp } from '../../utils/db';
-import { DbUser } from '../user/sql';
-import { TimestampTable } from '../interfaces';
+import { MySql } from '@utils/mysql';
+import { getTimestamp } from '@utils/db';
+import { DbUser } from '@model/user/sql';
 import { DbWidgetDef } from '@model/widget-def/sql';
+import { TimestampTable } from '@model/interfaces';
 
 export interface DbWidgetKey extends TimestampTable {
   widgetKeyId: string;
