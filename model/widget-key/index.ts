@@ -1,16 +1,16 @@
-import { generateUniqueId, getDb } from '../../utils/db';
-import { getSystemNotePcFields } from '../global';
-import { selectNote } from '../note';
-import { DbUser } from '../user/sql';
-import { UserAuthData } from '../user';
-import { DbWidgetKey, sql } from './sql';
-import { DbWidgetDef, sql as widgetDefSql } from '../widget-def/sql';
+import { generateUniqueId, getDb } from '@utils/db';
+import { getSystemNotePcFields } from '@model/global';
+import { selectNote } from '@model/note';
+import { DbUser } from '@model/user/sql';
+import { UserAuthData } from '@model/user';
+import { DbWidgetDef, sql as widgetDefSql } from '@model/widget-def/sql';
 import {
   WidgetKeyType,
   WidgetKeyTypeData,
   WidgetProps,
-} from '../widget-def/interface';
-import { SelectWidgetDefData } from '../widget-def';
+} from '@model/widget-def/interface';
+import { SelectWidgetDefData } from '@model/widget-def';
+import { DbWidgetKey, sql } from './sql';
 
 export interface WidgetKeyData<T extends WidgetKeyType> {
   widgetKeyId: DbWidgetKey['widgetKeyId'];

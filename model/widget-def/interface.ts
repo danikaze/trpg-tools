@@ -1,5 +1,5 @@
 import { DbNoteFieldDefinition } from '@model/note-definition/sql';
-import { NoteData, UpdateNoteData } from '../note';
+import { NoteData, UpdateNoteData } from '@model/note';
 
 export type WidgetKeyType = keyof WidgetKeyTypeData;
 

@@ -1,12 +1,12 @@
 import { WebSocketHandlerType } from '..';
-import { selectNote } from '../../model/note';
-import { DbNote } from '../../model/note/sql';
-import { UserAuthData } from '../../model/user';
-import { DbWidgetKey } from '../../model/widget-key/sql';
-import { WidgetKeyType } from '../../model/widget-def/interface';
-import { WidgetKeyData } from '../../model/widget-key';
-import { WsHandler } from '../../utils/ws/base-handler';
-import { WIDGET_UPDATE_INTERVAL } from '../../utils/constants';
+import { selectNote } from '@model/note';
+import { DbNote } from '@model/note/sql';
+import { UserAuthData } from '@model/user';
+import { DbWidgetKey } from '@model/widget-key/sql';
+import { WidgetKeyType } from '@model/widget-def/interface';
+import { WidgetKeyData } from '@model/widget-key';
+import { WsHandler } from '@utils/ws/base-handler';
+import { WIDGET_UPDATE_INTERVAL } from '@utils/constants';
 
 export class SelectNotesWsHandler extends WsHandler<{}> {
   protected ready: Promise<void>;

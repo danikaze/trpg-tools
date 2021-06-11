@@ -1,9 +1,9 @@
 import * as WebSocket from 'ws';
 import { validate } from 'uuid';
-import { DbWidgetKey } from '../model/widget-key/sql';
-import { WidgetKeyType } from '../model/widget-def/interface';
-import { WidgetKeyAndTypeData } from '../model/widget-key';
-import { WsHandler } from '../utils/ws/base-handler';
+import { DbWidgetKey } from '@model/widget-key/sql';
+import { WidgetKeyType } from '@model/widget-def/interface';
+import { WidgetKeyAndTypeData } from '@model/widget-key';
+import { WsHandler } from '@utils/ws/base-handler';
 import { SelectNotesWsHandler } from './select-notes';
 
 const webSocketHandlers = {

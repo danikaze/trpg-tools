@@ -1,7 +1,7 @@
-import { encryptPassword } from '../../../utils/crypt';
-import { LOCAL_SALT_SIZE } from '../../../utils/constants';
-import { Rng } from '../../../utils/rng';
-import { getDb } from '../../../utils/db';
+import { encryptPassword } from '@utils/crypt';
+import { LOCAL_SALT_SIZE } from '@utils/constants';
+import { Rng } from '@utils/rng';
+import { getDb } from '@utils/db';
 import { DbLocalUser, sql } from '../sql';
 import { UserAuthData } from '..';
 

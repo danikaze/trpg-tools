@@ -1,12 +1,12 @@
 import { basename } from 'path';
-import { UPLOAD_PATH_MAX_CHARS } from '../../utils/constants';
-import { DbInitFunction } from '../../utils/mysql';
+import { UPLOAD_PATH_MAX_CHARS } from '@utils/constants';
+import { DbInitFunction } from '@utils/mysql';
 import {
   EDIT_TIME_COLS,
   MYSQL_TYPE_ENUM,
   MYSQL_TYPE_IMAGE_WH,
   MYSQL_TYPE_INTERNAL_ID,
-} from '../constants/sql';
+} from '@model/constants/sql';
 
 export const initImage: DbInitFunction = async (db) => {
   const sql = [

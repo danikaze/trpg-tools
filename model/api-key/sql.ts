@@ -1,8 +1,8 @@
 import { ApiKeyType } from '.';
-import { DbUser } from '../user/sql';
-import { TimestampTable } from '../interfaces';
-import { MySql } from '../../utils/mysql';
-import { getTimestamp } from '../../utils/db';
+import { DbUser } from '@model/user/sql';
+import { TimestampTable } from '@model/interfaces';
+import { MySql } from '@utils/mysql';
+import { getTimestamp } from '@utils/db';
 
 export interface DbApiKey extends TimestampTable {
   apiKeyId: string;

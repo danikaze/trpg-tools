@@ -1,4 +1,4 @@
-import { DbInitFunction, InitDbOptions } from '../utils/mysql';
+import { DbInitFunction, InitDbOptions } from '@utils/mysql';
 
 import { initUser } from './user/init';
 import { initImage } from './image/init';

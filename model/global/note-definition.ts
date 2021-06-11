@@ -1,5 +1,5 @@
-import { getUserNoteDefinitions, NoteDefinition } from '../note-definition';
-import { DbNoteFieldDefinition } from '../note-definition/sql';
+import { getUserNoteDefinitions, NoteDefinition } from '@model/note-definition';
+import { DbNoteFieldDefinition } from '@model/note-definition/sql';
 import {
   NOTE_DEFINITION_NAME_LOCATIONS,
   NOTE_DEFINITION_NAME_NPCS,
@@ -20,8 +20,8 @@ import {
   NOTE_DEF_FIELD_NAME_RACE,
   NOTE_DEF_FIELD_NAME_STRENGTH,
   NOTE_DEF_FIELD_NAME_WISDOM,
-} from '../note-definition/init';
-import { SYSTEM_USER } from '../user';
+} from '@model/note-definition/init';
+import { SYSTEM_USER } from '@model/user';
 import { getSystemNoteDefinitions } from '.';
 
 export type SystemNoteDefinitions = Record<

@@ -1,5 +1,5 @@
-import { MySql } from '../../utils/mysql';
-import { getTimestamp } from '../../utils/db';
+import { MySql } from '@utils/mysql';
+import { getTimestamp } from '@utils/db';
 import { TimestampTable } from '../interfaces';
 import { UserRole } from '.';
 

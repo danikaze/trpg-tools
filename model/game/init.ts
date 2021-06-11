@@ -1,6 +1,6 @@
 import { basename } from 'path';
-import { GAME_NAME_MAX_CHARS } from '../../utils/constants';
-import { DbInitFunction } from '../../utils/mysql';
+import { GAME_NAME_MAX_CHARS } from '@utils/constants';
+import { DbInitFunction } from '@utils/mysql';
 import {
   EDIT_TIME_COLS,
   MYSQL_TYPE_ENUM,

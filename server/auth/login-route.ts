@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import { default as passport } from 'passport';
-import { addUrlParam } from '../../utils/url';
+import { addUrlParam } from '@utils/url';
 
 function getLoginRoute(strategy: string): RequestHandler {
   return (req, res) => {

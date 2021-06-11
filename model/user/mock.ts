@@ -1,4 +1,4 @@
-import { DbInitFunction, MySql } from '../../utils/mysql';
+import { DbInitFunction, MySql } from '@utils/mysql';
 import { createLocalUser } from './strats/local';
 import { createUser, UserAuthData, UserRole } from '.';
 import { UserType } from './sql';

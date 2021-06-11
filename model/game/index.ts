@@ -1,15 +1,15 @@
 import { ResultSetHeader } from 'mysql2/promise';
-import { generateUniqueId, getDb, getTimestamp } from '../../utils/db';
-import { Rng } from '../../utils/rng';
-import { Paginated } from '../../utils/mysql';
-import { UpdateGameResponse } from '../../api/game/interface';
+import { generateUniqueId, getDb, getTimestamp } from '@utils/db';
+import { Rng } from '@utils/rng';
+import { Paginated } from '@utils/mysql';
+import { UpdateGameResponse } from '@api/game/interface';
 import {
   GAME_SHARE_LINK_CHARSET,
   GAME_SHARE_LINK_LENGTH,
-} from '../constants/sql';
-import { DbUser } from '../user/sql';
-import { UserAuthData } from '../user';
-import { TimestampTable } from '../interfaces';
+} from '@model/constants/sql';
+import { DbUser } from '@model/user/sql';
+import { UserAuthData } from '@model/user';
+import { TimestampTable } from '@model/interfaces';
 import { DbGame, GamePermission, sql, DbGameShareLinks } from './sql';
 
 export interface GamePreviewData extends TimestampTable {

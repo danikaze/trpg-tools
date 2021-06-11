@@ -1,22 +1,22 @@
 import { basename } from 'path';
 import {
-  createNoteDefinition,
-  CreateNoteDefinitionData,
-  CreateNoteFieldDefinition,
-} from '.';
-import { SYSTEM_USER } from '../user';
-import {
   FIELD_COL_NAME_MAX_LENGTH,
   FIELD_TEXT_MAX_LENGTH,
   NOTE_TYPE_COL_NAME_MAX_LENGTH,
-} from '../../utils/constants';
-import { DbInitFunction } from '../../utils/mysql';
+} from '@utils/constants';
+import { DbInitFunction } from '@utils/mysql';
+import { SYSTEM_USER } from '@model/user';
 import {
   EDIT_TIME_COLS,
   MYSQL_TYPE_ENUM,
   MYSQL_TYPE_INTERNAL_ID,
   MYSQL_TYPE_PUBLIC_ID,
-} from '../constants/sql';
+} from '@model/constants/sql';
+import {
+  createNoteDefinition,
+  CreateNoteDefinitionData,
+  CreateNoteFieldDefinition,
+} from '.';
 
 export const NOTE_DEFINITION_NAME_PCS = 'PCs';
 export const NOTE_DEFINITION_NAME_NPCS = 'NPCs';

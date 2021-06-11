@@ -1,8 +1,8 @@
-import { DbInitFunction } from '../../utils/mysql';
-import { devUsers } from '../user/mock';
-import { devNotes } from '../note/mock';
-import { systemWidgetDefIds } from '../widget-def/init';
-import { getSystemNoteDefinitions } from '../global';
+import { DbInitFunction } from '@utils/mysql';
+import { devUsers } from '@model/user/mock';
+import { devNotes } from '@model/note/mock';
+import { systemWidgetDefIds } from '@model/widget-def/init';
+import { getSystemNoteDefinitions } from '@model/global';
 import { createWidgetKey } from '.';
 
 export const widgetKeyDevData: DbInitFunction = async (db) => {

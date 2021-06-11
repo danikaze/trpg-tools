@@ -1,4 +1,4 @@
-import { getDb } from '../../utils/db';
+import { getDb } from '@utils/db';
 import { DbUser, sql, UserType } from './sql';
 
 export type UserRole = 'system' | 'admin' | 'user';

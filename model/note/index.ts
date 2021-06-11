@@ -1,13 +1,13 @@
-import { Paginated } from '../../utils/mysql';
-import { generateUniqueId, getDb, getTimestamp } from '../../utils/db';
-import { TimestampTable } from '../interfaces';
+import { Paginated } from '@utils/mysql';
+import { generateUniqueId, getDb, getTimestamp } from '@utils/db';
+import { TimestampTable } from '@model/interfaces';
+import { DbGame } from '@model/game/sql';
+import { DbNoteDefinition } from '@model/note-definition/sql';
+import { UserAuthData } from '@model/user';
+import { selectGameNames } from '@model/game';
+import { getImageFields, getNoteDefinitionNames } from '@model/note-definition';
+import { getThumbnails } from '@model/image';
 import { DbNote, DbNoteContent, sql } from './sql';
-import { DbGame } from '../game/sql';
-import { DbNoteDefinition } from '../note-definition/sql';
-import { UserAuthData } from '../user';
-import { selectGameNames } from '../game';
-import { getImageFields, getNoteDefinitionNames } from '../note-definition';
-import { getThumbnails } from '../image';
 
 export interface CreateNoteData {
   noteDefId: DbNoteDefinition['noteDefId'];

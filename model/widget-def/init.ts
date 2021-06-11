@@ -1,18 +1,18 @@
 import { basename, join } from 'path';
-import { DbInitFunction } from '../../utils/mysql';
-import { storeImageInDb } from '../../utils/store-image-in-db';
+import { DbInitFunction } from '@utils/mysql';
+import { storeImageInDb } from '@utils/store-image-in-db';
 import {
   WIDGET_DEF_IMAGE_NAME_MAX_LENGTH,
   WIDGET_DEF_NAME_MAX_LENGTH,
-} from '../../utils/constants';
+} from '@utils/constants';
 import {
   EDIT_TIME_COLS,
   MYSQL_TYPE_ENUM,
   MYSQL_TYPE_INTERNAL_ID,
   MYSQL_TYPE_PUBLIC_ID,
-} from '../constants/sql';
-import { DbImage } from '../image/sql';
-import { SYSTEM_USER } from '../user';
+} from '@model/constants/sql';
+import { DbImage } from '@model/image/sql';
+import { SYSTEM_USER } from '@model/user';
 import { createWidgetDef } from '.';
 
 import { html as pjBordersHtml } from './system/pj-borders/html';

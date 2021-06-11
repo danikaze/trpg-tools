@@ -3,9 +3,9 @@ import compress from 'compression';
 import cookieParser from 'cookie-parser';
 import next from 'next';
 import { useAuth } from './auth';
-import { initDb } from '../utils/db';
-import { dbUpdates } from '../model/init';
-import { getLogger } from '../utils/logger';
+import { initDb } from '@utils/db';
+import { dbUpdates } from '@model/init';
+import { getLogger } from '@utils/logger';
 import { runWebSocketServer } from './ws';
 
 export function run() {

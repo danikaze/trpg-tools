@@ -1,7 +1,7 @@
-import { getTimestamp } from '../../utils/db';
-import { MySql } from '../../utils/mysql';
-import { DbUser } from '../user/sql';
-import { TimestampTable } from '../interfaces';
+import { getTimestamp } from '@utils/db';
+import { MySql } from '@utils/mysql';
+import { DbUser } from '@model/user/sql';
+import { TimestampTable } from '@model/interfaces';
 
 export type ImageType = 'game' | 'note' | 'widgetDef';
 export type ImageThumbnail =

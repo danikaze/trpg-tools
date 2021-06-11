@@ -1,7 +1,7 @@
 import { join } from 'path';
-import { DbInitFunction } from '../../../utils/mysql';
-import { storeImageInDb } from '../../../utils/store-image-in-db';
-import { filenameWithoutExtension } from '../../../utils/filename-without-extension';
+import { DbInitFunction } from '@utils/mysql';
+import { storeImageInDb } from '@utils/store-image-in-db';
+import { filenameWithoutExtension } from '@utils/filename-without-extension';
 import { devUsers } from '../../user/mock';
 import { StoredImage } from '..';
 import { ImageType } from '../sql';

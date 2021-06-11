@@ -1,8 +1,8 @@
-import { DbInitFunction } from '../../utils/mysql';
-import { devUsers } from '../user/mock';
+import { DbInitFunction } from '@utils/mysql';
+import { devUsers } from '@model/user/mock';
+import { devNotes } from '@model/note/mock';
+import { getSystemNoteDefinitions } from '@model/global';
 import { createApiKey } from '.';
-import { devNotes } from '../note/mock';
-import { getSystemNoteDefinitions } from '../global';
 
 export const apiKeyDevData: DbInitFunction = async (db) => {
   const systemNoteTypes = await getSystemNoteDefinitions();

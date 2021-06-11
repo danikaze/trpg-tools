@@ -1,12 +1,12 @@
 import { basename } from 'path';
-import { DbInitFunction } from '../../utils/mysql';
-import { WIDGET_NAME_MAX_LENGTH } from '../../utils/constants';
+import { DbInitFunction } from '@utils/mysql';
+import { WIDGET_NAME_MAX_LENGTH } from '@utils/constants';
 import {
   EDIT_TIME_COLS,
   MYSQL_TYPE_ENUM,
   MYSQL_TYPE_INTERNAL_ID,
   MYSQL_TYPE_PUBLIC_ID,
-} from '../constants/sql';
+} from '@model/constants/sql';
 
 export const initWidgetKeys: DbInitFunction = async (db) => {
   const sql = [

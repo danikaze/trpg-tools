@@ -1,18 +1,18 @@
 import { basename } from 'path';
-import { getTimestamp } from '../../utils/db';
-import { DbInitFunction } from '../../utils/mysql';
+import { getTimestamp } from '@utils/db';
+import { DbInitFunction } from '@utils/mysql';
 import {
   LOCAL_SALT_SIZE,
   PASSWORD_MAX_CHARS,
   TWITTER_PROFILE_LENGTH,
   USERNAME_MAX_CHARS,
-} from '../../utils/constants';
+} from '@utils/constants';
 import { PUBLIC_USER_MIN_ID, SYSTEM_USER } from '.';
 import {
   MYSQL_TYPE_INTERNAL_ID,
   EDIT_TIME_COLS,
   MYSQL_TYPE_ENUM,
-} from '../constants/sql';
+} from '@model/constants/sql';
 import { UserType } from './sql';
 
 const USERNAME_ROWTYPE = `VARCHAR(${USERNAME_MAX_CHARS})`;

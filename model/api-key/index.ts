@@ -1,7 +1,7 @@
-import { generateUniqueId, getDb } from '../../utils/db';
-import { UpdateNoteData } from '../note';
-import { DbUser } from '../user/sql';
-import { UserAuthData } from '../user';
+import { generateUniqueId, getDb } from '@utils/db';
+import { UpdateNoteData } from '@model/note';
+import { DbUser } from '@model/user/sql';
+import { UserAuthData } from '@model/user';
 import { DbApiKey, sql } from './sql';
 
 export type ApiKeySelectNoteData = Pick<UpdateNoteData, 'noteId'>;
